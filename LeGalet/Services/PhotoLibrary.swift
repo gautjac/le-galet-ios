@@ -12,9 +12,21 @@ final class PhotoLoader: ObservableObject {
     // must never satisfy a full-screen request (that was the low-res bug). NSCache
     // evicts under memory pressure so a big album can't balloon RAM.
     private let cache = NSCache<NSString, UIImage>()
+    private var framingCache: [String: PhotoFraming] = [:]
     private let manager = PHImageManager.default()
 
     init() { cache.countLimit = 24 }
+
+    // How to frame a photo (aspect + salient focus), computed once off the main
+    // thread via Vision and memoised so a cycling display never recomputes it.
+    func framing(for localId: String, image: UIImage) async -> PhotoFraming {
+        if let hit = framingCache[localId] { return hit }
+        let result = await Task.detached(priority: .userInitiated) {
+            PhotoFraming.analyze(image)
+        }.value
+        framingCache[localId] = result
+        return result
+    }
 
     func image(for localId: String, target: CGSize) async -> UIImage? {
         guard !localId.isEmpty else { return nil }

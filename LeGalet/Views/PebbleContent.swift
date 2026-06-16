@@ -76,37 +76,28 @@ private struct ReminderPebble: View {
     }
 }
 
-// Photo with a slow Ken Burns drift on a softly-blurred bed, plus an optional
-// italic serif caption over a gradient floor for legibility.
+// Photo framed intelligently for the current screen: it fills edge-to-edge when
+// the photo's shape is close to the iPad's, and shows the WHOLE photo on a soft
+// blurred bed when they clash (a portrait photo on a landscape iPad, say). When
+// it does crop, Vision keeps the faces / subject in frame, and the Ken Burns
+// drift leans toward them. A caption sits over a gradient floor for legibility.
 private struct PhotoPebble: View {
     let pebble: Pebble
     let settings: GaletSettings
     @State private var image: UIImage?
+    @State private var framing: PhotoFraming = .centered
     @State private var drifted = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    private var variant: Int { abs(pebble.id.hashValue) % 4 }
 
     var body: some View {
         GeometryReader { geo in
             ZStack {
                 if let image {
-                    // Blurred bed so any aspect ratio sits on a calm ground.
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: geo.size.width, height: geo.size.height)
-                        .clipped()
-                        .blur(radius: 40)
-                        .opacity(0.4)
-
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: geo.size.width, height: geo.size.height)
-                        .scaleEffect(kenBurnsScale)
-                        .offset(kenBurnsOffset)
-                        .clipped()
+                    if shouldFill(framing.aspect, geo.size) {
+                        fillView(image, geo.size)
+                    } else {
+                        fitView(image, geo.size)
+                    }
 
                     LinearGradient(
                         colors: [.clear, Color.stoneDeep.opacity(0.7)],
@@ -129,35 +120,71 @@ private struct PhotoPebble: View {
                 }
             }
             .frame(width: geo.size.width, height: geo.size.height)
+            .clipped()
             .task(id: pebble.id) {
-                // Request a touch larger than the screen so the Ken Burns zoom
-                // (up to ~1.16×) never magnifies past the image's native pixels.
-                let headroom: CGFloat = 1.2
-                image = await PhotoLoader.shared.image(
-                    for: pebble.photoLocalId,
-                    target: CGSize(width: geo.size.width * headroom,
-                                   height: geo.size.height * headroom))
+                // A touch larger than the screen so the Ken Burns zoom never
+                // magnifies past the photo's native pixels.
+                let target = CGSize(width: geo.size.width * 1.25,
+                                    height: geo.size.height * 1.25)
+                if let img = await PhotoLoader.shared.image(for: pebble.photoLocalId, target: target) {
+                    framing = await PhotoLoader.shared.framing(for: pebble.photoLocalId, image: img)
+                    image = img
+                }
                 startDrift()
             }
         }
         .ignoresSafeArea()
     }
 
+    // Fill when the photo's aspect is within ~35% of the screen's; otherwise show
+    // the whole photo (no decapitated portraits on a landscape iPad).
+    private func shouldFill(_ imgAspect: CGFloat, _ screen: CGSize) -> Bool {
+        guard screen.height > 0, imgAspect > 0 else { return true }
+        let ratio = imgAspect / (screen.width / screen.height)
+        return max(ratio, 1 / ratio) < 1.35
+    }
+
+    // Immersive aspect-fill, the crop biased toward the salient region, gentle zoom.
+    private func fillView(_ image: UIImage, _ frame: CGSize) -> some View {
+        let a = max(framing.aspect, 0.01)
+        var w = frame.height * a
+        var h = frame.height
+        if w < frame.width { w = frame.width; h = frame.width / a }
+        let overflowX = max(0, w - frame.width)
+        let overflowY = max(0, h - frame.height)
+        let offX = clampCG((0.5 - framing.focus.x) * w, -overflowX / 2, overflowX / 2)
+        let offY = clampCG((0.5 - framing.focus.y) * h, -overflowY / 2, overflowY / 2)
+
+        return Image(uiImage: image)
+            .resizable()
+            .frame(width: w, height: h)
+            .scaleEffect(driftOn ? (drifted ? 1.12 : 1.03) : 1.0)
+            .offset(x: offX, y: offY)
+            .frame(width: frame.width, height: frame.height)
+            .clipped()
+    }
+
+    // Whole photo, centred and un-cropped, on a soft blurred bed of itself.
+    private func fitView(_ image: UIImage, _ frame: CGSize) -> some View {
+        ZStack {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: frame.width, height: frame.height)
+                .clipped()
+                .blur(radius: 44)
+                .opacity(0.45)
+                .overlay(Color.stoneDeep.opacity(0.28))
+
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .scaleEffect(driftOn ? (drifted ? 1.05 : 1.0) : 1.0)
+                .frame(width: frame.width, height: frame.height)
+        }
+    }
+
     private var driftOn: Bool { settings.kenBurns && !reduceMotion }
-    private var kenBurnsScale: CGFloat {
-        guard driftOn else { return 1.04 }
-        let from: CGFloat = variant % 2 == 0 ? 1.06 : 1.15
-        let to: CGFloat = variant % 2 == 0 ? 1.16 : 1.05
-        return drifted ? to : from
-    }
-    private var kenBurnsOffset: CGSize {
-        guard driftOn else { return .zero }
-        let dirs: [CGSize] = [
-            .init(width: 18, height: 14), .init(width: -16, height: -16),
-            .init(width: -18, height: 12), .init(width: 16, height: -14)
-        ]
-        return drifted ? dirs[variant] : .zero
-    }
 
     private func startDrift() {
         guard driftOn else { return }
@@ -165,4 +192,8 @@ private struct PhotoPebble: View {
         let span = settings.dwellSeconds + settings.fadeSeconds * 2
         withAnimation(.easeInOut(duration: span)) { drifted = true }
     }
+}
+
+private func clampCG(_ v: CGFloat, _ lo: CGFloat, _ hi: CGFloat) -> CGFloat {
+    min(max(v, lo), hi)
 }
