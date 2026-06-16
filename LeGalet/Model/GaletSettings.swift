@@ -14,6 +14,7 @@ final class GaletSettings {
     var kenBurns: Bool = true
     var showClock: Bool = true
     var tone: String = ""
+    var quoteFontRaw: String = "serif"
     var langRaw: String = "fr"
     var onboarded: Bool = false
     var useCalendar: Bool = false        // drift in the day's events
@@ -22,4 +23,5 @@ final class GaletSettings {
     init() {}
 
     var lang: Lang { Lang(rawValue: langRaw) ?? .fr }
+    var quoteFont: QuoteFont { QuoteFont(rawValue: quoteFontRaw) ?? .serif }
 }

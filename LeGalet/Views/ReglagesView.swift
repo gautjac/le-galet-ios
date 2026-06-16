@@ -17,6 +17,7 @@ struct ReglagesView: View {
                     VStack(alignment: .leading, spacing: 26) {
                         pace
                         order
+                        typeface
                         dayNight
                         texture
                         household
@@ -54,6 +55,40 @@ struct ReglagesView: View {
         section(S.order(lang)) {
             GaletCard { CalmToggle(title: S.shuffleOn(lang), isOn: $settings.shuffle) }
         }
+    }
+
+    private var typeface: some View {
+        section(S.quoteTypeface(lang)) {
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10),
+                                GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                ForEach(QuoteFont.allCases) { f in fontCard(f) }
+            }
+        }
+    }
+
+    private func fontCard(_ f: QuoteFont) -> some View {
+        let on = settings.quoteFont == f
+        return Button {
+            settings.quoteFontRaw = f.rawValue
+            persist()
+        } label: {
+            VStack(spacing: 10) {
+                // A live sample set in the typeface itself.
+                Text("Aa")
+                    .font(f.font(38))
+                    .foregroundStyle(on ? Color.quoteInk : Color.mist)
+                Text(f.name(lang))
+                    .font(Typo.sans(12, .medium)).tracking(1)
+                    .foregroundStyle(on ? Color.amber : Color.mistSoft)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 20)
+            .background(on ? Color.amber.opacity(0.08) : Color.stoneRaise,
+                        in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16)
+                .strokeBorder(on ? Color.amber : Color.stoneLine.opacity(0.5), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
     }
 
     private var dayNight: some View {

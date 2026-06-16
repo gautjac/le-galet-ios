@@ -28,6 +28,7 @@
 		CFF5E1D026BF51B1CB5307F1 /* EventBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F6A20A8EE81BE940126DC0 /* EventBridge.swift */; };
 		E7720E55A40875663B5779F0 /* PebbleContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39804E0604F4AD232E130C2D /* PebbleContent.swift */; };
 		EBACFB322B351D86719EFE9F /* Souffleur.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D5D02C9448E79C7FE95509 /* Souffleur.swift */; };
+		FBEEADE9561BF70A2177FEE8 /* QuoteFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73F7F9FD1B1F6A05D3F6981 /* QuoteFont.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		B7C97563E3B71456AD7581A0 /* SeedContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedContent.swift; sourceTree = "<group>"; };
 		BE717629EAC2E576629CECA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C6A82658997A94F73D97ABDB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		C73F7F9FD1B1F6A05D3F6981 /* QuoteFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteFont.swift; sourceTree = "<group>"; };
 		CE93A6E92322B9D70053C81A /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
 		D5665A95AC574C736BDFFAA2 /* PhotoLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibrary.swift; sourceTree = "<group>"; };
 		E4D5D02C9448E79C7FE95509 /* Souffleur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Souffleur.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				CE93A6E92322B9D70053C81A /* Palette.swift */,
+				C73F7F9FD1B1F6A05D3F6981 /* QuoteFont.swift */,
 			);
 			path = Theme;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 				E7720E55A40875663B5779F0 /* PebbleContent.swift in Sources */,
 				20B4858C09524BBC24F60258 /* PhotoLibrary.swift in Sources */,
 				1E88F53410C65E6244FAC03B /* Playlist.swift in Sources */,
+				FBEEADE9561BF70A2177FEE8 /* QuoteFont.swift in Sources */,
 				42CC24AF2F50B9E432792E72 /* ReglagesView.swift in Sources */,
 				93C293B7111E4EC63D11BB35 /* RootView.swift in Sources */,
 				439BF8B782448F78612020BE /* SeedContent.swift in Sources */,

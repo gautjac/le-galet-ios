@@ -91,6 +91,7 @@ enum S {
     static let dayStart = L(fr: "Réveil de l'écran", en: "Screen wakes")
     static let nightStart = L(fr: "L'écran se tamise", en: "Screen dims")
     static let nightDim = L(fr: "Pénombre de nuit", en: "Night dimness")
+    static let quoteTypeface = L(fr: "La voix des citations", en: "Voice of the quotes")
     static let texture = L(fr: "La texture", en: "Texture")
     static let kenBurns = L(fr: "Lente dérive sur les photos", en: "Slow drift on photos")
     static let showClock = L(fr: "Heure discrète", en: "Quiet clock")

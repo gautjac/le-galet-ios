@@ -10,7 +10,7 @@ struct PebbleContent: View {
     var body: some View {
         switch pebble.kind {
         case .photo: PhotoPebble(pebble: pebble, settings: settings)
-        case .quote: QuotePebble(pebble: pebble)
+        case .quote: QuotePebble(pebble: pebble, font: settings.quoteFont)
         case .reminder: ReminderPebble(pebble: pebble, kindIcon: "bell")
         case .event: ReminderPebble(pebble: pebble, kindIcon: "calendar")
         }
@@ -20,10 +20,12 @@ struct PebbleContent: View {
 private struct QuotePebble: View {
     @Environment(\.galetAccent) private var accent
     let pebble: Pebble
+    let font: QuoteFont
     var body: some View {
         VStack(spacing: 28) {
             Text(pebble.text)
-                .font(Typo.serif(clampQuote, .light))
+                .font(font.font(clampQuote))
+                .tracking(font.tracking)
                 .foregroundStyle(Color.quoteInk)
                 .multilineTextAlignment(.center)
                 .lineSpacing(8)
