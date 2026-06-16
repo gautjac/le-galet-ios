@@ -1,0 +1,66 @@
+name: LeGalet
+options:
+  bundleIdPrefix: com.jac
+  developmentLanguage: fr
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    # Swift 5 language mode — matches the rest of Jac's native stack; avoids
+    # strict-concurrency actor churn in a small, single-window display app.
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: 9WZ66DZ69J
+    CODE_SIGN_STYLE: Automatic
+    DEAD_CODE_STRIPPING: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+
+targets:
+  LeGalet:
+    type: application
+    platform: iOS
+    sources:
+      - path: LeGalet
+    info:
+      path: LeGalet/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Le Galet
+        CFBundleName: LeGalet
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSHumanReadableCopyright: "© 2026 Jacques Gautreau"
+        CFBundleDevelopmentRegion: fr
+        CFBundleLocalizations: [fr, en]
+        UILaunchScreen:
+          UIColorName: ""
+        UIUserInterfaceStyle: Dark
+        # A calm hearth wants to stay lit — never auto-lock while drifting.
+        # (Enforced at runtime too via isIdleTimerDisabled.)
+        NSPhotoLibraryUsageDescription: "Pour afficher vos propres photos de famille sur l'écran calme. Elles restent sur l'appareil et ne sont jamais envoyées."
+        NSCalendarsFullAccessUsageDescription: "Pour faire dériver doucement vos rendez-vous du jour sur l'écran, comme de petits rappels. Rien n'est envoyé."
+        NSRemindersFullAccessUsageDescription: "Pour faire apparaître vos rappels au bon moment sur l'écran. Tout reste sur l'appareil."
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        "UISupportedInterfaceOrientations~ipad":
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "1,2"
+        PRODUCT_BUNDLE_IDENTIFIER: com.jac.LeGalet
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+
+schemes:
+  LeGalet:
+    build:
+      targets:
+        LeGalet: all
