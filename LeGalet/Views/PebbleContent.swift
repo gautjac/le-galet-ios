@@ -128,9 +128,13 @@ private struct PhotoPebble: View {
             }
             .frame(width: geo.size.width, height: geo.size.height)
             .task(id: pebble.id) {
+                // Request a touch larger than the screen so the Ken Burns zoom
+                // (up to ~1.16×) never magnifies past the image's native pixels.
+                let headroom: CGFloat = 1.2
                 image = await PhotoLoader.shared.image(
                     for: pebble.photoLocalId,
-                    target: CGSize(width: geo.size.width, height: geo.size.height))
+                    target: CGSize(width: geo.size.width * headroom,
+                                   height: geo.size.height * headroom))
                 startDrift()
             }
         }
