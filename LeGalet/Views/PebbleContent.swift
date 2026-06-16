@@ -180,14 +180,16 @@ private struct PhotoPebble: View {
         if fillW < frame.width { fillW = frame.width; fillH = frame.width / a }
         var fitW = frame.width, fitH = frame.width / a
         if fitH > frame.height { fitH = frame.height; fitW = frame.height * a }
+        let fitSize = CGSize(width: fitW, height: fitH)
 
-        if wantFit {
-            return make(CGSize(width: fitW, height: fitH), fit: true, frame: frame, s: framing).plan
+        // A person or pet is never cropped — always show the whole photo.
+        if framing.protectSubject || wantFit {
+            return make(fitSize, fit: true, frame: frame, s: framing).plan
         }
         let fill = make(CGSize(width: fillW, height: fillH), fit: false, frame: frame, s: framing)
         if fill.subjectFits { return fill.plan }
         // Filling would crop the subject — show the whole photo instead.
-        return make(CGSize(width: fitW, height: fitH), fit: true, frame: frame, s: framing).plan
+        return make(fitSize, fit: true, frame: frame, s: framing).plan
     }
 
     private func make(_ base: CGSize, fit: Bool, frame: CGSize, s: PhotoFraming)
