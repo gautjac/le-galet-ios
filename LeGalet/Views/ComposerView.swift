@@ -146,7 +146,8 @@ struct ComposerView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 5, leading: 22, bottom: 5, trailing: 22))
-                    .swipeActions(edge: .trailing) {
+                    // Swipe LEFT to remove (full swipe), with Hide as a second action.
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) { delete(item) } label: {
                             Label(S.remove(lang), systemImage: "trash")
                         }
@@ -155,6 +156,12 @@ struct ComposerView: View {
                                   systemImage: item.active ? "eye.slash" : "eye")
                         }.tint(.stoneLine)
                     }
+                    // Swipe RIGHT to remove, too — either direction works.
+                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                        Button(role: .destructive) { delete(item) } label: {
+                            Label(S.remove(lang), systemImage: "trash")
+                        }
+                    }
                     .contentShape(Rectangle())
                     .onTapGesture { if item.kind != .photo { editing = EditorDraft(kind: item.kind == .reminder ? .reminder : .quote, item: item) } }
             }
@@ -162,7 +169,8 @@ struct ComposerView: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
-        .environment(\.editMode, .constant(.active)) // always show drag handles
+        // No forced edit mode — that disabled swipe actions. Reordering still works
+        // by press-and-hold on a row.
     }
 
     // ── Mutations ───────────────────────────────────────────────────────────────
