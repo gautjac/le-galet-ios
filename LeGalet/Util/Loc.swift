@@ -90,6 +90,7 @@ enum S {
     static let pace = L(fr: "Le rythme", en: "Pace")
     static let fade = L(fr: "Durée du fondu", en: "Fade duration")
     static let dwell = L(fr: "Temps de repos", en: "Dwell time")
+    static let textSize = L(fr: "Taille du texte", en: "Text size")
     static let order = L(fr: "L'ordre", en: "Order")
     static let shuffleOn = L(fr: "Aléatoire (selon la fréquence)", en: "Shuffle (by frequency)")
     static let nightDayTitle = L(fr: "Le jour et la nuit", en: "Day & night")

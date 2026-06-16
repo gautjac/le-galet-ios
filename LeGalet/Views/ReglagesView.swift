@@ -47,6 +47,8 @@ struct ReglagesView: View {
                        display: String(format: "%.1f s", settings.fadeSeconds))
                 slider(S.dwell(lang), value: $settings.dwellSeconds, range: 4...300, step: 1,
                        display: durationLabel(settings.dwellSeconds))
+                slider(S.textSize(lang), value: $settings.textScale, range: 0.8...1.6, step: 0.05,
+                       display: "\(Int((settings.textScale * 100).rounded())) %")
             }
         }
     }

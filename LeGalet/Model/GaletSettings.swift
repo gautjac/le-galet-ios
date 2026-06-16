@@ -16,6 +16,9 @@ final class GaletSettings {
     // Off (default): always show the whole photo, never cropping. On: fill the
     // screen edge-to-edge, with a slight crop and subject protection.
     var fillScreen: Bool = false
+    // Multiplies every pebble's text size (quotes, reminders, captions). 1.0 = the
+    // tuned default; the slider runs from cosy (0.8) to across-the-room (1.6).
+    var textScale: Double = 1.0
     var tone: String = ""
     var quoteFontRaw: String = "serif"
     var langRaw: String = "fr"

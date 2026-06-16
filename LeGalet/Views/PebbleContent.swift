@@ -10,9 +10,9 @@ struct PebbleContent: View {
     var body: some View {
         switch pebble.kind {
         case .photo: PhotoPebble(pebble: pebble, settings: settings)
-        case .quote: QuotePebble(pebble: pebble, font: settings.quoteFont)
-        case .reminder: ReminderPebble(pebble: pebble, kindIcon: "bell")
-        case .event: ReminderPebble(pebble: pebble, kindIcon: "calendar")
+        case .quote: QuotePebble(pebble: pebble, font: settings.quoteFont, scale: settings.textScale)
+        case .reminder: ReminderPebble(pebble: pebble, kindIcon: "bell", scale: settings.textScale)
+        case .event: ReminderPebble(pebble: pebble, kindIcon: "calendar", scale: settings.textScale)
         }
     }
 }
@@ -21,18 +21,19 @@ private struct QuotePebble: View {
     @Environment(\.galetAccent) private var accent
     let pebble: Pebble
     let font: QuoteFont
+    var scale: Double = 1.0
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: 28 * scale) {
             Text(pebble.text)
-                .font(font.font(clampQuote))
+                .font(font.font(clampQuote * scale))
                 .tracking(font.tracking)
                 .foregroundStyle(Color.quoteInk)
                 .multilineTextAlignment(.center)
-                .lineSpacing(8)
+                .lineSpacing(8 * scale)
                 .fixedSize(horizontal: false, vertical: true)
             if !pebble.author.isEmpty {
                 Text(pebble.author.uppercased())
-                    .font(Typo.sans(13, .light))
+                    .font(Typo.sans(13 * scale, .light))
                     .tracking(3)
                     .foregroundStyle(accent.opacity(0.85))
             }
@@ -50,23 +51,24 @@ private struct ReminderPebble: View {
     @Environment(\.galetAccent) private var accent
     let pebble: Pebble
     let kindIcon: String
+    var scale: Double = 1.0
     var body: some View {
-        VStack(spacing: 22) {
+        VStack(spacing: 22 * scale) {
             Image(systemName: kindIcon)
-                .font(.system(size: 22, weight: .ultraLight))
+                .font(.system(size: 22 * scale, weight: .ultraLight))
                 .foregroundStyle(accent.opacity(0.8))
             Rectangle()
                 .fill(accent.opacity(0.5))
                 .frame(width: 40, height: 1)
             Text(pebble.text)
-                .font(Typo.sans(34, .light))
+                .font(Typo.sans(34 * scale, .light))
                 .foregroundStyle(Color.mist)
                 .multilineTextAlignment(.center)
-                .lineSpacing(4)
+                .lineSpacing(4 * scale)
                 .fixedSize(horizontal: false, vertical: true)
             if !pebble.subtitle.isEmpty {
                 Text(pebble.subtitle)
-                    .font(Typo.sans(15, .regular))
+                    .font(Typo.sans(15 * scale, .regular))
                     .tracking(1)
                     .foregroundStyle(Color.mistSoft)
             }
@@ -113,7 +115,7 @@ private struct PhotoPebble: View {
                         VStack {
                             Spacer()
                             Text(pebble.text)
-                                .font(Typo.serif(19, .light).italic())
+                                .font(Typo.serif(19 * settings.textScale, .light).italic())
                                 .foregroundStyle(Color.quoteInk.opacity(0.92))
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal, 40)
