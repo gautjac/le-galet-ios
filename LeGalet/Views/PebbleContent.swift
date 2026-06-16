@@ -93,11 +93,15 @@ private struct PhotoPebble: View {
         GeometryReader { geo in
             ZStack {
                 if let image {
-                    if shouldFill(framing.aspect, geo.size) {
-                        fillView(image, geo.size)
-                    } else {
-                        fitView(image, geo.size)
-                    }
+                    let p = plan(framing, geo.size)
+                    if p.fit { bed(image, geo.size) }
+                    Image(uiImage: image)
+                        .resizable()
+                        .frame(width: p.base.width, height: p.base.height)
+                        .offset(p.offset)
+                        .scaleEffect(drifted ? p.zoomTo : 1.0, anchor: p.anchor)
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .clipped()
 
                     LinearGradient(
                         colors: [.clear, Color.stoneDeep.opacity(0.7)],
@@ -122,8 +126,6 @@ private struct PhotoPebble: View {
             .frame(width: geo.size.width, height: geo.size.height)
             .clipped()
             .task(id: pebble.id) {
-                // A touch larger than the screen so the Ken Burns zoom never
-                // magnifies past the photo's native pixels.
                 let target = CGSize(width: geo.size.width * 1.25,
                                     height: geo.size.height * 1.25)
                 if let img = await PhotoLoader.shared.image(for: pebble.photoLocalId, target: target) {
@@ -136,52 +138,16 @@ private struct PhotoPebble: View {
         .ignoresSafeArea()
     }
 
-    // Fill when the photo's aspect is within ~35% of the screen's; otherwise show
-    // the whole photo (no decapitated portraits on a landscape iPad).
-    private func shouldFill(_ imgAspect: CGFloat, _ screen: CGSize) -> Bool {
-        guard screen.height > 0, imgAspect > 0 else { return true }
-        let ratio = imgAspect / (screen.width / screen.height)
-        return max(ratio, 1 / ratio) < 1.35
-    }
-
-    // Immersive aspect-fill, the crop biased toward the salient region, gentle zoom.
-    private func fillView(_ image: UIImage, _ frame: CGSize) -> some View {
-        let a = max(framing.aspect, 0.01)
-        var w = frame.height * a
-        var h = frame.height
-        if w < frame.width { w = frame.width; h = frame.width / a }
-        let overflowX = max(0, w - frame.width)
-        let overflowY = max(0, h - frame.height)
-        let offX = clampCG((0.5 - framing.focus.x) * w, -overflowX / 2, overflowX / 2)
-        let offY = clampCG((0.5 - framing.focus.y) * h, -overflowY / 2, overflowY / 2)
-
-        return Image(uiImage: image)
+    // A soft blurred bed of the photo itself, for the fit (letterboxed) case.
+    private func bed(_ image: UIImage, _ frame: CGSize) -> some View {
+        Image(uiImage: image)
             .resizable()
-            .frame(width: w, height: h)
-            .scaleEffect(driftOn ? (drifted ? 1.12 : 1.03) : 1.0)
-            .offset(x: offX, y: offY)
+            .scaledToFill()
             .frame(width: frame.width, height: frame.height)
             .clipped()
-    }
-
-    // Whole photo, centred and un-cropped, on a soft blurred bed of itself.
-    private func fitView(_ image: UIImage, _ frame: CGSize) -> some View {
-        ZStack {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
-                .frame(width: frame.width, height: frame.height)
-                .clipped()
-                .blur(radius: 44)
-                .opacity(0.45)
-                .overlay(Color.stoneDeep.opacity(0.28))
-
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFit()
-                .scaleEffect(driftOn ? (drifted ? 1.05 : 1.0) : 1.0)
-                .frame(width: frame.width, height: frame.height)
-        }
+            .blur(radius: 44)
+            .opacity(0.45)
+            .overlay(Color.stoneDeep.opacity(0.28))
     }
 
     private var driftOn: Bool { settings.kenBurns && !reduceMotion }
@@ -191,6 +157,65 @@ private struct PhotoPebble: View {
         drifted = false
         let span = settings.dwellSeconds + settings.fadeSeconds * 2
         withAnimation(.easeInOut(duration: span)) { drifted = true }
+    }
+
+    // ── Framing decision ────────────────────────────────────────────────────────
+    private struct FramePlan {
+        var fit: Bool          // letterbox the whole photo on a bed?
+        var base: CGSize       // size to render the image at (before zoom)
+        var offset: CGSize     // shift to centre the subject
+        var anchor: UnitPoint  // zoom pivots here (the subject) so it never leaves
+        var zoomTo: CGFloat    // Ken Burns target (1.0 = no zoom)
+    }
+
+    // Fill when the photo's shape is close to the screen's AND the subject fits;
+    // otherwise show the whole photo. Either way, cap the zoom so the (padded)
+    // subject — face, pet, focal point — is never cropped.
+    private func plan(_ framing: PhotoFraming, _ frame: CGSize) -> FramePlan {
+        let a = max(framing.aspect, 0.01)
+        let screenA = frame.width / max(frame.height, 1)
+        let wantFit = max(a / screenA, screenA / a) >= 1.35
+
+        var fillW = frame.height * a, fillH = frame.height
+        if fillW < frame.width { fillW = frame.width; fillH = frame.width / a }
+        var fitW = frame.width, fitH = frame.width / a
+        if fitH > frame.height { fitH = frame.height; fitW = frame.height * a }
+
+        if wantFit {
+            return make(CGSize(width: fitW, height: fitH), fit: true, frame: frame, s: framing).plan
+        }
+        let fill = make(CGSize(width: fillW, height: fillH), fit: false, frame: frame, s: framing)
+        if fill.subjectFits { return fill.plan }
+        // Filling would crop the subject — show the whole photo instead.
+        return make(CGSize(width: fitW, height: fitH), fit: true, frame: frame, s: framing).plan
+    }
+
+    private func make(_ base: CGSize, fit: Bool, frame: CGSize, s: PhotoFraming)
+        -> (plan: FramePlan, subjectFits: Bool) {
+        let subj = s.subject
+        let ovX = max(0, base.width - frame.width), ovY = max(0, base.height - frame.height)
+        let offX = clampCG((0.5 - subj.midX) * base.width, -ovX / 2, ovX / 2)
+        let offY = clampCG((0.5 - subj.midY) * base.height, -ovY / 2, ovY / 2)
+
+        // Subject centre in frame coords, and how far it sits from each edge.
+        let px = frame.width / 2 + (subj.midX - 0.5) * base.width + offX
+        let py = frame.height / 2 + (subj.midY - 0.5) * base.height + offY
+        let halfW = max(1, subj.width * base.width / 2)
+        let halfH = max(1, subj.height * base.height / 2)
+
+        // Largest zoom that keeps the whole subject inside the frame.
+        let zSubject = min(px / halfW, (frame.width - px) / halfW,
+                           py / halfH, (frame.height - py) / halfH)
+        let subjectFits = !s.hasSubject || zSubject >= 1.0
+        let ceiling: CGFloat = fit ? 1.04 : 1.06
+        let cap = s.hasSubject ? min(ceiling, max(1.0, zSubject)) : ceiling
+        let zoomTo = driftOn ? cap : 1.0
+
+        return (FramePlan(fit: fit, base: base,
+                          offset: CGSize(width: offX, height: offY),
+                          anchor: UnitPoint(x: subj.midX, y: subj.midY),
+                          zoomTo: zoomTo),
+                subjectFits)
     }
 }
 
