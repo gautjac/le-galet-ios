@@ -43,12 +43,20 @@ struct ReglagesView: View {
     private var pace: some View {
         section(S.pace(lang)) {
             GaletCard {
-                slider(S.fade(lang), value: $settings.fadeSeconds, range: 0.8...6, step: 0.2,
+                slider(S.fade(lang), value: $settings.fadeSeconds, range: 0.6...8, step: 0.2,
                        display: String(format: "%.1f s", settings.fadeSeconds))
-                slider(S.dwell(lang), value: $settings.dwellSeconds, range: 4...40, step: 1,
-                       display: "\(Int(settings.dwellSeconds)) s")
+                slider(S.dwell(lang), value: $settings.dwellSeconds, range: 4...300, step: 1,
+                       display: durationLabel(settings.dwellSeconds))
             }
         }
+    }
+
+    // Seconds under a minute, "m min s" beyond — so a long, ambient dwell reads naturally.
+    private func durationLabel(_ seconds: Double) -> String {
+        let s = Int(seconds.rounded())
+        if s < 60 { return "\(s) s" }
+        let m = s / 60, r = s % 60
+        return r == 0 ? "\(m) min" : "\(m) min \(r) s"
     }
 
     private var order: some View {

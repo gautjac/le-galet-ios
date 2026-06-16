@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import Photos
+import UniformTypeIdentifiers
 
 struct ComposerView: View {
     @Environment(\.modelContext) private var context
@@ -12,6 +13,8 @@ struct ComposerView: View {
 
     @State private var editing: EditorDraft?
     @State private var showingPhotoPicker = false
+    @State private var showingImporter = false
+    @State private var importMessage: String?
 
     private var sorted: [GaletItem] { items.sorted { $0.order < $1.order } }
     private var activeCount: Int { items.filter { $0.active }.count }
@@ -33,6 +36,15 @@ struct ComposerView: View {
             PhotoPicker { ids in addPhotos(ids) }
                 .ignoresSafeArea()
         }
+        .fileImporter(isPresented: $showingImporter,
+                      allowedContentTypes: [.plainText, .text, .json, .commaSeparatedText],
+                      allowsMultipleSelection: false) { result in handleImport(result) }
+        .alert(S.importFile(lang),
+               isPresented: Binding(get: { importMessage != nil },
+                                    set: { if !$0 { importMessage = nil } }),
+               presenting: importMessage) { _ in
+            Button("OK") { importMessage = nil }
+        } message: { Text($0) }
     }
 
     private var header: some View {
@@ -57,6 +69,7 @@ struct ComposerView: View {
             addButton("photo.on.rectangle", S.addPhoto(lang)) { openPhotos() }
             addButton("quote.bubble", S.addQuote(lang)) { editing = EditorDraft(kind: .quote) }
             addButton("bell", S.addReminder(lang)) { editing = EditorDraft(kind: .reminder) }
+            addButton("square.and.arrow.down", S.importFile(lang)) { showingImporter = true }
         }
         .padding(.horizontal, 22).padding(.bottom, 14)
     }
@@ -170,6 +183,38 @@ struct ComposerView: View {
             order += 1
         }
         try? context.save()
+    }
+
+    // Import a file of quotes — text / markdown / CSV / JSON — bulk-adding the
+    // new ones (deduped against what's already in the galet and within the file).
+    private func handleImport(_ result: Result<[URL], Error>) {
+        guard case .success(let urls) = result, let url = urls.first else { return }
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+
+        guard let data = try? Data(contentsOf: url) else {
+            importMessage = S.importFailed(lang); return
+        }
+        let parsed = QuoteImport.parse(data: data, filename: url.lastPathComponent).prefix(1000)
+        var seen = Set(items.filter { $0.kind == .quote }.map { normalize($0.text) })
+        var order = nextOrder()
+        var added = 0
+        for q in parsed {
+            let text = q.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            let key = normalize(text)
+            guard !text.isEmpty, !seen.contains(key) else { continue }
+            seen.insert(key)
+            context.insert(GaletItem(typeRaw: PebbleKind.quote.rawValue, text: text,
+                                     author: q.author, order: order, sourceRaw: "import"))
+            order += 1; added += 1
+        }
+        try? context.save()
+        importMessage = added == 0 ? S.importNone(lang)
+            : (added == 1 ? S.importOne(lang) : String(format: S.importDone(lang), added))
+    }
+
+    private func normalize(_ s: String) -> String {
+        s.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private func save(draft: EditorDraft, result: EditorResult) {
