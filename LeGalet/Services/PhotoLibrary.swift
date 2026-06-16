@@ -31,12 +31,15 @@ final class PhotoLoader: ObservableObject {
     func image(for localId: String, target: CGSize) async -> UIImage? {
         guard !localId.isEmpty else { return nil }
 
-        // A fixed 2× is the iPad's native scale and avoids the context-dependent
-        // UIScreen.main lookup (deprecated in iOS 26).
-        let scale: CGFloat = 2
-        let pixel = CGSize(width: (target.width * scale).rounded(),
-                           height: (target.height * scale).rounded())
-        let key = "\(localId)@\(Int(pixel.width))x\(Int(pixel.height))" as NSString
+        // Request the WHOLE photo, uncropped: a square max-edge target plus
+        // .aspectFit returns the full image scaled to good resolution for any
+        // orientation. (.aspectFill here would pre-crop the photo to the target's
+        // aspect — which silently chopped portrait photos on a landscape iPad,
+        // before the framing layer ever saw them.) A fixed 2× is the iPad's
+        // native scale and avoids the deprecated UIScreen.main lookup.
+        let edge = (max(target.width, target.height) * 2).rounded()
+        let pixel = CGSize(width: edge, height: edge)
+        let key = "\(localId)@fit\(Int(edge))" as NSString
         if let hit = cache.object(forKey: key) { return hit }
 
         let assets = PHAsset.fetchAssets(withLocalIdentifiers: [localId], options: nil)
@@ -49,7 +52,7 @@ final class PhotoLoader: ObservableObject {
 
         let img: UIImage? = await withCheckedContinuation { cont in
             var resumed = false
-            manager.requestImage(for: asset, targetSize: pixel, contentMode: .aspectFill,
+            manager.requestImage(for: asset, targetSize: pixel, contentMode: .aspectFit,
                                  options: options) { image, info in
                 // highQualityFormat delivers one final image; guard against any
                 // stray degraded/duplicate callback so we resume exactly once.
