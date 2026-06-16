@@ -17,6 +17,12 @@ struct PhotoFraming: Equatable {
     static let centered = PhotoFraming(
         aspect: 1, subject: CGRect(x: 0, y: 0, width: 1, height: 1), kind: .none)
 
+    // Just the aspect — no Vision pass, for the whole-photo (no-crop) mode.
+    static func justAspect(_ image: UIImage) -> PhotoFraming {
+        PhotoFraming(aspect: image.size.height > 0 ? image.size.width / image.size.height : 1,
+                     subject: CGRect(x: 0, y: 0, width: 1, height: 1), kind: .none)
+    }
+
     static func analyze(_ image: UIImage) -> PhotoFraming {
         let aspect = image.size.height > 0 ? image.size.width / image.size.height : 1
         guard let cg = image.cgImage else {

@@ -113,6 +113,11 @@ struct ReglagesView: View {
     private var texture: some View {
         section(S.texture(lang)) {
             GaletCard {
+                VStack(alignment: .leading, spacing: 8) {
+                    CalmToggle(title: S.fillScreen(lang), isOn: $settings.fillScreen)
+                    Text(S.fillScreenHelp(lang))
+                        .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).lineSpacing(2)
+                }
                 CalmToggle(title: S.kenBurns(lang), isOn: $settings.kenBurns)
                 CalmToggle(title: S.showClock(lang), isOn: $settings.showClock)
             }

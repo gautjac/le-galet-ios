@@ -94,12 +94,13 @@ private struct PhotoPebble: View {
             ZStack {
                 if let image {
                     let p = plan(framing, geo.size)
+                    let scale = driftOn ? (drifted ? p.toScale : p.fromScale) : 1.0
                     if p.fit { bed(image, geo.size) }
                     Image(uiImage: image)
                         .resizable()
                         .frame(width: p.base.width, height: p.base.height)
                         .offset(p.offset)
-                        .scaleEffect(drifted ? p.zoomTo : 1.0, anchor: p.anchor)
+                        .scaleEffect(scale, anchor: p.anchor)
                         .frame(width: geo.size.width, height: geo.size.height)
                         .clipped()
 
@@ -129,7 +130,11 @@ private struct PhotoPebble: View {
                 let target = CGSize(width: geo.size.width * 1.25,
                                     height: geo.size.height * 1.25)
                 if let img = await PhotoLoader.shared.image(for: pebble.photoLocalId, target: target) {
-                    framing = await PhotoLoader.shared.framing(for: pebble.photoLocalId, image: img)
+                    // Vision (subject detection) is only needed for fill mode; the
+                    // whole-photo default skips it to save battery.
+                    framing = settings.fillScreen
+                        ? await PhotoLoader.shared.framing(for: pebble.photoLocalId, image: img)
+                        : PhotoFraming.justAspect(img)
                     image = img
                 }
                 startDrift()
@@ -162,33 +167,38 @@ private struct PhotoPebble: View {
     // ── Framing decision ────────────────────────────────────────────────────────
     private struct FramePlan {
         var fit: Bool          // letterbox the whole photo on a bed?
-        var base: CGSize       // size to render the image at (before zoom)
+        var base: CGSize       // size to render the image at (before scaling)
         var offset: CGSize     // shift to centre the subject
-        var anchor: UnitPoint  // zoom pivots here (the subject) so it never leaves
-        var zoomTo: CGFloat    // Ken Burns target (1.0 = no zoom)
+        var anchor: UnitPoint  // scale pivots here
+        var fromScale: CGFloat // drift start
+        var toScale: CGFloat   // drift end
     }
 
-    // Fill when the photo's shape is close to the screen's AND the subject fits;
-    // otherwise show the whole photo. Either way, cap the zoom so the (padded)
-    // subject — face, pet, focal point — is never cropped.
     private func plan(_ framing: PhotoFraming, _ frame: CGSize) -> FramePlan {
         let a = max(framing.aspect, 0.01)
-        let screenA = frame.width / max(frame.height, 1)
-        let wantFit = max(a / screenA, screenA / a) >= 1.35
-
-        var fillW = frame.height * a, fillH = frame.height
-        if fillW < frame.width { fillW = frame.width; fillH = frame.width / a }
         var fitW = frame.width, fitH = frame.width / a
         if fitH > frame.height { fitH = frame.height; fitW = frame.height * a }
         let fitSize = CGSize(width: fitW, height: fitH)
 
-        // A person or pet is never cropped — always show the whole photo.
+        // DEFAULT — show the whole photo, never cropping. The gentle drift "settles
+        // in": the photo grows from a hair small to exact fit, so it can never
+        // exceed the frame and nothing is ever cut. No Vision needed.
+        if !settings.fillScreen {
+            return FramePlan(fit: true, base: fitSize, offset: .zero, anchor: .center,
+                             fromScale: 0.965, toScale: 1.0)
+        }
+
+        // FILL (opt-in) — immersive, with best-effort subject protection.
+        let screenA = frame.width / max(frame.height, 1)
+        let wantFit = max(a / screenA, screenA / a) >= 1.35
+        var fillW = frame.height * a, fillH = frame.height
+        if fillW < frame.width { fillW = frame.width; fillH = frame.width / a }
+
         if framing.protectSubject || wantFit {
             return make(fitSize, fit: true, frame: frame, s: framing).plan
         }
         let fill = make(CGSize(width: fillW, height: fillH), fit: false, frame: frame, s: framing)
         if fill.subjectFits { return fill.plan }
-        // Filling would crop the subject — show the whole photo instead.
         return make(fitSize, fit: true, frame: frame, s: framing).plan
     }
 
@@ -199,24 +209,21 @@ private struct PhotoPebble: View {
         let offX = clampCG((0.5 - subj.midX) * base.width, -ovX / 2, ovX / 2)
         let offY = clampCG((0.5 - subj.midY) * base.height, -ovY / 2, ovY / 2)
 
-        // Subject centre in frame coords, and how far it sits from each edge.
         let px = frame.width / 2 + (subj.midX - 0.5) * base.width + offX
         let py = frame.height / 2 + (subj.midY - 0.5) * base.height + offY
         let halfW = max(1, subj.width * base.width / 2)
         let halfH = max(1, subj.height * base.height / 2)
 
-        // Largest zoom that keeps the whole subject inside the frame.
         let zSubject = min(px / halfW, (frame.width - px) / halfW,
                            py / halfH, (frame.height - py) / halfH)
         let subjectFits = !s.hasSubject || zSubject >= 1.0
         let ceiling: CGFloat = fit ? 1.04 : 1.06
         let cap = s.hasSubject ? min(ceiling, max(1.0, zSubject)) : ceiling
-        let zoomTo = driftOn ? cap : 1.0
 
         return (FramePlan(fit: fit, base: base,
                           offset: CGSize(width: offX, height: offY),
                           anchor: UnitPoint(x: subj.midX, y: subj.midY),
-                          zoomTo: zoomTo),
+                          fromScale: 1.0, toScale: cap),
                 subjectFits)
     }
 }

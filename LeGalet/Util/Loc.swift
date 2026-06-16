@@ -100,6 +100,10 @@ enum S {
     static let texture = L(fr: "La texture", en: "Texture")
     static let kenBurns = L(fr: "Lente dérive sur les photos", en: "Slow drift on photos")
     static let showClock = L(fr: "Heure discrète", en: "Quiet clock")
+    static let fillScreen = L(fr: "Remplir l'écran", en: "Fill the screen")
+    static let fillScreenHelp = L(
+        fr: "Désactivé, la photo entière s'affiche — jamais de tête coupée. Activé, les photos remplissent l'écran avec un léger recadrage.",
+        en: "Off, the whole photo is shown — no cut-off heads. On, photos fill the screen with a slight crop.")
     static let household = L(fr: "Le foyer", en: "Household")
     static let toneLabel = L(fr: "L'air de la maison", en: "The mood of the home")
     static let tonePlaceholder = L(fr: "p. ex. une famille calme, deux enfants, on aime les mots doux et la mer…",

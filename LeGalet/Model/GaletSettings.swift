@@ -13,6 +13,9 @@ final class GaletSettings {
     var nightDim: Double = 0.6           // 0–1 brightness drop at the heart of night
     var kenBurns: Bool = true
     var showClock: Bool = true
+    // Off (default): always show the whole photo, never cropping. On: fill the
+    // screen edge-to-edge, with a slight crop and subject protection.
+    var fillScreen: Bool = false
     var tone: String = ""
     var quoteFontRaw: String = "serif"
     var langRaw: String = "fr"
