@@ -40,6 +40,9 @@ struct RootView: View {
             events.lang = settings.lang
             await events.refresh()
         }
+        // Pull margin quotes saved from the magazines (Les Marges → wiki → feed),
+        // then top up on a slow timer for as long as the display stays open.
+        .task { await MarginFeed.keepFresh(context) }
         .onChange(of: screen) { _, newValue in armIdleReturn(newValue) }
         .onChange(of: settings.langRaw) { _, _ in
             events.lang = settings.lang
