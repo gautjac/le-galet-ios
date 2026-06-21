@@ -101,6 +101,10 @@ enum S {
     static let texture = L(fr: "La texture", en: "Texture")
     static let kenBurns = L(fr: "Lente dérive sur les photos", en: "Slow drift on photos")
     static let showClock = L(fr: "Heure discrète", en: "Quiet clock")
+    static let photoMeta = L(fr: "Date et lieu des photos", en: "Photo date & place")
+    static let photoMetaHelp = L(
+        fr: "Affiche discrètement, sous chaque photo, la date et le lieu enregistrés par l'appareil — quand l'information existe.",
+        en: "Subtly shows each photo's captured date and place beneath it — when that information exists.")
     static let fillScreen = L(fr: "Remplir l'écran", en: "Fill the screen")
     static let fillScreenHelp = L(
         fr: "Désactivé, la photo entière s'affiche — jamais de tête coupée. Activé, les photos remplissent l'écran avec un léger recadrage.",

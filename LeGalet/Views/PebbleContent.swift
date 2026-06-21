@@ -9,7 +9,7 @@ struct PebbleContent: View {
 
     var body: some View {
         switch pebble.kind {
-        case .photo: PhotoPebble(pebble: pebble, settings: settings)
+        case .photo: PhotoPebble(pebble: pebble, settings: settings, lang: lang)
         case .quote: QuotePebble(pebble: pebble, font: settings.quoteFont, scale: settings.textScale)
         case .reminder: ReminderPebble(pebble: pebble, kindIcon: "bell", scale: settings.textScale)
         case .event: ReminderPebble(pebble: pebble, kindIcon: "calendar", scale: settings.textScale)
@@ -86,9 +86,11 @@ private struct ReminderPebble: View {
 private struct PhotoPebble: View {
     let pebble: Pebble
     let settings: GaletSettings
+    var lang: Lang = .fr
     @State private var image: UIImage?
     @State private var framing: PhotoFraming = .centered
     @State private var drifted = false
+    @State private var metaLine: String?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -111,16 +113,33 @@ private struct PhotoPebble: View {
                         startPoint: .center, endPoint: .bottom
                     )
 
-                    if !pebble.text.isEmpty {
-                        VStack {
+                    let caption = pebble.text.isEmpty ? nil : pebble.text
+                    let meta = (settings.showPhotoMeta ? metaLine : nil)
+                    if caption != nil || meta != nil {
+                        VStack(spacing: 10) {
                             Spacer()
-                            Text(pebble.text)
-                                .font(Typo.serif(19 * settings.textScale, .light).italic())
-                                .foregroundStyle(Color.quoteInk.opacity(0.92))
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal, 40)
-                                .padding(.bottom, 64)
+                            if let caption {
+                                Text(caption)
+                                    .font(Typo.serif(19 * settings.textScale, .light).italic())
+                                    .foregroundStyle(Color.quoteInk.opacity(0.92))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
+                            }
+                            if let meta {
+                                // A quiet photo-credit line: small, low-contrast,
+                                // gently tracked so it sits under the image without
+                                // competing with it.
+                                Text(meta)
+                                    .font(Typo.sans(12.5, .regular))
+                                    .tracking(1.5)
+                                    .foregroundStyle(Color.mist.opacity(0.55))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
+                            }
                         }
+                        // Sit the footer clear of the resting clock when it's shown,
+                        // so the date/place line never collides with the time.
+                        .padding(.bottom, settings.showClock ? 58 : 40)
                     }
                 } else {
                     Color.stoneBase
@@ -140,9 +159,19 @@ private struct PhotoPebble: View {
                     image = img
                 }
                 startDrift()
+                await loadMeta()
             }
+            // Toggling the caption on mid-display fills it in for the current photo.
+            .task(id: settings.showPhotoMeta) { await loadMeta() }
         }
         .ignoresSafeArea()
+    }
+
+    // Pull the photo's date + place only when the caption is enabled; PhotoLoader
+    // memoises both, so this is cheap on every photo after the first look.
+    private func loadMeta() async {
+        guard settings.showPhotoMeta, !pebble.photoLocalId.isEmpty else { return }
+        metaLine = await PhotoLoader.shared.meta(for: pebble.photoLocalId).line(lang: lang)
     }
 
     // A soft blurred bed of the photo itself, for the fit (letterboxed) case.

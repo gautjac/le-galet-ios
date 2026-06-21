@@ -122,6 +122,11 @@ struct ReglagesView: View {
                 }
                 CalmToggle(title: S.kenBurns(lang), isOn: $settings.kenBurns)
                 CalmToggle(title: S.showClock(lang), isOn: $settings.showClock)
+                VStack(alignment: .leading, spacing: 8) {
+                    CalmToggle(title: S.photoMeta(lang), isOn: $settings.showPhotoMeta)
+                    Text(S.photoMetaHelp(lang))
+                        .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).lineSpacing(2)
+                }
             }
         }
     }

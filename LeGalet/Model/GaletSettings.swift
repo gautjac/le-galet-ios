@@ -13,6 +13,9 @@ final class GaletSettings {
     var nightDim: Double = 0.6           // 0–1 brightness drop at the heart of night
     var kenBurns: Bool = true
     var showClock: Bool = true
+    // Show a subtle caption under each photo with its capture date and place,
+    // read from the photo's own metadata (absent on photos that carry neither).
+    var showPhotoMeta: Bool = true
     // Off (default): always show the whole photo, never cropping. On: fill the
     // screen edge-to-edge, with a slight crop and subject protection.
     var fillScreen: Bool = false

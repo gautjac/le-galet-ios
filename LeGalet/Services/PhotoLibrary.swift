@@ -1,6 +1,34 @@
 import SwiftUI
 import Photos
 import PhotosUI
+import CoreLocation
+
+// The quiet facts a photo carries: when it was taken and, if the camera saved a
+// location, where. `place` is reverse-geocoded to a gentle "City, Region" once
+// and memoised. Either field may be absent — a stripped or imported photo often
+// has neither, and the caption simply doesn't appear.
+struct PhotoMeta: Equatable {
+    var date: Date?
+    var place: String?
+
+    static let empty = PhotoMeta(date: nil, place: nil)
+
+    // The single subtle line shown under the photo, e.g. "14 juin 2024 · Montréal".
+    func line(lang: Lang) -> String? {
+        var parts: [String] = []
+        if let date { parts.append(Self.dateString(date, lang: lang)) }
+        if let place, !place.isEmpty { parts.append(place) }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
+    private static func dateString(_ date: Date, lang: Lang) -> String {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: lang == .fr ? "fr_CA" : "en_CA")
+        f.dateStyle = .long
+        f.timeStyle = .none
+        return f.string(from: date)
+    }
+}
 
 // Loads images by their Photos localIdentifier so the household's album bytes
 // stay in the library — Le Galet only keeps a reference. Results are cached as
@@ -13,9 +41,44 @@ final class PhotoLoader: ObservableObject {
     // evicts under memory pressure so a big album can't balloon RAM.
     private let cache = NSCache<NSString, UIImage>()
     private var framingCache: [String: PhotoFraming] = [:]
+    private var metaCache: [String: PhotoMeta] = [:]
+    private let geocoder = CLGeocoder()
     private let manager = PHImageManager.default()
 
     init() { cache.countLimit = 24 }
+
+    // The photo's capture date and (reverse-geocoded) place. Read straight off the
+    // PHAsset — no pixels needed — then memoised, so a place name is looked up once
+    // per photo for the life of the run. Only called when the caption is enabled.
+    func meta(for localId: String) async -> PhotoMeta {
+        guard !localId.isEmpty else { return .empty }
+        if let hit = metaCache[localId] { return hit }
+
+        let assets = PHAsset.fetchAssets(withLocalIdentifiers: [localId], options: nil)
+        guard let asset = assets.firstObject else { return .empty }
+
+        var meta = PhotoMeta(date: asset.creationDate, place: nil)
+        if let location = asset.location {
+            meta.place = await reverseGeocode(location)
+        }
+        metaCache[localId] = meta
+        return meta
+    }
+
+    // A gentle "City, Region" (or the best available subset). CLGeocoder is network-
+    // backed and rate-limited; results are cached by the caller above so the display
+    // never re-asks for a photo it has already placed. A failure just yields nil.
+    private func reverseGeocode(_ location: CLLocation) async -> String? {
+        guard let placemark = try? await geocoder.reverseGeocodeLocation(location).first
+        else { return nil }
+        let city = placemark.locality ?? placemark.subAdministrativeArea ?? placemark.name
+        let region = placemark.administrativeArea ?? placemark.country
+        let parts = [city, region].compactMap { $0 }.filter { !$0.isEmpty }
+        // Drop a duplicate (e.g. a city-state where locality == region).
+        return parts.count == 2 && parts[0] == parts[1]
+            ? parts[0]
+            : (parts.isEmpty ? nil : parts.joined(separator: ", "))
+    }
 
     // How to frame a photo (aspect + salient focus), computed once off the main
     // thread via Vision and memoised so a cycling display never recomputes it.
