@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import Photos
+import EventKit
 import UniformTypeIdentifiers
 
 struct ComposerView: View {
@@ -18,8 +19,18 @@ struct ComposerView: View {
     @State private var showingPhotoPicker = false
     @State private var showingImporter = false
     @State private var importMessage: String?
+    @State private var pickerKind: SourceKind?
 
-    private var anyModalOpen: Bool { showingPhotoPicker || showingImporter || editing != nil }
+    // Which live source the calendar/list picker is choosing for.
+    private enum SourceKind: String, Identifiable {
+        case calendar, reminders
+        var id: String { rawValue }
+        var isCalendar: Bool { self == .calendar }
+    }
+
+    private var anyModalOpen: Bool {
+        showingPhotoPicker || showingImporter || editing != nil || pickerKind != nil
+    }
 
     private var sorted: [GaletItem] { items.sorted { $0.order < $1.order } }
     private var activeCount: Int { items.filter { $0.active }.count }
@@ -44,6 +55,19 @@ struct ComposerView: View {
         .fileImporter(isPresented: $showingImporter,
                       allowedContentTypes: [.plainText, .text, .json, .commaSeparatedText],
                       allowsMultipleSelection: false) { result in handleImport(result) }
+        .sheet(item: $pickerKind) { kind in
+            SourcePickerView(
+                isCalendar: kind.isCalendar,
+                calendars: kind.isCalendar ? events.eventCalendars() : events.reminderLists(),
+                selectedIDs: kind.isCalendar ? settings.selectedCalendarIDs
+                                             : settings.selectedReminderListIDs
+            ) { ids in
+                if kind.isCalendar { settings.selectedCalendarIDs = ids }
+                else { settings.selectedReminderListIDs = ids }
+                try? context.save()
+            }
+            .environment(\.lang, lang)
+        }
         .alert(S.importFile(lang),
                isPresented: Binding(get: { importMessage != nil },
                                     set: { if !$0 { importMessage = nil } }),
@@ -102,12 +126,12 @@ struct ComposerView: View {
             SectionLabel(text: S.liveSources(lang))
             sourceRow(symbol: "calendar", title: S.calendarToggle(lang),
                       granted: events.calendarGranted, denied: events.calendarStatus == .denied,
-                      isOn: settings.useCalendar,
-                      toggle: { toggleCalendar() })
+                      isOn: settings.useCalendar, summary: calendarSummary(),
+                      toggle: { toggleCalendar() }, configure: { pickerKind = .calendar })
             sourceRow(symbol: "checklist", title: S.remindersToggle(lang),
                       granted: events.reminderGranted, denied: events.reminderStatus == .denied,
-                      isOn: settings.useReminders,
-                      toggle: { toggleReminders() })
+                      isOn: settings.useReminders, summary: reminderSummary(),
+                      toggle: { toggleReminders() }, configure: { pickerKind = .reminders })
         }
         .padding(16)
         .background(Color.stoneRaise.opacity(0.5), in: RoundedRectangle(cornerRadius: 18))
@@ -116,11 +140,27 @@ struct ComposerView: View {
     }
 
     private func sourceRow(symbol: String, title: String, granted: Bool, denied: Bool,
-                           isOn: Bool, toggle: @escaping () -> Void) -> some View {
+                           isOn: Bool, summary: String,
+                           toggle: @escaping () -> Void, configure: @escaping () -> Void) -> some View {
         HStack(spacing: 12) {
             Image(systemName: symbol).font(.system(size: 16, weight: .light))
                 .foregroundStyle(Color.mistSoft).frame(width: 22)
-            Text(title).font(Typo.sans(14)).foregroundStyle(Color.mist)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title).font(Typo.sans(14)).foregroundStyle(Color.mist)
+                // When the source is on, a tappable summary opens the calendar /
+                // list picker so the household can narrow what drifts in.
+                if granted && isOn {
+                    Button(action: configure) {
+                        HStack(spacing: 4) {
+                            Text(summary).font(Typo.sans(12)).foregroundStyle(Color.amber)
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 9, weight: .semibold))
+                                .foregroundStyle(Color.amber.opacity(0.7))
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
             Spacer()
             if denied {
                 Text(S.denied(lang)).font(Typo.sans(11)).foregroundStyle(Color.mistFaint)
@@ -135,6 +175,23 @@ struct ComposerView: View {
                 }
             }
         }
+    }
+
+    // "All calendars", "1 list", or "3 calendars" — what the picker has narrowed to.
+    private func calendarSummary() -> String {
+        sourceSummary(settings.selectedCalendarIDs, available: events.eventCalendars(),
+                      all: S.allCalendars(lang), one: S.oneCalendar(lang), many: S.someCalendars(lang))
+    }
+    private func reminderSummary() -> String {
+        sourceSummary(settings.selectedReminderListIDs, available: events.reminderLists(),
+                      all: S.allReminders(lang), one: S.oneReminderList(lang), many: S.someReminders(lang))
+    }
+    private func sourceSummary(_ selected: [String], available: [EKCalendar],
+                               all: String, one: String, many: String) -> String {
+        let ids = Set(available.map { $0.calendarIdentifier })
+        let picked = selected.isEmpty ? ids : Set(selected).intersection(ids)
+        if picked.isEmpty || picked.count == ids.count { return all }
+        return picked.count == 1 ? one : String(format: many, picked.count)
     }
 
     private var emptyList: some View {
@@ -267,8 +324,15 @@ struct ComposerView: View {
         if events.calendarGranted {
             settings.useCalendar.toggle(); try? context.save()
             Task { await events.refresh() }
+            if settings.useCalendar { pickerKind = .calendar }   // just turned on → choose
         } else {
-            Task { await events.requestCalendar(); if events.calendarGranted { settings.useCalendar = true; try? context.save() } }
+            Task {
+                await events.requestCalendar()
+                if events.calendarGranted {
+                    settings.useCalendar = true; try? context.save()
+                    pickerKind = .calendar
+                }
+            }
         }
     }
 
@@ -276,9 +340,104 @@ struct ComposerView: View {
         if events.reminderGranted {
             settings.useReminders.toggle(); try? context.save()
             Task { await events.refresh() }
+            if settings.useReminders { pickerKind = .reminders }
         } else {
-            Task { await events.requestReminders(); if events.reminderGranted { settings.useReminders = true; try? context.save() } }
+            Task {
+                await events.requestReminders()
+                if events.reminderGranted {
+                    settings.useReminders = true; try? context.save()
+                    pickerKind = .reminders
+                }
+            }
         }
+    }
+}
+
+// A sheet to choose which calendars (or reminder lists) drift into the display.
+// Every source starts checked; unchecking narrows it. All checked is stored as an
+// empty selection, so a calendar added later is included without re-visiting this.
+private struct SourcePickerView: View {
+    @Environment(\.lang) private var lang
+    @Environment(\.dismiss) private var dismiss
+    let isCalendar: Bool
+    let calendars: [EKCalendar]
+    let onSave: ([String]) -> Void
+    @State private var selected: Set<String>
+
+    init(isCalendar: Bool, calendars: [EKCalendar], selectedIDs: [String],
+         onSave: @escaping ([String]) -> Void) {
+        self.isCalendar = isCalendar
+        self.calendars = calendars
+        self.onSave = onSave
+        let allIDs = Set(calendars.map { $0.calendarIdentifier })
+        _selected = State(initialValue: selectedIDs.isEmpty ? allIDs
+                                                            : Set(selectedIDs).intersection(allIDs))
+    }
+
+    var body: some View {
+        ZStack {
+            Color.stoneBase.ignoresSafeArea()
+            VStack(spacing: 0) {
+                header
+                if calendars.isEmpty {
+                    Spacer()
+                    Text(isCalendar ? S.noCalendars(lang) : S.noReminderLists(lang))
+                        .font(Typo.sans(14)).foregroundStyle(Color.mistFaint)
+                    Spacer()
+                } else {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(S.sourcePickerHint(lang))
+                                .font(Typo.sans(12)).foregroundStyle(Color.mistFaint)
+                                .padding(.bottom, 4)
+                            ForEach(calendars, id: \.calendarIdentifier) { row($0) }
+                        }
+                        .padding(22)
+                    }
+                }
+            }
+        }
+    }
+
+    private var header: some View {
+        HStack {
+            Text(isCalendar ? S.whichCalendars(lang) : S.whichReminders(lang))
+                .font(Typo.serif(22, .light)).foregroundStyle(Color.mist)
+            Spacer()
+            Button(S.done(lang)) {
+                let allIDs = Set(calendars.map { $0.calendarIdentifier })
+                onSave(selected == allIDs ? [] : Array(selected))   // all → store empty (= all)
+                dismiss()
+            }
+            .font(Typo.sans(15, .medium)).foregroundStyle(Color.amber)
+        }
+        .padding(.horizontal, 22).padding(.top, 24).padding(.bottom, 16)
+    }
+
+    private func row(_ cal: EKCalendar) -> some View {
+        let on = selected.contains(cal.calendarIdentifier)
+        let cg: CGColor? = cal.cgColor
+        let dot: Color = cg.map { Color(cgColor: $0) } ?? Color.mistSoft
+        return Button {
+            if on { selected.remove(cal.calendarIdentifier) }
+            else { selected.insert(cal.calendarIdentifier) }
+        } label: {
+            HStack(spacing: 12) {
+                Circle().fill(dot).frame(width: 12, height: 12)
+                Text(cal.title).font(Typo.sans(15)).foregroundStyle(Color.mist)
+                Spacer()
+                Image(systemName: on ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 20, weight: .light))
+                    .foregroundStyle(on ? Color.amber : Color.stoneLine)
+            }
+            .padding(.vertical, 12).padding(.horizontal, 14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(on ? Color.amber.opacity(0.06) : Color.stoneRaise,
+                        in: RoundedRectangle(cornerRadius: 14))
+            .overlay(RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(on ? Color.amber.opacity(0.5) : Color.stoneLine.opacity(0.5), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
     }
 }
 

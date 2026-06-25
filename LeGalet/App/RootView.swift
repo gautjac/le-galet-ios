@@ -42,6 +42,8 @@ struct RootView: View {
             ensureSettings()
             SeedContent.seedIfNeeded(context)
             events.lang = settings.lang
+            events.selectedCalendarIDs = settings.selectedCalendarIDs
+            events.selectedReminderListIDs = settings.selectedReminderListIDs
             await events.refresh()
         }
         // Pull margin quotes saved from the magazines (Les Marges → wiki → feed),
@@ -54,6 +56,15 @@ struct RootView: View {
         .onChange(of: items.count) { _, _ in armIdleReturn() }
         .onChange(of: settings.langRaw) { _, _ in
             events.lang = settings.lang
+            Task { await events.refresh() }
+        }
+        // A changed calendar / list selection re-pulls the live pebbles.
+        .onChange(of: settings.selectedCalendarIDs) { _, v in
+            events.selectedCalendarIDs = v
+            Task { await events.refresh() }
+        }
+        .onChange(of: settings.selectedReminderListIDs) { _, v in
+            events.selectedReminderListIDs = v
             Task { await events.refresh() }
         }
     }

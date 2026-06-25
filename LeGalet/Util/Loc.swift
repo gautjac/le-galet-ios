@@ -66,6 +66,19 @@ enum S {
     static let connect = L(fr: "Relier", en: "Connect")
     static let connected = L(fr: "Relié", en: "Connected")
     static let denied = L(fr: "Refusé — voir Réglages iOS", en: "Denied — see iOS Settings")
+    static let whichCalendars = L(fr: "Quels agendas ?", en: "Which calendars?")
+    static let whichReminders = L(fr: "Quelles listes ?", en: "Which lists?")
+    static let allCalendars = L(fr: "Tous les agendas", en: "All calendars")
+    static let allReminders = L(fr: "Toutes les listes", en: "All lists")
+    static let someCalendars = L(fr: "%d agendas", en: "%d calendars")
+    static let someReminders = L(fr: "%d listes", en: "%d lists")
+    static let oneCalendar = L(fr: "1 agenda", en: "1 calendar")
+    static let oneReminderList = L(fr: "1 liste", en: "1 list")
+    static let sourcePickerHint = L(fr: "Cochez les sources à faire dériver dans l'écran.",
+                                    en: "Check the sources to drift into the display.")
+    static let noCalendars = L(fr: "Aucun agenda trouvé.", en: "No calendars found.")
+    static let noReminderLists = L(fr: "Aucune liste trouvée.", en: "No lists found.")
+    static let done = L(fr: "Terminé", en: "Done")
 
     // Editor
     static let quoteTitle = L(fr: "Une pensée, une parole", en: "A thought, a saying")

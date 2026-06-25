@@ -32,6 +32,10 @@ final class GaletSettings {
     var onboarded: Bool = false
     var useCalendar: Bool = false        // drift in the day's events
     var useReminders: Bool = false       // drift in reminders
+    // Which calendars / reminder lists to draw from, by EKCalendar identifier.
+    // Empty means "all of them" — the forgiving default and what new ones inherit.
+    var selectedCalendarIDs: [String] = []
+    var selectedReminderListIDs: [String] = []
 
     init() {}
 

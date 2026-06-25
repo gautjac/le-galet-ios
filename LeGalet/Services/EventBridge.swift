@@ -18,8 +18,30 @@ final class EventBridge: ObservableObject {
     // Set from the display language so event subtitles read naturally.
     var lang: Lang = .fr
 
+    // Which calendars / reminder lists to draw from (EKCalendar identifiers).
+    // Empty = all. Kept in sync with GaletSettings by RootView.
+    var selectedCalendarIDs: [String] = []
+    var selectedReminderListIDs: [String] = []
+
     var calendarGranted: Bool { calendarStatus == .fullAccess }
     var reminderGranted: Bool { reminderStatus == .fullAccess }
+
+    // The calendars / reminder lists the user could choose from, for the picker.
+    func eventCalendars() -> [EKCalendar] {
+        calendarGranted ? store.calendars(for: .event) : []
+    }
+    func reminderLists() -> [EKCalendar] {
+        reminderGranted ? store.calendars(for: .reminder) : []
+    }
+
+    // Resolve a stored ID set to concrete calendars; nil means "all" (also the
+    // forgiving fallback when a saved selection no longer matches anything).
+    private func chosen(_ ids: [String], _ entity: EKEntityType) -> [EKCalendar]? {
+        let all = store.calendars(for: entity)
+        guard !ids.isEmpty else { return nil }
+        let picked = all.filter { ids.contains($0.calendarIdentifier) }
+        return picked.isEmpty ? nil : picked
+    }
 
     // Pebbles to merge into the playlist, honouring the household's toggles.
     func livePebbles(useCalendar: Bool, useReminders: Bool) -> [Pebble] {
@@ -60,7 +82,8 @@ final class EventBridge: ObservableObject {
         let now = Date()
         let start = cal.startOfDay(for: now)
         let end = cal.date(byAdding: .day, value: 2, to: start) ?? now
-        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)
+        let predicate = store.predicateForEvents(withStart: start, end: end,
+                                                 calendars: chosen(selectedCalendarIDs, .event))
         let events = store.events(matching: predicate)
 
         let timeFmt = DateFormatter()
@@ -100,7 +123,8 @@ final class EventBridge: ObservableObject {
     // ── Reminders: incomplete, due today or overdue within the last day. ────────
     private func loadReminders() async {
         let predicate = store.predicateForIncompleteReminders(
-            withDueDateStarting: nil, ending: nil, calendars: nil)
+            withDueDateStarting: nil, ending: nil,
+            calendars: chosen(selectedReminderListIDs, .reminder))
         let reminders: [EKReminder] = await withCheckedContinuation { cont in
             store.fetchReminders(matching: predicate) { cont.resume(returning: $0 ?? []) }
         }
