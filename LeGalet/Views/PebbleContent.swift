@@ -77,6 +77,17 @@ private struct ReminderPebble: View {
                     .tracking(1)
                     .foregroundStyle(Color.mistSoft)
             }
+            // The details the household added — notes / a URL — under a hairline.
+            if !pebble.notes.isEmpty {
+                Rectangle().fill(accent.opacity(0.22)).frame(width: 26, height: 1)
+                Text(pebble.notes)
+                    .font(Typo.sans(16 * scale, .light))
+                    .foregroundStyle(Color.mist.opacity(0.82))
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(5 * scale)
+                    .lineLimit(10)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .padding(.horizontal, 52)
         .padding(.vertical, 46)

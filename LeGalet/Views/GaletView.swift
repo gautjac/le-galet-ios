@@ -34,7 +34,9 @@ struct GaletView: View {
 
     private var contentKey: String {
         let ids = items.filter { $0.active }.map { "\($0.id.uuidString):\($0.order):\($0.weight)" }.joined(separator: ",")
-        let liveIds = live.map { $0.id }.joined(separator: ",")
+        // Include the live text/details so edits to a reminder or event (same id,
+        // new notes) actually re-render rather than showing the stale pebble.
+        let liveIds = live.map { "\($0.id):\($0.subtitle):\($0.notes)" }.joined(separator: ",")
         let albumIds = albumPhotos.map { $0.id }.joined(separator: ",")
         return ids + "|" + liveIds + "|" + albumIds + "|\(settings.shuffle)|\(settings.liveFrequency)"
     }

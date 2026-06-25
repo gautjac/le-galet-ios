@@ -8,9 +8,20 @@ import Combine
 @MainActor
 final class EventBridge: ObservableObject {
     private let store = EKEventStore()
+    private var changeObserver: NSObjectProtocol?
 
     @Published private(set) var reminderPebbles: [Pebble] = []
     @Published private(set) var eventPebbles: [Pebble] = []
+
+    init() {
+        // Editing an event/reminder (e.g. adding notes) posts this — re-pull so the
+        // new details appear on the display without waiting for a relaunch.
+        changeObserver = NotificationCenter.default.addObserver(
+            forName: .EKEventStoreChanged, object: store, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in await self?.refresh() }
+        }
+    }
 
     @Published var calendarStatus: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
     @Published var reminderStatus: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .reminder)
@@ -101,13 +112,16 @@ final class EventBridge: ObservableObject {
             .filter { ($0.endDate ?? $0.startDate) >= now } // skip what's already done
             .prefix(12)
             .map { ev in
+                // Time line: a start–end range for timed events, a day for all-day.
                 var sub: String
                 if ev.isAllDay {
                     sub = dayLabel(ev.startDate)
-                } else if cal.isDateInToday(ev.startDate) {
-                    sub = timeFmt.string(from: ev.startDate)
                 } else {
-                    sub = "\(dayLabel(ev.startDate)) · \(timeFmt.string(from: ev.startDate))"
+                    var range = timeFmt.string(from: ev.startDate)
+                    if let end = ev.endDate, end > ev.startDate {
+                        range += " – \(timeFmt.string(from: end))"
+                    }
+                    sub = cal.isDateInToday(ev.startDate) ? range : "\(dayLabel(ev.startDate)) · \(range)"
                 }
                 if let loc = ev.location, !loc.isEmpty { sub += " · \(loc)" }
                 return Pebble(
@@ -115,9 +129,21 @@ final class EventBridge: ObservableObject {
                     kind: .event,
                     text: ev.title ?? "—",
                     subtitle: sub,
+                    notes: Self.detail(notes: ev.notes, url: ev.url),
                     weight: 1
                 )
             }
+    }
+
+    // The free-text details the household added: the notes field, plus a URL if
+    // one was attached. Trimmed and clipped so the card never grows unbounded.
+    private static func detail(notes: String?, url: URL?) -> String {
+        var parts: [String] = []
+        if let n = notes?.trimmingCharacters(in: .whitespacesAndNewlines), !n.isEmpty {
+            parts.append(String(n.prefix(600)))
+        }
+        if let u = url?.absoluteString, !u.isEmpty { parts.append(u) }
+        return parts.joined(separator: "\n")
     }
 
     // ── Reminders: incomplete, due today or overdue within the last day. ────────
@@ -151,6 +177,7 @@ final class EventBridge: ObservableObject {
                 kind: .reminder,
                 text: title,
                 subtitle: subtitle,
+                notes: Self.detail(notes: r.notes, url: r.url),
                 weight: 1
             )
         }

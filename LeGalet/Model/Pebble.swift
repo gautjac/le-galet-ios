@@ -13,6 +13,7 @@ struct Pebble: Identifiable, Equatable {
     let text: String
     var author: String = ""       // quote attribution
     var subtitle: String = ""     // event time / context line, e.g. "18 h · chez Mamie"
+    var notes: String = ""        // the free-text details on an event / reminder
     var photoLocalId: String = "" // for photos
     var weight: Int = 1
 
