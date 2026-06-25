@@ -155,20 +155,19 @@ private struct PhotoPebble: View {
                                     .padding(.horizontal, 40)
                             }
                             if let meta {
-                                // A quiet photo-credit line: small, low-contrast,
-                                // gently tracked so it sits under the image without
-                                // competing with it.
+                                // A quiet photo-credit line: small and gently tracked
+                                // so it sits under the image without competing with it.
                                 Text(meta)
                                     .font(Typo.sans(12.5, .regular))
                                     .tracking(1.5)
-                                    .foregroundStyle(Color.mist.opacity(0.55))
+                                    .foregroundStyle(Color.mist.opacity(0.7))
                                     .multilineTextAlignment(.center)
                                     .padding(.horizontal, 40)
                             }
                         }
-                        // Sit the footer clear of the resting clock when it's shown,
-                        // so the date/place line never collides with the time.
-                        .padding(.bottom, settings.showClock ? 58 : 40)
+                        // Sit the credit well clear of the now-larger resting clock,
+                        // with open space between the two.
+                        .padding(.bottom, settings.showClock ? 150 : 40)
                     }
                 } else {
                     Color.stoneBase

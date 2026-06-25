@@ -103,10 +103,10 @@ struct GaletView: View {
         VStack {
             Spacer()
             Text(TimeOfDay.clockLabel(now, lang))
-                .font(Typo.sans(13, .light))
-                .tracking(4)
-                .foregroundStyle(Color.mistFaint.opacity(0.7))
-                .padding(.bottom, 26)
+                .font(Typo.sans(42, .thin))
+                .tracking(1)
+                .foregroundStyle(Color.mist.opacity(0.6))
+                .padding(.bottom, 34)
         }
         .allowsHitTesting(false)
     }
