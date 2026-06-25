@@ -55,9 +55,8 @@ struct ComposerView: View {
                 .ignoresSafeArea()
         }
         .sheet(isPresented: $showingAlbumPicker) {
-            AlbumPickerView(albums: PhotoLoader.shared.userAlbums(),
-                            fullAccess: PhotoLoader.authorizationStatus() == .authorized) { collections in
-                addAlbums(collections)
+            AlbumPickerView(fullAccess: PhotoLoader.authorizationStatus() == .authorized) { infos in
+                addAlbums(infos)
             }
             .environment(\.lang, lang)
         }
@@ -306,13 +305,13 @@ struct ComposerView: View {
         }
     }
 
-    private func addAlbums(_ collections: [PHAssetCollection]) {
+    private func addAlbums(_ infos: [AlbumKit.Info]) {
         let existing = Set(items.filter { $0.kind == .album }.map { $0.photoLocalId })
         var order = nextOrder()
-        for c in collections where !existing.contains(c.localIdentifier) {
+        for info in infos where !existing.contains(info.id) {
             context.insert(GaletItem(typeRaw: PebbleKind.album.rawValue,
-                                     text: c.localizedTitle ?? S.addAlbum(lang),
-                                     photoLocalId: c.localIdentifier, order: order))
+                                     text: info.title.isEmpty ? S.addAlbum(lang) : info.title,
+                                     photoLocalId: info.id, order: order))
             order += 1
         }
         try? context.save()
@@ -539,7 +538,9 @@ private struct ComposerRow: View {
             if item.kind == .photo {
                 thumb = await PhotoLoader.shared.image(for: item.photoLocalId, target: CGSize(width: 90, height: 90))
             } else if item.kind == .album {
-                albumCount = PhotoLoader.shared.assetCount(collectionID: item.photoLocalId)
+                albumCount = await Task.detached(priority: .userInitiated) {
+                    AlbumKit.imageCount(collectionID: item.photoLocalId)
+                }.value
                 thumb = await PhotoLoader.shared.albumCover(collectionID: item.photoLocalId,
                                                             target: CGSize(width: 90, height: 90))
             }
@@ -611,13 +612,15 @@ private struct WeightDots: View {
 
 // ── Album picker ────────────────────────────────────────────────────────────
 // A sheet of the user's albums (cover + photo count). Select one or more; Done
-// adds each as an album item whose photos drift in and refresh over time.
+// adds each as an album item whose photos drift in and refresh over time. The
+// album list is loaded off the main thread so the sheet opens instantly even on
+// a large iCloud library (a synchronous load froze it for many seconds).
 private struct AlbumPickerView: View {
     @Environment(\.lang) private var lang
     @Environment(\.dismiss) private var dismiss
-    let albums: [PHAssetCollection]
     var fullAccess: Bool = true
-    let onAdd: ([PHAssetCollection]) -> Void
+    let onAdd: ([AlbumKit.Info]) -> Void
+    @State private var albums: [AlbumKit.Info]?   // nil = still loading
     @State private var selected: Set<String> = []
 
     var body: some View {
@@ -625,31 +628,41 @@ private struct AlbumPickerView: View {
             Color.stoneBase.ignoresSafeArea()
             VStack(spacing: 0) {
                 header
-                if albums.isEmpty {
-                    emptyState
-                } else {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(S.albumPickerHint(lang))
-                                .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).padding(.bottom, 4)
-                            // Limited access hides your real albums; offer the way out.
-                            if !fullAccess { limitedNote }
-                            ForEach(albums, id: \.localIdentifier) { album in
-                                AlbumPickerRow(album: album,
-                                               selected: selected.contains(album.localIdentifier)) {
-                                    let id = album.localIdentifier
-                                    if selected.contains(id) { selected.remove(id) } else { selected.insert(id) }
-                                }
-                            }
-                        }
-                        .padding(22)
-                    }
-                }
+                content
             }
+        }
+        .task {
+            albums = await Task.detached(priority: .userInitiated) { AlbumKit.albums() }.value
         }
     }
 
-    // Shown when the library can't be enumerated (limited / denied access).
+    @ViewBuilder private var content: some View {
+        if let albums {
+            if albums.isEmpty {
+                emptyState
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(S.albumPickerHint(lang))
+                            .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).padding(.bottom, 4)
+                        if !fullAccess { limitedNote }   // limited access hides real albums
+                        ForEach(albums) { album in
+                            AlbumPickerRow(album: album, selected: selected.contains(album.id)) {
+                                if selected.contains(album.id) { selected.remove(album.id) }
+                                else { selected.insert(album.id) }
+                            }
+                        }
+                    }
+                    .padding(22)
+                }
+            }
+        } else {
+            Spacer()
+            ProgressView().tint(.amber)
+            Spacer()
+        }
+    }
+
     private var emptyState: some View {
         VStack(spacing: 16) {
             Spacer()
@@ -694,7 +707,7 @@ private struct AlbumPickerView: View {
             Text(S.chooseAlbums(lang)).font(Typo.serif(22, .light)).foregroundStyle(Color.mist)
             Spacer()
             Button(S.done(lang)) {
-                let chosen = albums.filter { selected.contains($0.localIdentifier) }
+                let chosen = (albums ?? []).filter { selected.contains($0.id) }
                 if !chosen.isEmpty { onAdd(chosen) }
                 dismiss()
             }
@@ -708,20 +721,21 @@ private struct AlbumPickerView: View {
 
 private struct AlbumPickerRow: View {
     @Environment(\.lang) private var lang
-    let album: PHAssetCollection
+    let album: AlbumKit.Info
     let selected: Bool
     let toggle: () -> Void
     @State private var cover: UIImage?
-    @State private var count: Int?
 
     var body: some View {
         Button(action: toggle) {
             HStack(spacing: 12) {
                 coverView
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(album.localizedTitle ?? S.addAlbum(lang))
+                    Text(album.title.isEmpty ? S.addAlbum(lang) : album.title)
                         .font(Typo.sans(15)).foregroundStyle(Color.mist).lineLimit(1)
-                    Text(countLabel).font(Typo.sans(11)).foregroundStyle(Color.mistFaint)
+                    if !countLabel.isEmpty {
+                        Text(countLabel).font(Typo.sans(11)).foregroundStyle(Color.mistFaint)
+                    }
                 }
                 Spacer()
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
@@ -736,9 +750,10 @@ private struct AlbumPickerRow: View {
                 .strokeBorder(selected ? Color.amber.opacity(0.5) : Color.stoneLine.opacity(0.5), lineWidth: 1))
         }
         .buttonStyle(.plain)
-        .task(id: album.localIdentifier) {
-            count = PhotoLoader.shared.assetCount(collectionID: album.localIdentifier)
-            cover = await PhotoLoader.shared.albumCover(collectionID: album.localIdentifier,
+        // Only the cover loads per row, and off the main thread — the title and
+        // count come straight from the (instant) Info, so rows render immediately.
+        .task(id: album.id) {
+            cover = await PhotoLoader.shared.albumCover(collectionID: album.id,
                                                         target: CGSize(width: 110, height: 110))
         }
     }
@@ -755,7 +770,8 @@ private struct AlbumPickerRow: View {
     }
 
     private var countLabel: String {
-        guard let n = count else { return "" }
+        let n = album.count
+        if n < 0 { return "" }   // unknown
         return n == 0 ? S.noPhotos(lang)
              : (n == 1 ? S.onePhoto(lang) : String(format: S.photoCount(lang), n))
     }

@@ -140,61 +140,14 @@ final class PhotoLoader: ObservableObject {
         PHPhotoLibrary.authorizationStatus(for: .readWrite)
     }
 
-    // The albums offered in the picker: All Photos (always present, so there's
-    // something to pick even with no custom albums), Favorites, then every
-    // user-made album. Sorted in Swift — a fetch-level sort on "localizedTitle"
-    // is unsupported for collections and can fail on device. Note: enumerating
-    // user albums needs FULL library access; under "Selected Photos" (limited)
-    // it returns nothing, which is why the picker can look empty.
-    func userAlbums() -> [PHAssetCollection] {
-        var out: [PHAssetCollection] = []
-        PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
-            .enumerateObjects { c, _, _ in out.append(c) }   // "Recents" / All Photos
-        PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumFavorites, options: nil)
-            .enumerateObjects { c, _, _ in if c.estimatedAssetCount != 0 { out.append(c) } }
-        var userMade: [PHAssetCollection] = []
-        PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
-            .enumerateObjects { c, _, _ in userMade.append(c) }
-        userMade.sort {
-            ($0.localizedTitle ?? "").localizedCaseInsensitiveCompare($1.localizedTitle ?? "") == .orderedAscending
-        }
-        out.append(contentsOf: userMade)
-        return out
-    }
-
-    func collection(for id: String) -> PHAssetCollection? {
-        PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [id], options: nil).firstObject
-    }
-
-    func assetCount(collectionID: String) -> Int {
-        guard let c = collection(for: collectionID) else { return 0 }
-        return PHAsset.fetchAssets(in: c, options: imageOptions()).count
-    }
-
-    // The most-recent image identifiers in an album, capped — what we resolve to
-    // photo pebbles. Newest-first so a freshly added family photo surfaces soon.
-    func albumAssetIDs(collectionID: String, limit: Int) -> [String] {
-        guard let c = collection(for: collectionID) else { return [] }
-        let opts = imageOptions()
-        opts.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        let assets = PHAsset.fetchAssets(in: c, options: opts)
-        var ids: [String] = []
-        assets.enumerateObjects { a, _, stop in
-            if ids.count >= limit { stop.pointee = true; return }
-            ids.append(a.localIdentifier)
-        }
-        return ids
-    }
-
+    // An album's cover thumbnail. The newest-image lookup runs off the main thread
+    // (AlbumKit); the thumbnail itself loads via the shared, cached image path.
     func albumCover(collectionID: String, target: CGSize) async -> UIImage? {
-        guard let first = albumAssetIDs(collectionID: collectionID, limit: 1).first else { return nil }
+        let first = await Task.detached(priority: .userInitiated) {
+            AlbumKit.assetIDs(collectionID: collectionID, limit: 1).first
+        }.value
+        guard let first else { return nil }
         return await image(for: first, target: target)
-    }
-
-    private func imageOptions() -> PHFetchOptions {
-        let o = PHFetchOptions()
-        o.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
-        return o
     }
 }
 
