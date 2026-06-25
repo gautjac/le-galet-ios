@@ -92,21 +92,11 @@ final class EventBridge: ObservableObject {
         let cal = Calendar.current
         let now = Date()
         let start = cal.startOfDay(for: now)
-        let end = cal.date(byAdding: .day, value: 2, to: start) ?? now
+        let end = cal.date(byAdding: .day, value: 3, to: start) ?? now   // today + the next two days
         let predicate = store.predicateForEvents(withStart: start, end: end,
                                                  calendars: chosen(selectedCalendarIDs, .event))
         let events = store.events(matching: predicate)
-
-        let timeFmt = DateFormatter()
-        timeFmt.locale = Locale.current
-        timeFmt.dateFormat = "HH'h'mm"
-        let dayFmt = DateFormatter()
-        dayFmt.locale = Locale.current
-        dayFmt.setLocalizedDateFormatFromTemplate("EEEE")
-
-        func dayLabel(_ d: Date) -> String {
-            cal.isDateInToday(d) ? S.today(lang) : dayFmt.string(from: d).capitalized
-        }
+        let timeFmt = Self.timeFormatter()
 
         eventPebbles = events
             .filter { ($0.endDate ?? $0.startDate) >= now } // skip what's already done
@@ -146,7 +136,24 @@ final class EventBridge: ObservableObject {
         return parts.joined(separator: "\n")
     }
 
-    // ── Reminders: incomplete, due today or overdue within the last day. ────────
+    private static func timeFormatter() -> DateFormatter {
+        let f = DateFormatter(); f.locale = Locale.current; f.dateFormat = "HH'h'mm"; return f
+    }
+
+    // "Aujourd'hui" / "Demain" / a weekday name, for a non-today date.
+    private func dayLabel(_ d: Date) -> String {
+        let cal = Calendar.current
+        if cal.isDateInToday(d) { return S.today(lang) }
+        if cal.isDateInTomorrow(d) { return S.tomorrow(lang) }
+        let f = DateFormatter()
+        f.locale = Locale.current
+        f.setLocalizedDateFormatFromTemplate("EEEE")
+        return f.string(from: d).capitalized
+    }
+
+    // ── Reminders: incomplete, due from yesterday (overdue) through the next few
+    // days — plus undated ones. Pulls the due day/time, the place from a
+    // location alarm, high priority, and the notes/URL. ─────────────────────────
     private func loadReminders() async {
         let predicate = store.predicateForIncompleteReminders(
             withDueDateStarting: nil, ending: nil,
@@ -157,26 +164,36 @@ final class EventBridge: ObservableObject {
 
         let cal = Calendar.current
         let now = Date()
-        let timeFmt = DateFormatter()
-        timeFmt.locale = Locale.current
-        timeFmt.dateFormat = "HH'h'mm"
+        let timeFmt = Self.timeFormatter()
 
         reminderPebbles = reminders.compactMap { r -> Pebble? in
             guard let title = r.title, !title.isEmpty else { return nil }
-            // Keep undated reminders plus those due from yesterday through today.
-            var subtitle = ""
+            var parts: [String] = []
             if let comps = r.dueDateComponents, let due = cal.date(from: comps) {
                 let dayDiff = cal.dateComponents([.day], from: cal.startOfDay(for: now),
                                                  to: cal.startOfDay(for: due)).day ?? 0
-                if dayDiff > 0 { return nil }            // only today / overdue
-                if dayDiff < -1 { return nil }           // not stale beyond yesterday
-                if comps.hour != nil { subtitle = timeFmt.string(from: due) }
+                if dayDiff < -1 || dayDiff > 3 { return nil }   // overdue (yesterday) → 3 days out
+                if comps.hour != nil {
+                    let time = timeFmt.string(from: due)
+                    parts.append(dayDiff == 0 ? time : "\(self.dayLabel(due)) · \(time)")
+                } else if dayDiff != 0 {
+                    parts.append(self.dayLabel(due))
+                }
             }
+            // Place from a location-based alarm ("arrive at Victoria Park").
+            if let place = (r.alarms ?? [])
+                .compactMap({ $0.structuredLocation?.title })
+                .first(where: { !$0.isEmpty }) {
+                parts.append(place)
+            }
+            // A high-priority reminder gets a gentle marker.
+            if (1...4).contains(r.priority) { parts.append(S.important(lang)) }
+
             return Pebble(
                 id: "rem-\(r.calendarItemIdentifier)",
                 kind: .reminder,
                 text: title,
-                subtitle: subtitle,
+                subtitle: parts.joined(separator: " · "),
                 notes: Self.detail(notes: r.notes, url: r.url),
                 weight: 1
             )

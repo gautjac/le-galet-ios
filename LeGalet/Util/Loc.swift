@@ -168,6 +168,8 @@ enum S {
                                   en: "The souffleur went quiet for a moment. Try again.")
 
     static let today = L(fr: "Aujourd'hui", en: "Today")
+    static let tomorrow = L(fr: "Demain", en: "Tomorrow")
+    static let important = L(fr: "Important", en: "Important")
 
     static let seasonSpring = L(fr: "printemps", en: "spring")
     static let seasonSummer = L(fr: "été", en: "summer")
