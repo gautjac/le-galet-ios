@@ -79,6 +79,9 @@ enum S {
     static let noCalendars = L(fr: "Aucun agenda trouvé.", en: "No calendars found.")
     static let noReminderLists = L(fr: "Aucune liste trouvée.", en: "No lists found.")
     static let done = L(fr: "Terminé", en: "Done")
+    static let liveFrequency = L(fr: "Fréquence d'apparition", en: "How often they appear")
+    static let liveFrequencyHint = L(fr: "À quelle fréquence les rendez-vous et rappels apparaissent, par rapport aux photos et citations.",
+                                     en: "How often events and reminders surface, next to the photos and quotes.")
 
     // Editor
     static let quoteTitle = L(fr: "Une pensée, une parole", en: "A thought, a saying")

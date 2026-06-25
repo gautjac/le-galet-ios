@@ -36,6 +36,9 @@ final class GaletSettings {
     // Empty means "all of them" — the forgiving default and what new ones inherit.
     var selectedCalendarIDs: [String] = []
     var selectedReminderListIDs: [String] = []
+    // How often calendar events & reminders surface, relative to photos/quotes.
+    // 1.0 = a normal slot each (the default); below = rarer, above = more often.
+    var liveFrequency: Double = 1.0
 
     init() {}
 

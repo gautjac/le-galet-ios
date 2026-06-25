@@ -132,6 +132,7 @@ struct ComposerView: View {
                       granted: events.reminderGranted, denied: events.reminderStatus == .denied,
                       isOn: settings.useReminders, summary: reminderSummary(),
                       toggle: { toggleReminders() }, configure: { pickerKind = .reminders })
+            if liveSourceOn { frequencyControl }
         }
         .padding(16)
         .background(Color.stoneRaise.opacity(0.5), in: RoundedRectangle(cornerRadius: 18))
@@ -192,6 +193,30 @@ struct ComposerView: View {
         let picked = selected.isEmpty ? ids : Set(selected).intersection(ids)
         if picked.isEmpty || picked.count == ids.count { return all }
         return picked.count == 1 ? one : String(format: many, picked.count)
+    }
+
+    // Shown once at least one live source is on: how often events/reminders
+    // surface relative to the photos and quotes (scales their weight in the deck).
+    private var liveSourceOn: Bool {
+        (events.calendarGranted && settings.useCalendar) ||
+        (events.reminderGranted && settings.useReminders)
+    }
+
+    private var frequencyControl: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Rectangle().fill(Color.stoneLine.opacity(0.4)).frame(height: 1).padding(.vertical, 2)
+            HStack {
+                Text(S.liveFrequency(lang)).font(Typo.sans(13)).foregroundStyle(Color.mistSoft)
+                Spacer()
+                Text(String(format: "%g×", settings.liveFrequency))
+                    .font(Typo.sans(13)).foregroundStyle(Color.amber).monospacedDigit()
+            }
+            Slider(value: Binding(get: { settings.liveFrequency },
+                                  set: { settings.liveFrequency = $0; try? context.save() }),
+                   in: 0.25...3, step: 0.25).tint(.amber)
+            Text(S.liveFrequencyHint(lang)).font(Typo.sans(11)).foregroundStyle(Color.mistFaint).lineSpacing(2)
+        }
+        .padding(.top, 2)
     }
 
     private var emptyList: some View {

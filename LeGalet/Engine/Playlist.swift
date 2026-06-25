@@ -24,12 +24,25 @@ enum Playlist {
         guard !all.isEmpty else { return [] }
         guard settings.shuffle else { return all }
 
-        // Weighted: a higher-weight pebble takes more slots in the deck.
-        var pool: [Pebble] = []
-        for p in all { for _ in 0..<max(1, min(3, p.weight)) { pool.append(p) } }
+        // Weighted deck. Stored items use their per-item frequency dial (1–3);
+        // live events/reminders are scaled by the household's frequency setting —
+        // a whole multiplier adds that many copies, a fraction adds one more with
+        // that probability. One RNG, seeded per deal, keeps the deck stable for a
+        // few minutes and drives both the fractional choice and the shuffle.
+        var rng = SeededRNG(seed: seed(now: now, n: all.count))
 
-        let shuffled = seededShuffle(pool, seed: seed(now: now, n: all.count))
-        return decluster(shuffled)
+        var pool: [Pebble] = []
+        for p in stored { for _ in 0..<clampWeight(p.weight) { pool.append(p) } }
+
+        let freq = max(0, settings.liveFrequency)
+        for p in live {
+            var copies = Int(freq)
+            if rng.unit() < (freq - Double(copies)) { copies += 1 }
+            for _ in 0..<copies { pool.append(p) }
+        }
+
+        guard !pool.isEmpty else { return all }   // never blank the display
+        return decluster(seededShuffle(pool, rng: &rng))
     }
 
     // Avoid the same pebble — and, softly, the same kind — landing back to back.
@@ -49,16 +62,13 @@ enum Playlist {
         return out
     }
 
-    private static func seededShuffle(_ arr: [Pebble], seed: UInt32) -> [Pebble] {
+    private static func clampWeight(_ w: Int) -> Int { max(1, min(3, w)) }
+
+    private static func seededShuffle(_ arr: [Pebble], rng: inout SeededRNG) -> [Pebble] {
         var a = arr
-        var s = seed == 0 ? 0x9E3779B9 : seed
-        func rnd() -> Double {
-            s ^= s << 13; s ^= s >> 17; s ^= s << 5
-            return Double(s % 100_000) / 100_000
-        }
         if a.count > 1 {
             for i in stride(from: a.count - 1, to: 0, by: -1) {
-                let j = Int(rnd() * Double(i + 1))
+                let j = Int(rng.unit() * Double(i + 1))
                 a.swapAt(i, j)
             }
         }
@@ -69,5 +79,16 @@ enum Playlist {
     private static func seed(now: Date, n: Int) -> UInt32 {
         let bucket = UInt32(truncatingIfNeeded: Int(now.timeIntervalSince1970) / 240)
         return bucket &* 2_654_435_761 &+ UInt32(n &* 40_503)
+    }
+}
+
+// A tiny deterministic xorshift generator so a deal stays stable within its time
+// bucket (no flicker between rebuilds) yet re-deals when the bucket rolls over.
+private struct SeededRNG {
+    private var s: UInt32
+    init(seed: UInt32) { s = seed == 0 ? 0x9E3779B9 : seed }
+    mutating func unit() -> Double {
+        s ^= s << 13; s ^= s >> 17; s ^= s << 5
+        return Double(s % 100_000) / 100_000
     }
 }
