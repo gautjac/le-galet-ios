@@ -136,15 +136,29 @@ final class PhotoLoader: ObservableObject {
     }
 
     // ── Albums ──────────────────────────────────────────────────────────────────
-    // The albums offered in the picker: every user-made album plus Favorites.
+    static func authorizationStatus() -> PHAuthorizationStatus {
+        PHPhotoLibrary.authorizationStatus(for: .readWrite)
+    }
+
+    // The albums offered in the picker: All Photos (always present, so there's
+    // something to pick even with no custom albums), Favorites, then every
+    // user-made album. Sorted in Swift — a fetch-level sort on "localizedTitle"
+    // is unsupported for collections and can fail on device. Note: enumerating
+    // user albums needs FULL library access; under "Selected Photos" (limited)
+    // it returns nothing, which is why the picker can look empty.
     func userAlbums() -> [PHAssetCollection] {
         var out: [PHAssetCollection] = []
-        let opts = PHFetchOptions()
-        opts.sortDescriptors = [NSSortDescriptor(key: "localizedTitle", ascending: true)]
-        PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: opts)
-            .enumerateObjects { c, _, _ in out.append(c) }
+        PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
+            .enumerateObjects { c, _, _ in out.append(c) }   // "Recents" / All Photos
         PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumFavorites, options: nil)
             .enumerateObjects { c, _, _ in if c.estimatedAssetCount != 0 { out.append(c) } }
+        var userMade: [PHAssetCollection] = []
+        PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: nil)
+            .enumerateObjects { c, _, _ in userMade.append(c) }
+        userMade.sort {
+            ($0.localizedTitle ?? "").localizedCaseInsensitiveCompare($1.localizedTitle ?? "") == .orderedAscending
+        }
+        out.append(contentsOf: userMade)
         return out
     }
 

@@ -84,7 +84,12 @@ enum S {
     static let albumTag = L(fr: "Album", en: "Album")
     static let albumPickerHint = L(fr: "Les photos de l'album dérivent dans l'écran et se renouvellent quand vous en ajoutez.",
                                    en: "An album's photos drift into the display and refresh as you add to it.")
-    static let noAlbums = L(fr: "Aucun album trouvé.", en: "No albums found.")
+    static let noAlbums = L(fr: "Aucun album trouvé. Créez-en un dans l'app Photos.",
+                            en: "No albums found. Create one in the Photos app.")
+    static let albumsNeedFullAccess = L(
+        fr: "Pour parcourir vos albums, Le Galet a besoin de l'accès à toutes vos photos (et non à une sélection).",
+        en: "To browse your albums, Le Galet needs access to all your photos (not a selection).")
+    static let openSettings = L(fr: "Ouvrir les Réglages", en: "Open Settings")
     static let photoCount = L(fr: "%d photos", en: "%d photos")
     static let onePhoto = L(fr: "1 photo", en: "1 photo")
     static let noPhotos = L(fr: "Vide", en: "Empty")

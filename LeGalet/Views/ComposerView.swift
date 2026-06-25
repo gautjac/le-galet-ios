@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 import Photos
 import EventKit
+import UIKit
 import UniformTypeIdentifiers
 
 struct ComposerView: View {
@@ -54,7 +55,8 @@ struct ComposerView: View {
                 .ignoresSafeArea()
         }
         .sheet(isPresented: $showingAlbumPicker) {
-            AlbumPickerView(albums: PhotoLoader.shared.userAlbums()) { collections in
+            AlbumPickerView(albums: PhotoLoader.shared.userAlbums(),
+                            fullAccess: PhotoLoader.authorizationStatus() == .authorized) { collections in
                 addAlbums(collections)
             }
             .environment(\.lang, lang)
@@ -614,6 +616,7 @@ private struct AlbumPickerView: View {
     @Environment(\.lang) private var lang
     @Environment(\.dismiss) private var dismiss
     let albums: [PHAssetCollection]
+    var fullAccess: Bool = true
     let onAdd: ([PHAssetCollection]) -> Void
     @State private var selected: Set<String> = []
 
@@ -623,14 +626,14 @@ private struct AlbumPickerView: View {
             VStack(spacing: 0) {
                 header
                 if albums.isEmpty {
-                    Spacer()
-                    Text(S.noAlbums(lang)).font(Typo.sans(14)).foregroundStyle(Color.mistFaint)
-                    Spacer()
+                    emptyState
                 } else {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(S.albumPickerHint(lang))
                                 .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).padding(.bottom, 4)
+                            // Limited access hides your real albums; offer the way out.
+                            if !fullAccess { limitedNote }
                             ForEach(albums, id: \.localIdentifier) { album in
                                 AlbumPickerRow(album: album,
                                                selected: selected.contains(album.localIdentifier)) {
@@ -644,6 +647,46 @@ private struct AlbumPickerView: View {
                 }
             }
         }
+    }
+
+    // Shown when the library can't be enumerated (limited / denied access).
+    private var emptyState: some View {
+        VStack(spacing: 16) {
+            Spacer()
+            Image(systemName: "photo.on.rectangle.angled")
+                .font(.system(size: 34, weight: .ultraLight)).foregroundStyle(Color.mistFaint.opacity(0.6))
+            Text(fullAccess ? S.noAlbums(lang) : S.albumsNeedFullAccess(lang))
+                .font(Typo.sans(14)).foregroundStyle(Color.mistFaint)
+                .multilineTextAlignment(.center).padding(.horizontal, 40).lineSpacing(3)
+            if !fullAccess { openSettingsButton }
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var limitedNote: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(S.albumsNeedFullAccess(lang))
+                .font(Typo.sans(12)).foregroundStyle(Color.amberSoft).lineSpacing(2)
+            openSettingsButton
+        }
+        .padding(12)
+        .background(Color.amber.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.amber.opacity(0.3), lineWidth: 1))
+        .padding(.bottom, 4)
+    }
+
+    private var openSettingsButton: some View {
+        Button {
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        } label: {
+            Text(S.openSettings(lang)).font(Typo.sans(13, .medium)).foregroundStyle(Color.amber)
+                .padding(.horizontal, 16).padding(.vertical, 8)
+                .overlay(Capsule().strokeBorder(Color.amber.opacity(0.6), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
     }
 
     private var header: some View {
