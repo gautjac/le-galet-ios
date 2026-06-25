@@ -120,6 +120,11 @@ struct ReglagesView: View {
                     Text(S.fillScreenHelp(lang))
                         .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).lineSpacing(2)
                 }
+                VStack(alignment: .leading, spacing: 8) {
+                    CalmToggle(title: S.smartCrop(lang), isOn: $settings.smartCrop)
+                    Text(S.smartCropHelp(lang))
+                        .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).lineSpacing(2)
+                }
                 CalmToggle(title: S.kenBurns(lang), isOn: $settings.kenBurns)
                 CalmToggle(title: S.showClock(lang), isOn: $settings.showClock)
                 VStack(alignment: .leading, spacing: 8) {

@@ -151,9 +151,9 @@ private struct PhotoPebble: View {
                 let target = CGSize(width: geo.size.width * 1.25,
                                     height: geo.size.height * 1.25)
                 if let img = await PhotoLoader.shared.image(for: pebble.photoLocalId, target: target) {
-                    // Vision (subject detection) is only needed for fill mode; the
-                    // whole-photo default skips it to save battery.
-                    framing = settings.fillScreen
+                    // Vision (subject detection) is only needed when a mode may crop —
+                    // fill or smart crop; the whole-photo default skips it to save battery.
+                    framing = needsVision
                         ? await PhotoLoader.shared.framing(for: pebble.photoLocalId, image: img)
                         : PhotoFraming.justAspect(img)
                     image = img
@@ -163,6 +163,12 @@ private struct PhotoPebble: View {
             }
             // Toggling the caption on mid-display fills it in for the current photo.
             .task(id: settings.showPhotoMeta) { await loadMeta() }
+            // Turning fill / smart crop on mid-display recomputes the subject so the
+            // current photo re-frames immediately rather than on the next dissolve.
+            .task(id: needsVision) {
+                guard needsVision, let img = image else { return }
+                framing = await PhotoLoader.shared.framing(for: pebble.photoLocalId, image: img)
+            }
         }
         .ignoresSafeArea()
     }
@@ -185,6 +191,9 @@ private struct PhotoPebble: View {
             .opacity(0.45)
             .overlay(Color.stoneDeep.opacity(0.28))
     }
+
+    // Both crop modes lean on Vision to keep the subject in frame.
+    private var needsVision: Bool { settings.fillScreen || settings.smartCrop }
 
     private var driftOn: Bool { settings.kenBurns && !reduceMotion }
 
@@ -211,6 +220,20 @@ private struct PhotoPebble: View {
         if fitH > frame.height { fitH = frame.height; fitW = frame.height * a }
         let fitSize = CGSize(width: fitW, height: fitH)
 
+        let screenA = frame.width / max(frame.height, 1)
+
+        // SMART CROP (opt-in) — when the photo's orientation clashes with the
+        // screen's (a portrait photo on a landscape iPad, or the reverse), crop it
+        // to fill rather than letterbox, with Vision keeping the subject centred.
+        // This is the one path that crops even a protected subject (a face or pet),
+        // because cropping the portrait into landscape is exactly what's asked.
+        let orientationClash = (a >= 1) != (screenA >= 1)
+        if settings.smartCrop && orientationClash {
+            var w = frame.height * a, h = frame.height
+            if w < frame.width { w = frame.width; h = frame.width / a }
+            return make(CGSize(width: w, height: h), fit: false, frame: frame, s: framing).plan
+        }
+
         // DEFAULT — show the whole photo, never cropping. The gentle drift "settles
         // in": the photo grows from a hair small to exact fit, so it can never
         // exceed the frame and nothing is ever cut. No Vision needed.
@@ -220,7 +243,6 @@ private struct PhotoPebble: View {
         }
 
         // FILL (opt-in) — immersive, with best-effort subject protection.
-        let screenA = frame.width / max(frame.height, 1)
         let wantFit = max(a / screenA, screenA / a) >= 1.35
         var fillW = frame.height * a, fillH = frame.height
         if fillW < frame.width { fillW = frame.width; fillH = frame.width / a }

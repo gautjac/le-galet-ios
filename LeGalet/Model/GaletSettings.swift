@@ -19,6 +19,10 @@ final class GaletSettings {
     // Off (default): always show the whole photo, never cropping. On: fill the
     // screen edge-to-edge, with a slight crop and subject protection.
     var fillScreen: Bool = false
+    // When a photo's orientation clashes with the screen's (a portrait photo on a
+    // landscape iPad, or the reverse), crop it to fill using Vision to keep the
+    // subject — a face, a pet, the focal point — centred, instead of letterboxing.
+    var smartCrop: Bool = false
     // Multiplies every pebble's text size (quotes, reminders, captions). 1.0 = the
     // tuned default; the slider runs from cosy (0.8) to across-the-room (1.6).
     var textScale: Double = 1.0

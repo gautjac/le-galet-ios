@@ -109,6 +109,10 @@ enum S {
     static let fillScreenHelp = L(
         fr: "Désactivé, la photo entière s'affiche — jamais de tête coupée. Activé, les photos remplissent l'écran avec un léger recadrage.",
         en: "Off, the whole photo is shown — no cut-off heads. On, photos fill the screen with a slight crop.")
+    static let smartCrop = L(fr: "Recadrage intelligent", en: "Smart crop")
+    static let smartCropHelp = L(
+        fr: "En mode paysage, recadre intelligemment une photo portrait pour remplir l'écran — le sujet (visage, animal) reste au centre — au lieu d'afficher des bandes floues. Et l'inverse en mode portrait.",
+        en: "In landscape, intelligently crops a portrait photo to fill the screen — keeping the subject (a face, a pet) centred — instead of showing blurred bars. And the reverse in portrait.")
     static let household = L(fr: "Le foyer", en: "Household")
     static let toneLabel = L(fr: "L'air de la maison", en: "The mood of the home")
     static let tonePlaceholder = L(fr: "p. ex. une famille calme, deux enfants, on aime les mots doux et la mer…",
