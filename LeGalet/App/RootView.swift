@@ -11,6 +11,10 @@ struct RootView: View {
     @StateObject private var events = EventBridge()
     @State private var screen: Screen = .galet
     @State private var idleTask: Task<Void, Never>?
+    // True while the Composer has a modal open (photo picker, file importer, or
+    // editor). The idle-return is suspended while it is, so browsing a large
+    // photo library can never bounce you back to the display mid-selection.
+    @State private var composerModalOpen = false
 
     private var settings: GaletSettings { settingsRows.first ?? placeholder }
     private let placeholder = GaletSettings()
@@ -43,7 +47,11 @@ struct RootView: View {
         // Pull margin quotes saved from the magazines (Les Marges → wiki → feed),
         // then top up on a slow timer for as long as the display stays open.
         .task { await MarginFeed.keepFresh(context) }
-        .onChange(of: screen) { _, newValue in armIdleReturn(newValue) }
+        .onChange(of: screen) { _, _ in composerModalOpen = false; armIdleReturn() }
+        // A modal opening pauses the countdown; closing it re-arms a fresh one.
+        .onChange(of: composerModalOpen) { _, _ in armIdleReturn() }
+        // Adding or removing items is active curation — keep the screen alive.
+        .onChange(of: items.count) { _, _ in armIdleReturn() }
         .onChange(of: settings.langRaw) { _, _ in
             events.lang = settings.lang
             Task { await events.refresh() }
@@ -64,7 +72,8 @@ struct RootView: View {
             )
             .task { await events.refresh() }
         case .composer:
-            ComposerView(items: items, settings: settings, events: events) { screen = .galet }
+            ComposerView(items: items, settings: settings, events: events,
+                         modalOpen: $composerModalOpen) { screen = .galet }
         case .settings:
             ReglagesView(settings: settings, events: events) { screen = .galet }
         case .souffleur:
@@ -79,12 +88,14 @@ struct RootView: View {
         }
     }
 
-    // A curation screen left untouched drifts back to the display after a while.
-    private func armIdleReturn(_ s: Screen) {
+    // A curation screen left genuinely idle drifts back to the display after a
+    // while — but never while a modal is open (the photo picker can take minutes)
+    // and the countdown restarts on each interaction, so active use never bounces.
+    private func armIdleReturn() {
         idleTask?.cancel()
-        guard s != .galet else { return }
+        guard screen != .galet, !composerModalOpen else { return }
         idleTask = Task {
-            try? await Task.sleep(for: .seconds(120))
+            try? await Task.sleep(for: .seconds(180))
             if !Task.isCancelled { await MainActor.run { screen = .galet } }
         }
     }

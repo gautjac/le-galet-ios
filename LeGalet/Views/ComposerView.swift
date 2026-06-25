@@ -9,12 +9,17 @@ struct ComposerView: View {
     let items: [GaletItem]
     let settings: GaletSettings
     @ObservedObject var events: EventBridge
+    // Mirrors whether any modal is open up to RootView, which suspends the
+    // idle-return so a slow photo selection never bounces back to the display.
+    @Binding var modalOpen: Bool
     let onBack: () -> Void
 
     @State private var editing: EditorDraft?
     @State private var showingPhotoPicker = false
     @State private var showingImporter = false
     @State private var importMessage: String?
+
+    private var anyModalOpen: Bool { showingPhotoPicker || showingImporter || editing != nil }
 
     private var sorted: [GaletItem] { items.sorted { $0.order < $1.order } }
     private var activeCount: Int { items.filter { $0.active }.count }
@@ -45,6 +50,10 @@ struct ComposerView: View {
                presenting: importMessage) { _ in
             Button("OK") { importMessage = nil }
         } message: { Text($0) }
+        // Tell RootView whenever a modal opens or closes so it can pause/resume
+        // the idle-return. .task seeds the initial value; onChange tracks it.
+        .onChange(of: anyModalOpen) { _, open in modalOpen = open }
+        .onDisappear { modalOpen = false }
     }
 
     private var header: some View {
