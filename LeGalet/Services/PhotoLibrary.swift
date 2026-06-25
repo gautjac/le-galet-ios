@@ -134,6 +134,54 @@ final class PhotoLoader: ObservableObject {
             PHPhotoLibrary.requestAuthorization(for: .readWrite) { cont.resume(returning: $0) }
         }
     }
+
+    // ── Albums ──────────────────────────────────────────────────────────────────
+    // The albums offered in the picker: every user-made album plus Favorites.
+    func userAlbums() -> [PHAssetCollection] {
+        var out: [PHAssetCollection] = []
+        let opts = PHFetchOptions()
+        opts.sortDescriptors = [NSSortDescriptor(key: "localizedTitle", ascending: true)]
+        PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: opts)
+            .enumerateObjects { c, _, _ in out.append(c) }
+        PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumFavorites, options: nil)
+            .enumerateObjects { c, _, _ in if c.estimatedAssetCount != 0 { out.append(c) } }
+        return out
+    }
+
+    func collection(for id: String) -> PHAssetCollection? {
+        PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [id], options: nil).firstObject
+    }
+
+    func assetCount(collectionID: String) -> Int {
+        guard let c = collection(for: collectionID) else { return 0 }
+        return PHAsset.fetchAssets(in: c, options: imageOptions()).count
+    }
+
+    // The most-recent image identifiers in an album, capped — what we resolve to
+    // photo pebbles. Newest-first so a freshly added family photo surfaces soon.
+    func albumAssetIDs(collectionID: String, limit: Int) -> [String] {
+        guard let c = collection(for: collectionID) else { return [] }
+        let opts = imageOptions()
+        opts.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        let assets = PHAsset.fetchAssets(in: c, options: opts)
+        var ids: [String] = []
+        assets.enumerateObjects { a, _, stop in
+            if ids.count >= limit { stop.pointee = true; return }
+            ids.append(a.localIdentifier)
+        }
+        return ids
+    }
+
+    func albumCover(collectionID: String, target: CGSize) async -> UIImage? {
+        guard let first = albumAssetIDs(collectionID: collectionID, limit: 1).first else { return nil }
+        return await image(for: first, target: target)
+    }
+
+    private func imageOptions() -> PHFetchOptions {
+        let o = PHFetchOptions()
+        o.predicate = NSPredicate(format: "mediaType == %d", PHAssetMediaType.image.rawValue)
+        return o
+    }
 }
 
 // A multi-select picker that returns Photos localIdentifiers (requires the

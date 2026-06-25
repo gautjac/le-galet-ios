@@ -9,6 +9,7 @@ struct GaletView: View {
     let items: [GaletItem]
     let settings: GaletSettings
     let live: [Pebble]
+    var albumPhotos: [Pebble] = []
     let onCompose: () -> Void
     let onSettings: () -> Void
     let onSouffleur: () -> Void
@@ -34,7 +35,8 @@ struct GaletView: View {
     private var contentKey: String {
         let ids = items.filter { $0.active }.map { "\($0.id.uuidString):\($0.order):\($0.weight)" }.joined(separator: ",")
         let liveIds = live.map { $0.id }.joined(separator: ",")
-        return ids + "|" + liveIds + "|\(settings.shuffle)"
+        let albumIds = albumPhotos.map { $0.id }.joined(separator: ",")
+        return ids + "|" + liveIds + "|" + albumIds + "|\(settings.shuffle)|\(settings.liveFrequency)"
     }
     private var advanceKey: String { "\(playlist.count)|\(settings.dwellSeconds)|\(settings.fadeSeconds)" }
 
@@ -137,7 +139,8 @@ struct GaletView: View {
     // ── Engine ────────────────────────────────────────────────────────────────
     private func rebuild() {
         let currentId = displayed?.id
-        let next = Playlist.build(items: items, live: live, settings: settings, now: now)
+        let next = Playlist.build(items: items, live: live, albumPhotos: albumPhotos,
+                                  settings: settings, now: now)
         playlist = next
         if let cid = currentId, let pos = next.firstIndex(where: { $0.id == cid }) {
             index = pos

@@ -9,6 +9,7 @@ struct RootView: View {
     @Query private var settingsRows: [GaletSettings]
 
     @StateObject private var events = EventBridge()
+    @StateObject private var albums = AlbumLibrary()
     @State private var screen: Screen = .galet
     @State private var idleTask: Task<Void, Never>?
     // True while the Composer has a modal open (photo picker, file importer, or
@@ -44,6 +45,7 @@ struct RootView: View {
             events.lang = settings.lang
             events.selectedCalendarIDs = settings.selectedCalendarIDs
             events.selectedReminderListIDs = settings.selectedReminderListIDs
+            albums.update(albumSpecs)
             await events.refresh()
         }
         // Pull margin quotes saved from the magazines (Les Marges → wiki → feed),
@@ -67,6 +69,17 @@ struct RootView: View {
             events.selectedReminderListIDs = v
             Task { await events.refresh() }
         }
+        // Added / removed an album, or changed its frequency dial → re-resolve.
+        .onChange(of: albumSpecKey) { _, _ in albums.update(albumSpecs) }
+    }
+
+    // The stored album items, as resolver specs (collection id + weight dial).
+    private var albumSpecs: [AlbumLibrary.Spec] {
+        items.filter { $0.kind == .album }
+             .map { AlbumLibrary.Spec(id: $0.photoLocalId, weight: $0.weight) }
+    }
+    private var albumSpecKey: String {
+        albumSpecs.map { "\($0.id):\($0.weight)" }.joined(separator: ",")
     }
 
     @ViewBuilder private var content: some View {
@@ -77,6 +90,7 @@ struct RootView: View {
                 settings: settings,
                 live: events.livePebbles(useCalendar: settings.useCalendar,
                                          useReminders: settings.useReminders),
+                albumPhotos: albums.pebbles,
                 onCompose: { screen = .composer },
                 onSettings: { screen = .settings },
                 onSouffleur: { screen = .souffleur }

@@ -17,6 +17,7 @@ struct ComposerView: View {
 
     @State private var editing: EditorDraft?
     @State private var showingPhotoPicker = false
+    @State private var showingAlbumPicker = false
     @State private var showingImporter = false
     @State private var importMessage: String?
     @State private var pickerKind: SourceKind?
@@ -29,7 +30,7 @@ struct ComposerView: View {
     }
 
     private var anyModalOpen: Bool {
-        showingPhotoPicker || showingImporter || editing != nil || pickerKind != nil
+        showingPhotoPicker || showingAlbumPicker || showingImporter || editing != nil || pickerKind != nil
     }
 
     private var sorted: [GaletItem] { items.sorted { $0.order < $1.order } }
@@ -51,6 +52,12 @@ struct ComposerView: View {
         .sheet(isPresented: $showingPhotoPicker) {
             PhotoPicker { ids in addPhotos(ids) }
                 .ignoresSafeArea()
+        }
+        .sheet(isPresented: $showingAlbumPicker) {
+            AlbumPickerView(albums: PhotoLoader.shared.userAlbums()) { collections in
+                addAlbums(collections)
+            }
+            .environment(\.lang, lang)
         }
         .fileImporter(isPresented: $showingImporter,
                       allowedContentTypes: [.plainText, .text, .json, .commaSeparatedText],
@@ -100,6 +107,7 @@ struct ComposerView: View {
     private var addRow: some View {
         HStack(spacing: 10) {
             addButton("photo.on.rectangle", S.addPhoto(lang)) { openPhotos() }
+            addButton("rectangle.stack", S.addAlbum(lang)) { openAlbums() }
             addButton("quote.bubble", S.addQuote(lang)) { editing = EditorDraft(kind: .quote) }
             addButton("bell", S.addReminder(lang)) { editing = EditorDraft(kind: .reminder) }
             addButton("square.and.arrow.down", S.importFile(lang)) { showingImporter = true }
@@ -254,7 +262,11 @@ struct ComposerView: View {
                         }
                     }
                     .contentShape(Rectangle())
-                    .onTapGesture { if item.kind != .photo { editing = EditorDraft(kind: item.kind == .reminder ? .reminder : .quote, item: item) } }
+                    .onTapGesture {
+                        if item.kind == .quote || item.kind == .reminder {
+                            editing = EditorDraft(kind: item.kind == .reminder ? .reminder : .quote, item: item)
+                        }
+                    }
             }
             .onMove(perform: move)
         }
@@ -279,6 +291,26 @@ struct ComposerView: View {
         var order = nextOrder()
         for id in ids {
             context.insert(GaletItem(typeRaw: PebbleKind.photo.rawValue, photoLocalId: id, order: order))
+            order += 1
+        }
+        try? context.save()
+    }
+
+    private func openAlbums() {
+        Task {
+            let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+            if status == .notDetermined { _ = await PhotoLoader.requestAccess() }
+            showingAlbumPicker = true
+        }
+    }
+
+    private func addAlbums(_ collections: [PHAssetCollection]) {
+        let existing = Set(items.filter { $0.kind == .album }.map { $0.photoLocalId })
+        var order = nextOrder()
+        for c in collections where !existing.contains(c.localIdentifier) {
+            context.insert(GaletItem(typeRaw: PebbleKind.album.rawValue,
+                                     text: c.localizedTitle ?? S.addAlbum(lang),
+                                     photoLocalId: c.localIdentifier, order: order))
             order += 1
         }
         try? context.save()
@@ -476,6 +508,7 @@ private struct ComposerRow: View {
     let lang: Lang
     @Environment(\.modelContext) private var context
     @State private var thumb: UIImage?
+    @State private var albumCount: Int?
 
     var body: some View {
         HStack(spacing: 12) {
@@ -503,14 +536,28 @@ private struct ComposerRow: View {
         .task(id: item.photoLocalId) {
             if item.kind == .photo {
                 thumb = await PhotoLoader.shared.image(for: item.photoLocalId, target: CGSize(width: 90, height: 90))
+            } else if item.kind == .album {
+                albumCount = PhotoLoader.shared.assetCount(collectionID: item.photoLocalId)
+                thumb = await PhotoLoader.shared.albumCover(collectionID: item.photoLocalId,
+                                                            target: CGSize(width: 90, height: 90))
             }
         }
     }
 
     @ViewBuilder private var thumbView: some View {
-        if item.kind == .photo, let thumb {
+        if (item.kind == .photo || item.kind == .album), let thumb {
             Image(uiImage: thumb).resizable().scaledToFill()
                 .frame(width: 44, height: 44).clipShape(RoundedRectangle(cornerRadius: 10))
+                .overlay(alignment: .bottomTrailing) {
+                    if item.kind == .album {
+                        Image(systemName: "square.stack.fill")
+                            .font(.system(size: 9))
+                            .foregroundStyle(.white)
+                            .padding(3)
+                            .background(.black.opacity(0.45), in: RoundedRectangle(cornerRadius: 5))
+                            .padding(3)
+                    }
+                }
         } else {
             Image(systemName: icon).font(.system(size: 16, weight: .light))
                 .foregroundStyle(Color.mistFaint)
@@ -520,15 +567,26 @@ private struct ComposerRow: View {
     }
 
     private var icon: String {
-        switch item.kind { case .quote: return "quote.bubble"; case .reminder: return "bell"; default: return "photo" }
+        switch item.kind {
+        case .quote: return "quote.bubble"
+        case .reminder: return "bell"
+        case .album: return "rectangle.stack"
+        default: return "photo"
+        }
     }
     private var displayText: String {
-        item.text.isEmpty ? (item.kind == .photo ? "—" : "") : item.text
+        if item.kind == .album { return item.text.isEmpty ? S.addAlbum(lang) : item.text }
+        return item.text.isEmpty ? (item.kind == .photo ? "—" : "") : item.text
     }
     private var tag: String {
         switch item.kind {
         case .quote: return item.author.isEmpty ? S.addQuote(lang) : item.author
         case .reminder: return (item.startAt != nil || item.endAt != nil) ? S.addReminder(lang) : S.always(lang)
+        case .album:
+            guard let n = albumCount else { return S.albumTag(lang) }
+            let count = n == 0 ? S.noPhotos(lang)
+                      : (n == 1 ? S.onePhoto(lang) : String(format: S.photoCount(lang), n))
+            return "\(S.albumTag(lang)) · \(count)"
         default: return S.addPhoto(lang)
         }
     }
@@ -546,5 +604,116 @@ private struct WeightDots: View {
                     .onTapGesture { item.weight = w; try? context.save() }
             }
         }
+    }
+}
+
+// ── Album picker ────────────────────────────────────────────────────────────
+// A sheet of the user's albums (cover + photo count). Select one or more; Done
+// adds each as an album item whose photos drift in and refresh over time.
+private struct AlbumPickerView: View {
+    @Environment(\.lang) private var lang
+    @Environment(\.dismiss) private var dismiss
+    let albums: [PHAssetCollection]
+    let onAdd: ([PHAssetCollection]) -> Void
+    @State private var selected: Set<String> = []
+
+    var body: some View {
+        ZStack {
+            Color.stoneBase.ignoresSafeArea()
+            VStack(spacing: 0) {
+                header
+                if albums.isEmpty {
+                    Spacer()
+                    Text(S.noAlbums(lang)).font(Typo.sans(14)).foregroundStyle(Color.mistFaint)
+                    Spacer()
+                } else {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(S.albumPickerHint(lang))
+                                .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).padding(.bottom, 4)
+                            ForEach(albums, id: \.localIdentifier) { album in
+                                AlbumPickerRow(album: album,
+                                               selected: selected.contains(album.localIdentifier)) {
+                                    let id = album.localIdentifier
+                                    if selected.contains(id) { selected.remove(id) } else { selected.insert(id) }
+                                }
+                            }
+                        }
+                        .padding(22)
+                    }
+                }
+            }
+        }
+    }
+
+    private var header: some View {
+        HStack {
+            Text(S.chooseAlbums(lang)).font(Typo.serif(22, .light)).foregroundStyle(Color.mist)
+            Spacer()
+            Button(S.done(lang)) {
+                let chosen = albums.filter { selected.contains($0.localIdentifier) }
+                if !chosen.isEmpty { onAdd(chosen) }
+                dismiss()
+            }
+            .font(Typo.sans(15, .medium))
+            .foregroundStyle(selected.isEmpty ? Color.mistFaint : Color.amber)
+            .disabled(selected.isEmpty)
+        }
+        .padding(.horizontal, 22).padding(.top, 24).padding(.bottom, 16)
+    }
+}
+
+private struct AlbumPickerRow: View {
+    @Environment(\.lang) private var lang
+    let album: PHAssetCollection
+    let selected: Bool
+    let toggle: () -> Void
+    @State private var cover: UIImage?
+    @State private var count: Int?
+
+    var body: some View {
+        Button(action: toggle) {
+            HStack(spacing: 12) {
+                coverView
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(album.localizedTitle ?? S.addAlbum(lang))
+                        .font(Typo.sans(15)).foregroundStyle(Color.mist).lineLimit(1)
+                    Text(countLabel).font(Typo.sans(11)).foregroundStyle(Color.mistFaint)
+                }
+                Spacer()
+                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 20, weight: .light))
+                    .foregroundStyle(selected ? Color.amber : Color.stoneLine)
+            }
+            .padding(10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(selected ? Color.amber.opacity(0.06) : Color.stoneRaise,
+                        in: RoundedRectangle(cornerRadius: 14))
+            .overlay(RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(selected ? Color.amber.opacity(0.5) : Color.stoneLine.opacity(0.5), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .task(id: album.localIdentifier) {
+            count = PhotoLoader.shared.assetCount(collectionID: album.localIdentifier)
+            cover = await PhotoLoader.shared.albumCover(collectionID: album.localIdentifier,
+                                                        target: CGSize(width: 110, height: 110))
+        }
+    }
+
+    @ViewBuilder private var coverView: some View {
+        if let cover {
+            Image(uiImage: cover).resizable().scaledToFill()
+                .frame(width: 52, height: 52).clipShape(RoundedRectangle(cornerRadius: 10))
+        } else {
+            Image(systemName: "rectangle.stack").font(.system(size: 18, weight: .light))
+                .foregroundStyle(Color.mistFaint).frame(width: 52, height: 52)
+                .background(Color.stoneCard, in: RoundedRectangle(cornerRadius: 10))
+        }
+    }
+
+    private var countLabel: String {
+        guard let n = count else { return "" }
+        return n == 0 ? S.noPhotos(lang)
+             : (n == 1 ? S.onePhoto(lang) : String(format: S.photoCount(lang), n))
     }
 }

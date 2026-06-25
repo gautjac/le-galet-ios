@@ -79,6 +79,15 @@ enum S {
     static let noCalendars = L(fr: "Aucun agenda trouvé.", en: "No calendars found.")
     static let noReminderLists = L(fr: "Aucune liste trouvée.", en: "No lists found.")
     static let done = L(fr: "Terminé", en: "Done")
+    static let addAlbum = L(fr: "Album", en: "Album")
+    static let chooseAlbums = L(fr: "Vos albums", en: "Your albums")
+    static let albumTag = L(fr: "Album", en: "Album")
+    static let albumPickerHint = L(fr: "Les photos de l'album dérivent dans l'écran et se renouvellent quand vous en ajoutez.",
+                                   en: "An album's photos drift into the display and refresh as you add to it.")
+    static let noAlbums = L(fr: "Aucun album trouvé.", en: "No albums found.")
+    static let photoCount = L(fr: "%d photos", en: "%d photos")
+    static let onePhoto = L(fr: "1 photo", en: "1 photo")
+    static let noPhotos = L(fr: "Vide", en: "Empty")
     static let liveFrequency = L(fr: "Fréquence d'apparition", en: "How often they appear")
     static let liveFrequencyHint = L(fr: "À quelle fréquence les rendez-vous et rappels apparaissent, par rapport aux photos et citations.",
                                      en: "How often events and reminders surface, next to the photos and quotes.")

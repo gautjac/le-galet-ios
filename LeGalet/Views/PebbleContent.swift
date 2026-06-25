@@ -11,8 +11,11 @@ struct PebbleContent: View {
         switch pebble.kind {
         case .photo: PhotoPebble(pebble: pebble, settings: settings, lang: lang)
         case .quote: QuotePebble(pebble: pebble, font: settings.quoteFont, scale: settings.textScale)
-        case .reminder: ReminderPebble(pebble: pebble, kindIcon: "bell", scale: settings.textScale)
-        case .event: ReminderPebble(pebble: pebble, kindIcon: "calendar", scale: settings.textScale)
+        case .reminder: ReminderPebble(pebble: pebble, kindIcon: "bell", scale: settings.textScale,
+                                       cardTop: .reminderCardTop, cardBottom: .reminderCardBottom)
+        case .event: ReminderPebble(pebble: pebble, kindIcon: "calendar", scale: settings.textScale,
+                                    cardTop: .eventCardTop, cardBottom: .eventCardBottom)
+        case .album: EmptyView()   // never a runtime pebble; resolved to photos
         }
     }
 }
@@ -52,17 +55,19 @@ private struct ReminderPebble: View {
     let pebble: Pebble
     let kindIcon: String
     var scale: Double = 1.0
+    var cardTop: Color = .eventCardTop
+    var cardBottom: Color = .eventCardBottom
     var body: some View {
-        VStack(spacing: 22 * scale) {
+        VStack(spacing: 20 * scale) {
             Image(systemName: kindIcon)
-                .font(.system(size: 22 * scale, weight: .ultraLight))
-                .foregroundStyle(accent.opacity(0.8))
+                .font(.system(size: 23 * scale, weight: .ultraLight))
+                .foregroundStyle(accent)
             Rectangle()
-                .fill(accent.opacity(0.5))
+                .fill(accent.opacity(0.55))
                 .frame(width: 40, height: 1)
             Text(pebble.text)
                 .font(Typo.sans(34 * scale, .light))
-                .foregroundStyle(Color.mist)
+                .foregroundStyle(Color.quoteInk)
                 .multilineTextAlignment(.center)
                 .lineSpacing(4 * scale)
                 .fixedSize(horizontal: false, vertical: true)
@@ -73,8 +78,21 @@ private struct ReminderPebble: View {
                     .foregroundStyle(Color.mistSoft)
             }
         }
-        .padding(.horizontal, 56)
-        .frame(maxWidth: 760)
+        .padding(.horizontal, 52)
+        .padding(.vertical, 46)
+        .frame(maxWidth: 600)
+        // The complementary teal card — what makes a day-info pebble stand out.
+        .background(
+            RoundedRectangle(cornerRadius: 32, style: .continuous)
+                .fill(LinearGradient(colors: [cardTop, cardBottom],
+                                     startPoint: .top, endPoint: .bottom))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 32, style: .continuous)
+                .strokeBorder(accent.opacity(0.28), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.45), radius: 34, x: 0, y: 14)
+        .padding(.horizontal, 40)
     }
 }
 

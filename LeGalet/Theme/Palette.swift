@@ -27,6 +27,15 @@ extension Color {
     static let amberSoft = Color(hex: 0xE0C39B)
     static let slate = Color(hex: 0x6F8190)      // night cool
     static let slateSoft = Color(hex: 0x9AA9B5)
+
+    // Live day-info pebbles (calendar + reminders) sit on a deep teal card — the
+    // complement of the amber accent — so they're noticed against the borderless
+    // quotes and full-bleed photos. Calendar runs cooler (blue-teal), reminders
+    // a touch greener, so the two read as kin but distinct.
+    static let eventCardTop = Color(hex: 0x1C3D49)
+    static let eventCardBottom = Color(hex: 0x142D37)
+    static let reminderCardTop = Color(hex: 0x1E3F39)
+    static let reminderCardBottom = Color(hex: 0x15302B)
 }
 
 // The live accent: amber by day, slate by night, blended across the threshold.

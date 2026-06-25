@@ -4,9 +4,11 @@ import Foundation
 // anything outside its time window, then weight + decluster into the sequence
 // the engine drifts through.
 enum Playlist {
-    static func build(items: [GaletItem], live: [Pebble], settings: GaletSettings, now: Date) -> [Pebble] {
+    static func build(items: [GaletItem], live: [Pebble], albumPhotos: [Pebble] = [],
+                      settings: GaletSettings, now: Date) -> [Pebble] {
         let stored: [Pebble] = items
             .filter { $0.active }
+            .filter { $0.kind != .album }   // albums are containers; their photos arrive via albumPhotos
             .filter { TimeOfDay.reminderActive($0, now) }
             .sorted { $0.order < $1.order }
             .map { item in
@@ -20,7 +22,7 @@ enum Playlist {
                 )
             }
 
-        let all = stored + live
+        let all = stored + albumPhotos + live
         guard !all.isEmpty else { return [] }
         guard settings.shuffle else { return all }
 
@@ -33,6 +35,8 @@ enum Playlist {
 
         var pool: [Pebble] = []
         for p in stored { for _ in 0..<clampWeight(p.weight) { pool.append(p) } }
+        // Album photos behave like stored photos, weighted by the album's dial.
+        for p in albumPhotos { for _ in 0..<clampWeight(p.weight) { pool.append(p) } }
 
         let freq = max(0, settings.liveFrequency)
         for p in live {

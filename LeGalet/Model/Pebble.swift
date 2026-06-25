@@ -1,6 +1,8 @@
 import Foundation
 
-enum PebbleKind: String { case photo, quote, reminder, event }
+// `album` is a stored container, never a runtime pebble: its photos are resolved
+// into individual `photo` pebbles at playlist time (see AlbumLibrary).
+enum PebbleKind: String { case photo, quote, reminder, event, album }
 
 // A runtime item the engine actually drifts. Produced from stored GaletItems and
 // from live EventKit (reminders + calendar). Deliberately value-typed and cheap
