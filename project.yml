@@ -29,7 +29,10 @@ targets:
     info:
       path: LeGalet/Resources/Info.plist
       properties:
-        CFBundleDisplayName: Le Galet
+        # User-facing name only — localized per device language in
+        # {fr,en}.lproj/InfoPlist.strings (Carrousel / Carousel). The bundle id,
+        # module, and product name stay LeGalet so installs keep their data.
+        CFBundleDisplayName: Carrousel
         CFBundleName: LeGalet
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"

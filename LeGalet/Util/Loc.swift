@@ -26,12 +26,12 @@ enum S {
                              en: "Add a photo, a thought, or a reminder — then let the screen drift.")
     static let begin = L(fr: "Commencer", en: "Begin")
 
-    static let ob1Title = L(fr: "Voici Le Galet.", en: "Meet Le Galet.")
-    static let ob1Body = L(fr: "Une vieille tablette devient un foyer calme — vos photos, vos pensées, vos rendez-vous et vos rappels dérivent lentement, un seul à la fois.",
-                           en: "An old tablet becomes a calm hearth — your photos, thoughts, events, and reminders drift slowly, one at a time.")
+    static let ob1Title = L(fr: "Carrousel", en: "Carousel")
+    static let ob1Body = L(fr: "Une vieille tablette devient un foyer calme — vos photos, citations, rappels et événements dérivent lentement, un à la fois.",
+                           en: "An old tablet becomes a calm hearth — your photos, quotes, reminders and events drift slowly by, one at a time.")
     static let ob2Title = L(fr: "Reliez vos albums et votre agenda.", en: "Connect your albums and calendar.")
-    static let ob2Body = L(fr: "Choisissez des photos, écrivez une parole. Le Galet fait dériver vos rappels et vos rendez-vous du jour au bon moment.",
-                           en: "Pick photos, write a saying. Le Galet drifts your reminders and the day's events in at the right moment.")
+    static let ob2Body = L(fr: "Choisissez des photos, écrivez une parole. Carrousel fait dériver vos rappels et vos rendez-vous du jour au bon moment.",
+                           en: "Pick photos, write a saying. Carousel drifts your reminders and the day's events in at the right moment.")
     static let ob3Title = L(fr: "Puis posez-le et oubliez-le.", en: "Then prop it up and forget it.")
     static let ob3Body = L(fr: "L'écran s'illumine au déjeuner et se tamise le soir. Aucune notification, aucune décision — juste une chose calme à la fois.",
                            en: "It brightens at breakfast and dims at night. No notifications, no decisions — just one calm thing at a time.")
@@ -103,11 +103,11 @@ enum S {
     static let noAlbums = L(fr: "Aucun album trouvé. Créez-en un dans l'app Photos.",
                             en: "No albums found. Create one in the Photos app.")
     static let albumsNeedFullAccess = L(
-        fr: "Pour parcourir vos albums, Le Galet a besoin de l'accès à toutes vos photos (et non à une sélection).",
-        en: "To browse your albums, Le Galet needs access to all your photos (not a selection).")
+        fr: "Pour parcourir vos albums, Carrousel a besoin de l'accès à toutes vos photos (et non à une sélection).",
+        en: "To browse your albums, Carousel needs access to all your photos (not a selection).")
     static let openSettings = L(fr: "Ouvrir les Réglages", en: "Open Settings")
-    static let photosDenied = L(fr: "Le Galet a besoin d'accéder à vos photos. Activez-le dans Réglages.",
-                                en: "Le Galet needs access to your photos. Turn it on in Settings.")
+    static let photosDenied = L(fr: "Carrousel a besoin d'accéder à vos photos. Activez-le dans Réglages.",
+                                en: "Carousel needs access to your photos. Turn it on in Settings.")
     static let frequencyA11y = L(fr: "Fréquence d'apparition", en: "Appearance frequency")
     static let photoCount = L(fr: "%d photos", en: "%d photos")
     static let onePhoto = L(fr: "1 photo", en: "1 photo")
