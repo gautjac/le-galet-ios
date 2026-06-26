@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 // Le Galet — a candle-lit shelf at dusk. The app is always dark (forced in
 // Info.plist): near-black charcoal washed with warm grey and riverbed taupe,
@@ -53,11 +54,35 @@ enum Accent {
 }
 
 enum Typo {
+    // Two font worlds, on purpose:
+    //   • serif/sans HONOUR the OS Dynamic Type setting — used everywhere the
+    //     household reads and taps up close (onboarding, the composer, settings).
+    //   • fixedSerif/fixedSans IGNORE it — used by the drifting display itself,
+    //     which is read from across a room and already has its own size dial
+    //     (settings.textScale). Letting the phone-sized accessibility setting
+    //     also stretch the far-viewing pebbles would fight that dial, so the
+    //     display opts out and stays under the owner's deliberate control.
+
     // Quotes carry the soul of the display: a humanist serif, large and airy.
     static func serif(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .serif)
+        .system(size: scaled(size), weight: weight, design: .serif)
     }
     static func sans(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+        .system(size: scaled(size), weight: weight, design: .default)
+    }
+
+    // Non-scaling — the display controls its own size via settings.textScale.
+    static func fixedSerif(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
+        .system(size: size, weight: weight, design: .serif)
+    }
+    static func fixedSans(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
         .system(size: size, weight: weight, design: .default)
+    }
+
+    // Scale a point size by the user's Dynamic Type setting, clamped at 1.6× so
+    // the largest accessibility sizes enlarge text meaningfully without bursting
+    // the compact curation layouts (capsule buttons, picker rows, pill labels).
+    private static func scaled(_ size: CGFloat) -> CGFloat {
+        min(UIFontMetrics.default.scaledValue(for: size), size * 1.6)
     }
 }

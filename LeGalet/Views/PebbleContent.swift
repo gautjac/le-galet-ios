@@ -36,7 +36,7 @@ private struct QuotePebble: View {
                 .fixedSize(horizontal: false, vertical: true)
             if !pebble.author.isEmpty {
                 Text(pebble.author.uppercased())
-                    .font(Typo.sans(13 * scale, .light))
+                    .font(Typo.fixedSans(13 * scale, .light))
                     .tracking(3)
                     .foregroundStyle(accent.opacity(0.85))
             }
@@ -66,14 +66,14 @@ private struct ReminderPebble: View {
                 .fill(accent.opacity(0.55))
                 .frame(width: 40, height: 1)
             Text(pebble.text)
-                .font(Typo.sans(34 * scale, .light))
+                .font(Typo.fixedSans(34 * scale, .light))
                 .foregroundStyle(Color.quoteInk)
                 .multilineTextAlignment(.center)
                 .lineSpacing(4 * scale)
                 .fixedSize(horizontal: false, vertical: true)
             if !pebble.subtitle.isEmpty {
                 Text(pebble.subtitle)
-                    .font(Typo.sans(15 * scale, .regular))
+                    .font(Typo.fixedSans(15 * scale, .regular))
                     .tracking(1)
                     .foregroundStyle(Color.mistSoft)
             }
@@ -81,7 +81,7 @@ private struct ReminderPebble: View {
             if !pebble.notes.isEmpty {
                 Rectangle().fill(accent.opacity(0.22)).frame(width: 26, height: 1)
                 Text(pebble.notes)
-                    .font(Typo.sans(16 * scale, .light))
+                    .font(Typo.fixedSans(16 * scale, .light))
                     .foregroundStyle(Color.mist.opacity(0.82))
                     .multilineTextAlignment(.center)
                     .lineSpacing(5 * scale)
@@ -149,7 +149,7 @@ private struct PhotoPebble: View {
                             Spacer()
                             if let caption {
                                 Text(caption)
-                                    .font(Typo.serif(19 * settings.textScale, .light).italic())
+                                    .font(Typo.fixedSerif(19 * settings.textScale, .light).italic())
                                     .foregroundStyle(Color.quoteInk.opacity(0.92))
                                     .multilineTextAlignment(.center)
                                     .padding(.horizontal, 40)
@@ -158,7 +158,7 @@ private struct PhotoPebble: View {
                                 // A quiet photo-credit line: small and gently tracked
                                 // so it sits under the image without competing with it.
                                 Text(meta)
-                                    .font(Typo.sans(12.5, .regular))
+                                    .font(Typo.fixedSans(12.5, .regular))
                                     .tracking(1.5)
                                     .foregroundStyle(Color.mist.opacity(0.7))
                                     .multilineTextAlignment(.center)
