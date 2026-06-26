@@ -13,7 +13,7 @@ settings:
     # Swift 5 language mode — matches the rest of Jac's native stack; avoids
     # strict-concurrency actor churn in a small, single-window display app.
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
     DEVELOPMENT_TEAM: 9WZ66DZ69J
     CODE_SIGN_STYLE: Automatic
@@ -36,6 +36,9 @@ targets:
         CFBundleName: LeGalet
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        # Only standard HTTPS encryption → exempt; declaring this skips the
+        # export-compliance question on every TestFlight/App Store upload.
+        ITSAppUsesNonExemptEncryption: false
         NSHumanReadableCopyright: "© 2026 Jacques Gautreau"
         CFBundleDevelopmentRegion: fr
         CFBundleLocalizations: [fr, en]

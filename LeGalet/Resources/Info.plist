@@ -25,6 +25,8 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>Pour faire dériver doucement vos rendez-vous du jour sur l'écran, comme de petits rappels.</string>
 	<key>NSHumanReadableCopyright</key>
