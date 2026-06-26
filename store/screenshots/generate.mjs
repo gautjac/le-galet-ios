@@ -28,6 +28,7 @@ const C = {
 }
 const SERIF = `ui-serif, "New York", Georgia, serif`
 const SANS = `-apple-system, "SF Pro Text", system-ui, sans-serif`
+const PHOTO = `file://${resolve(HERE, 'assets/photo-lake.png')}` // a real photo for the hero shot
 
 const cal = (col) => `<svg width="78" height="78" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="1.1" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>`
 
@@ -43,7 +44,7 @@ function chrome(eyebrow, headline){
 const scenes = {
   photo: (t) => `
     <div class="canvas photo">
-      <div class="bokeh"></div>
+      <div class="realphoto"></div>
       <div class="botscrim"></div>
       ${chrome(t.eyebrow, t.headline)}
       <div class="pcap">${t.caption}</div>
@@ -142,19 +143,13 @@ function page(inner){
   .glow{background:radial-gradient(120% 90% at 50% 38%, #24201b 0%, ${C.stoneBase} 42%, ${C.stoneDeep} 100%)}
   /* top headline */
   .top{position:absolute;top:0;left:0;right:0;height:520px;z-index:5;text-align:center}
-  .scrim{position:absolute;inset:0;background:linear-gradient(${C.stoneDeep}cc, transparent)}
+  .scrim{position:absolute;inset:0;background:linear-gradient(${C.stoneDeep}f2, ${C.stoneDeep}6e 46%, transparent)}
   .eyebrow{position:relative;margin-top:150px;color:${C.amber};font:600 30px/1 ${SANS};letter-spacing:8px}
   .headline{position:relative;margin-top:34px;color:${C.mist};font:300 92px/1.05 ${SERIF};letter-spacing:.5px}
   /* photo scene */
-  .photo{background:#241c16}
-  .bokeh{position:absolute;inset:0;background:
-     radial-gradient(closest-side at 22% 34%, rgba(255,222,170,.55), transparent 70%),
-     radial-gradient(closest-side at 74% 26%, rgba(228,170,96,.45), transparent 70%),
-     radial-gradient(closest-side at 60% 70%, rgba(255,236,200,.40), transparent 70%),
-     radial-gradient(closest-side at 34% 78%, rgba(180,120,70,.40), transparent 72%),
-     radial-gradient(140% 120% at 50% 40%, #4a3a28 0%, #2a2018 55%, #181109 100%);
-     filter:saturate(1.05)}
-  .botscrim{position:absolute;inset:0;background:linear-gradient(transparent 55%, ${C.stoneDeep}b3 100%)}
+  .photo{background:#181109}
+  .realphoto{position:absolute;inset:0;background:url("${PHOTO}") center 42%/cover no-repeat;filter:saturate(1.03) brightness(.98)}
+  .botscrim{position:absolute;inset:0;background:linear-gradient(transparent 50%, ${C.stoneDeep}cc 100%)}
   .pcap{position:absolute;left:0;right:0;bottom:230px;text-align:center;color:${C.quoteInk}e8;font:300 italic 56px/1 ${SERIF}}
   .clock{position:absolute;left:0;right:0;bottom:120px;text-align:center;color:${C.mist}99;font:200 88px/1 ${SANS};letter-spacing:2px}
   /* quote scene */
