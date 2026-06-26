@@ -129,6 +129,9 @@ final class PhotoLoader: ObservableObject {
         return img
     }
 
+    // PhotoKit has no read-only access level — `.readWrite` is what grants *read*
+    // access to the library (`.addOnly` only permits adding). Le Galet never writes;
+    // the NSPhotoLibraryUsageDescription string covers this view-only use.
     static func requestAccess() async -> PHAuthorizationStatus {
         await withCheckedContinuation { cont in
             PHPhotoLibrary.requestAuthorization(for: .readWrite) { cont.resume(returning: $0) }

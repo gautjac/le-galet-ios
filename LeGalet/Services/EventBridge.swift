@@ -23,6 +23,10 @@ final class EventBridge: ObservableObject {
         }
     }
 
+    deinit {
+        if let changeObserver { NotificationCenter.default.removeObserver(changeObserver) }
+    }
+
     @Published var calendarStatus: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
     @Published var reminderStatus: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .reminder)
 

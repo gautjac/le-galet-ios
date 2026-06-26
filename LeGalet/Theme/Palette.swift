@@ -20,7 +20,7 @@ extension Color {
 
     static let mist = Color(hex: 0xD9D3C8)       // warm grey body text
     static let mistSoft = Color(hex: 0xA8A298)
-    static let mistFaint = Color(hex: 0x7C766D)
+    static let mistFaint = Color(hex: 0x938C81)  // hints/labels — nudged up for legible contrast
     static let quoteInk = Color(hex: 0xECE6DB)   // serif quotes
 
     static let amber = Color(hex: 0xCD9A5C)      // daytime warmth

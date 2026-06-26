@@ -53,18 +53,23 @@ enum Souffleur {
         )
         req.httpBody = try JSONEncoder().encode(body)
 
-        let (data, response) = try await URLSession.shared.data(for: req)
+        // Any network failure (offline, timeout) becomes the friendly message —
+        // never a raw "The request timed out" system string.
+        let data: Data
+        do {
+            (data, _) = try await URLSession.shared.data(for: req)
+        } catch {
+            throw err(lang)
+        }
         let text = String(decoding: data, as: UTF8.self)
         let lines = text.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
-        guard let last = lines.last, let lastData = last.data(using: .utf8) else {
-            throw err(lang)
-        }
-        let env = try JSONDecoder().decode(Envelope.self, from: lastData)
+        guard let last = lines.last, let lastData = last.data(using: .utf8) else { throw err(lang) }
+        // A malformed body (e.g. an HTML 502 from a timed-out function) decodes to
+        // garbage — map that to the friendly message too. Only the server's own
+        // `error` string is surfaced verbatim.
+        guard let env = try? JSONDecoder().decode(Envelope.self, from: lastData) else { throw err(lang) }
         if let e = env.error { throw NSError(domain: "Souffleur", code: 1, userInfo: [NSLocalizedDescriptionKey: e]) }
-        guard let result = env.result else {
-            if let http = response as? HTTPURLResponse, http.statusCode >= 400 { throw err(lang) }
-            throw err(lang)
-        }
+        guard let result = env.result else { throw err(lang) }
         return result
     }
 

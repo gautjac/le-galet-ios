@@ -22,6 +22,7 @@ struct ComposerView: View {
     @State private var showingImporter = false
     @State private var importMessage: String?
     @State private var pickerKind: SourceKind?
+    @State private var photoAccessDenied = false
 
     // Which live source the calendar/list picker is choosing for.
     private enum SourceKind: String, Identifiable {
@@ -82,6 +83,10 @@ struct ComposerView: View {
                presenting: importMessage) { _ in
             Button("OK") { importMessage = nil }
         } message: { Text($0) }
+        .alert(S.photosDenied(lang), isPresented: $photoAccessDenied) {
+            Button(S.openSettings(lang)) { openAppSettings() }
+            Button(S.cancel(lang), role: .cancel) {}
+        }
         // Tell RootView whenever a modal opens or closes so it can pause/resume
         // the idle-return. .task seeds the initial value; onChange tracks it.
         .onChange(of: anyModalOpen) { _, open in modalOpen = open }
@@ -246,8 +251,10 @@ struct ComposerView: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 5, leading: 22, bottom: 5, trailing: 22))
-                    // Swipe LEFT to remove (full swipe), with Hide as a second action.
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    // Swipe LEFT to reveal Remove + Hide. Full-swipe is OFF so the
+                    // trash must be tapped — an accidental drag can't delete a
+                    // hand-typed quote or album with no undo.
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) { delete(item) } label: {
                             Label(S.remove(lang), systemImage: "trash")
                         }
@@ -256,8 +263,8 @@ struct ComposerView: View {
                                   systemImage: item.active ? "eye.slash" : "eye")
                         }.tint(.stoneLine)
                     }
-                    // Swipe RIGHT to remove, too — either direction works.
-                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                    // Swipe RIGHT to reveal Remove too — either direction works.
+                    .swipeActions(edge: .leading, allowsFullSwipe: false) {
                         Button(role: .destructive) { delete(item) } label: {
                             Label(S.remove(lang), systemImage: "trash")
                         }
@@ -282,10 +289,17 @@ struct ComposerView: View {
 
     private func openPhotos() {
         Task {
-            let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-            if status == .notDetermined { _ = await PhotoLoader.requestAccess() }
-            showingPhotoPicker = true
+            var status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+            if status == .notDetermined { status = await PhotoLoader.requestAccess() }
+            // Denied → a dead-end empty picker helps no one; point to Settings.
+            // Limited and authorized both let the picker return photos.
+            if status == .denied || status == .restricted { photoAccessDenied = true }
+            else { showingPhotoPicker = true }
         }
+    }
+
+    private func openAppSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
     }
 
     private func addPhotos(_ ids: [String]) {
@@ -598,6 +612,7 @@ private struct ComposerRow: View {
 private struct WeightDots: View {
     @Bindable var item: GaletItem
     @Environment(\.modelContext) private var context
+    @Environment(\.lang) private var lang
     var body: some View {
         HStack(spacing: 4) {
             ForEach(1...3, id: \.self) { w in
@@ -605,6 +620,17 @@ private struct WeightDots: View {
                     .fill(item.weight >= w ? Color.amber : Color.stoneLine)
                     .frame(width: 7, height: 7)
                     .onTapGesture { item.weight = w; try? context.save() }
+            }
+        }
+        // VoiceOver hears a single adjustable "Frequency, 2 of 3" control.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(S.frequencyA11y(lang))
+        .accessibilityValue("\(item.weight)")
+        .accessibilityAdjustableAction { dir in
+            switch dir {
+            case .increment: if item.weight < 3 { item.weight += 1; try? context.save() }
+            case .decrement: if item.weight > 1 { item.weight -= 1; try? context.save() }
+            @unknown default: break
             }
         }
     }

@@ -38,6 +38,22 @@ enum S {
     static let next = L(fr: "Suivant", en: "Next")
     static let letItDrift = L(fr: "Laisser dériver", en: "Let it drift")
     static let skip = L(fr: "Passer", en: "Skip")
+    // Actionable onboarding
+    static let obPhotosTitle = L(fr: "Vos photos.", en: "Your photos.")
+    static let obPhotosBody = L(fr: "Choisissez quelques photos de famille pour commencer. Vous pourrez ajouter des albums entiers, des citations et plus dans l'atelier.",
+                                en: "Pick a few family photos to begin. You can add whole albums, quotes and more in the workshop later.")
+    static let obAddPhotos = L(fr: "Choisir des photos", en: "Choose photos")
+    static let obPhotosAdded = L(fr: "%d photos prêtes", en: "%d photos ready")
+    static let obOnePhotoAdded = L(fr: "1 photo prête", en: "1 photo ready")
+    static let obDayTitle = L(fr: "Votre journée, en douceur.", en: "Your day, gently.")
+    static let obDayBody = L(fr: "Reliez votre agenda et vos rappels pour les voir dériver au bon moment. C'est optionnel — vous pourrez le faire plus tard.",
+                             en: "Connect your calendar and reminders to see them drift in at the right time. Optional — you can do this later.")
+    static let obDoneTitle = L(fr: "Posez-le, et laissez-le dériver.", en: "Prop it up, and let it drift.")
+    static let obDoneBody = L(fr: "L'écran s'illumine au déjeuner et se tamise le soir. Aucune notification, aucune décision — juste une chose calme à la fois.",
+                              en: "It brightens at breakfast and dims at night. No notifications, no decisions — just one calm thing at a time.")
+    static let obBegin = L(fr: "Commencer", en: "Begin")
+    static let obConnectCalendar = L(fr: "Calendrier", en: "Calendar")
+    static let obConnectReminders = L(fr: "Rappels", en: "Reminders")
 
     // Composer
     static let composerTitle = L(fr: "Composer le galet", en: "Compose the pebble")
@@ -90,6 +106,9 @@ enum S {
         fr: "Pour parcourir vos albums, Le Galet a besoin de l'accès à toutes vos photos (et non à une sélection).",
         en: "To browse your albums, Le Galet needs access to all your photos (not a selection).")
     static let openSettings = L(fr: "Ouvrir les Réglages", en: "Open Settings")
+    static let photosDenied = L(fr: "Le Galet a besoin d'accéder à vos photos. Activez-le dans Réglages.",
+                                en: "Le Galet needs access to your photos. Turn it on in Settings.")
+    static let frequencyA11y = L(fr: "Fréquence d'apparition", en: "Appearance frequency")
     static let photoCount = L(fr: "%d photos", en: "%d photos")
     static let onePhoto = L(fr: "1 photo", en: "1 photo")
     static let noPhotos = L(fr: "Vide", en: "Empty")

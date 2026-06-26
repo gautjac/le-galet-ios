@@ -21,6 +21,7 @@ struct CircleButton: View {
 
 // Back chevron used atop every curation screen.
 struct BackButton: View {
+    @Environment(\.lang) private var lang
     let action: () -> Void
     var body: some View {
         Button(action: action) {
@@ -30,6 +31,7 @@ struct BackButton: View {
                 .frame(width: 42, height: 42)
                 .overlay(Circle().strokeBorder(Color.stoneLine, lineWidth: 1))
         }
+        .accessibilityLabel(S.back(lang))
     }
 }
 

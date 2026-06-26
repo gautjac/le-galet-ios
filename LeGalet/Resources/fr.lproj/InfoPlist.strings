@@ -1,0 +1,3 @@
+"NSPhotoLibraryUsageDescription" = "Pour afficher vos propres photos de famille sur l'écran calme. Vos photos restent dans votre photothèque — seul le lieu enregistré d'une photo peut être converti en nom de ville pour la légende.";
+"NSCalendarsFullAccessUsageDescription" = "Pour faire dériver doucement vos rendez-vous du jour sur l'écran, comme de petits rappels.";
+"NSRemindersFullAccessUsageDescription" = "Pour faire apparaître vos rappels au bon moment sur l'écran. Tout reste sur l'appareil.";

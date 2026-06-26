@@ -33,9 +33,11 @@ struct RootView: View {
             }
 
             if let s = settingsRows.first, !s.onboarded {
-                OnboardingView { s.onboarded = true; try? context.save() }
-                    .environment(\.lang, settings.lang)
-                    .transition(.opacity)
+                OnboardingView(context: context, events: events, settings: s) {
+                    s.onboarded = true; try? context.save()
+                }
+                .environment(\.lang, settings.lang)
+                .transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.6), value: settingsRows.first?.onboarded)
@@ -106,9 +108,15 @@ struct RootView: View {
         }
     }
 
+    // Exactly one settings row should ever exist. Create it if missing, and if a
+    // race ever produced duplicates, keep the first and delete the rest so the app
+    // never drifts onto an orphan copy.
     private func ensureSettings() {
         if settingsRows.isEmpty {
             context.insert(GaletSettings())
+            try? context.save()
+        } else if settingsRows.count > 1 {
+            for extra in settingsRows.dropFirst() { context.delete(extra) }
             try? context.save()
         }
     }
