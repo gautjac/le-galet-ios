@@ -1,0 +1,96 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background: warm charcoal, candle-lit from just above centre -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#24252B"/>
+      <stop offset="0.55" stop-color="#191A1F"/>
+      <stop offset="1" stop-color="#101116"/>
+    </linearGradient>
+    <radialGradient id="hearth" cx="512" cy="470" r="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3A332A" stop-opacity="0.55"/>
+      <stop offset="0.45" stop-color="#241F1B" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#0E0F13" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="512" cy="540" r="640" gradientUnits="userSpaceOnUse">
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
+
+    <!-- The round stage the pebbles ride on -->
+    <radialGradient id="stage" cx="512" cy="520" r="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2B2C32" stop-opacity="0.85"/>
+      <stop offset="0.7" stop-color="#202126" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#15161B" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Pebble surface gradients, lit from upper-left -->
+    <radialGradient id="amber" cx="0.34" cy="0.28" r="0.85">
+      <stop offset="0" stop-color="#F0D6AC"/>
+      <stop offset="0.42" stop-color="#D7A668"/>
+      <stop offset="0.78" stop-color="#B07F44"/>
+      <stop offset="1" stop-color="#5E4427"/>
+    </radialGradient>
+    <radialGradient id="warm" cx="0.34" cy="0.28" r="0.85">
+      <stop offset="0" stop-color="#D7D0C4"/>
+      <stop offset="0.5" stop-color="#A29C92"/>
+      <stop offset="1" stop-color="#48443D"/>
+    </radialGradient>
+    <radialGradient id="cool" cx="0.34" cy="0.28" r="0.85">
+      <stop offset="0" stop-color="#A6A8A6"/>
+      <stop offset="0.5" stop-color="#6F7378"/>
+      <stop offset="1" stop-color="#2A2C30"/>
+    </radialGradient>
+
+    <filter id="soft" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <filter id="glow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur stdDeviation="46"/>
+    </filter>
+  </defs>
+
+  <!-- ground -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <rect width="1024" height="1024" fill="url(#hearth)"/>
+
+  <!-- carousel stage + faint orbit -->
+  <ellipse cx="512" cy="520" rx="322" ry="126" fill="url(#stage)"/>
+  <ellipse cx="512" cy="520" rx="300" ry="112" fill="none" stroke="#9A9488" stroke-opacity="0.12" stroke-width="2"/>
+
+  <!-- ===== pebbles, painted back to front ===== -->
+
+  <!-- back centre (θ=270) -->
+  <g opacity="0.42">
+    <ellipse cx="512" cy="424" rx="70" ry="44" fill="#000" opacity="0.5" filter="url(#soft)"/>
+    <ellipse cx="512" cy="408" rx="70" ry="44" fill="url(#cool)"/>
+  </g>
+  <!-- back left (θ=200) -->
+  <g opacity="0.6">
+    <ellipse cx="230" cy="498" rx="98" ry="62" fill="#000" opacity="0.5" filter="url(#soft)"/>
+    <ellipse cx="230" cy="482" rx="98" ry="62" fill="url(#cool)"/>
+  </g>
+  <!-- back right (θ=340) -->
+  <g opacity="0.6">
+    <ellipse cx="794" cy="498" rx="98" ry="62" fill="#000" opacity="0.5" filter="url(#soft)"/>
+    <ellipse cx="794" cy="482" rx="98" ry="62" fill="url(#cool)"/>
+  </g>
+  <!-- front left (θ=146) -->
+  <g opacity="0.95">
+    <ellipse cx="263" cy="606" rx="136" ry="85" fill="#000" opacity="0.55" filter="url(#soft)"/>
+    <ellipse cx="263" cy="583" rx="136" ry="85" fill="url(#warm)"/>
+  </g>
+  <!-- front right (θ=34) -->
+  <g opacity="0.95">
+    <ellipse cx="761" cy="606" rx="136" ry="85" fill="#000" opacity="0.55" filter="url(#soft)"/>
+    <ellipse cx="761" cy="583" rx="136" ry="85" fill="url(#warm)"/>
+  </g>
+
+  <!-- front centre — the one on stage, lit amber -->
+  <ellipse cx="512" cy="632" rx="240" ry="170" fill="#D79A53" opacity="0.26" filter="url(#glow)"/>
+  <ellipse cx="512" cy="660" rx="158" ry="98" fill="#000" opacity="0.6" filter="url(#soft)"/>
+  <ellipse cx="512" cy="632" rx="158" ry="100" fill="url(#amber)"/>
+  <ellipse cx="455" cy="600" rx="44" ry="26" fill="#FCEBCB" opacity="0.45" filter="url(#soft)"/>
+
+  <!-- settle the whole thing into the dark -->
+  <rect width="1024" height="1024" fill="url(#vignette)"/>
+</svg>
