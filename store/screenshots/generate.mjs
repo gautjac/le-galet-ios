@@ -11,7 +11,10 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-const OUT = resolve(HERE, 'out')
+// CLEAN=1 omits the marketing headline band → pure app screens for the web page,
+// where the landing page's own type carries the message.
+const CLEAN = !!process.env.CLEAN
+const OUT = resolve(HERE, CLEAN ? 'out-clean' : 'out')
 const TMP = resolve(HERE, '.tmp')
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const W = 2752, H = 2064
@@ -34,6 +37,7 @@ const cal = (col) => `<svg width="78" height="78" viewBox="0 0 24 24" fill="none
 
 // ── scene builders: each returns the inner HTML of the full-bleed canvas ─────
 function chrome(eyebrow, headline){
+  if (CLEAN) return ''   // pure app screen — the landing page supplies the copy
   return `<div class="top">
     <div class="scrim"></div>
     <div class="eyebrow">${eyebrow}</div>
@@ -188,7 +192,10 @@ function page(inner){
   .fill.third{width:38%}
   .knob{position:absolute;top:50%;left:62%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:${C.amberSoft};box-shadow:0 6px 16px rgba(0,0,0,.5)}
   .knob.third{left:38%}
-  </style></head><body>${inner}</body></html>`
+  /* clean mode: no headline band, so re-centre the content vertically */
+  .clean .panel{top:50%;transform:translate(-50%,-50%)}
+  .clean .card{margin-top:0}
+  </style></head><body class="${CLEAN?'clean':''}">${inner}</body></html>`
 }
 
 // ── render ───────────────────────────────────────────────────────────────────

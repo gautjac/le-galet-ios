@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrousel — un foyer calme pour l'iPad</title>
+<meta name="description" content="Carrousel transforme un vieil iPad en foyer familial calme : vos photos, citations, rappels et rendez-vous du jour dérivent lentement, un à la fois.">
+<link rel="icon" href="assets/icon-180.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="lang-fr">
+
+<nav class="nav">
+  <a class="brand" href="#top" aria-label="Carrousel">
+    <img src="assets/icon-180.png" alt="">
+    <span class="name"><span class="fr">Carrousel</span><span class="en">Carousel</span></span>
+  </a>
+  <div class="langtoggle" role="group" aria-label="Language / Langue">
+    <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero__stage" aria-hidden="true">
+    <img src="assets/hero-photo.jpg" alt="">
+  </div>
+  <div class="hero__scrim" aria-hidden="true"></div>
+  <div class="wrap hero__inner">
+    <span class="kicker serif">
+      <span class="fr">Pour un vieil iPad qui dort.</span>
+      <span class="en">For an old iPad, gathering dust.</span>
+    </span>
+    <h1><span class="fr">Carrousel</span><span class="en">Carousel</span></h1>
+    <p class="lede">
+      <span class="fr">Un écran calme qui dérive à travers vos photos, vos citations et votre journée — une chose à la fois.</span>
+      <span class="en">A calm display that drifts through your photos, your quotes, and your day — one thing at a time.</span>
+    </p>
+    <div class="hero__cta">
+      <a class="btn" href="#photos">
+        <span class="fr">Découvrir</span><span class="en">Take a look</span>
+      </a>
+      <span class="note"><span class="dot" aria-hidden="true"></span>
+        <span class="fr">En bêta privée sur TestFlight</span>
+        <span class="en">In private beta on TestFlight</span>
+      </span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="manifesto wrap reveal">
+    <p class="serif">
+      <span class="fr">Un vieil iPad devient un&nbsp;foyer. <span class="soft">Pas un écran de plus à consulter.</span></span>
+      <span class="en">An old iPad becomes a&nbsp;hearth. <span class="soft">Not one more screen to check.</span></span>
+    </p>
+    <p class="sub">
+      <span class="fr">Posez-le sur une tablette ou un comptoir. Il s'illumine au déjeuner, se tamise le soir, et fait défiler lentement ce qui compte pour votre maisonnée. Sans notification, sans décision.</span>
+      <span class="en">Prop it on a shelf or a counter. It brightens at breakfast, dims in the evening, and drifts slowly through what matters to your household. No notifications, no decisions.</span>
+    </p>
+  </section>
+
+  <div class="rows wrap">
+
+    <section class="row reveal" id="photos">
+      <div class="row__media"><figure class="shot">
+        <img data-fr="assets/01-photo-fr.jpg" data-en="assets/01-photo-en.jpg" src="assets/01-photo-fr.jpg"
+             data-alt-fr="Une photo de famille au bord d'un lac, avec sa date et son lieu, sur l'écran de Carrousel"
+             data-alt-en="A family lakeside photo with its date and place, on the Carousel display"
+             alt="Une photo de famille au bord d'un lac, avec sa date et son lieu, sur l'écran de Carrousel">
+      </figure></div>
+      <div class="row__body">
+        <h2><span class="fr">Vos photos, montrées en entier.</span><span class="en">Your photos, shown whole.</span></h2>
+        <p><span class="fr">Choisissez des photos une à une, ou des albums entiers. Rien n'est téléversé : vos souvenirs restent dans votre photothèque.</span>
+           <span class="en">Pick photos one at a time, or whole albums. Nothing is uploaded: your memories stay in your library.</span></p>
+        <p><span class="fr">Une légende discrète porte la date et le lieu. Les portraits sont montrés en entier, jamais une tête coupée.</span>
+           <span class="en">A quiet caption carries the date and place. Portraits are shown whole, never a head cropped off.</span></p>
+      </div>
+    </section>
+
+    <section class="row row--flip reveal">
+      <div class="row__media"><figure class="shot">
+        <img data-fr="assets/02-quote-fr.jpg" data-en="assets/02-quote-en.jpg" src="assets/02-quote-fr.jpg"
+             data-alt-fr="Une citation en grands caractères serif sur l'écran calme de Carrousel"
+             data-alt-en="A quote set in large serif type on the calm Carousel display"
+             alt="Une citation en grands caractères serif sur l'écran calme de Carrousel">
+      </figure></div>
+      <div class="row__body">
+        <h2><span class="fr">Des mots à garder.</span><span class="en">Words worth keeping.</span></h2>
+        <p><span class="fr">Ajoutez les lignes que vous aimez (une parole, un proverbe, un vœu), dans l'une de quatre typographies tranquilles.</span>
+           <span class="en">Add the lines you love (a saying, a proverb, a wish), in one of four quiet typefaces.</span></p>
+      </div>
+    </section>
+
+    <section class="row reveal">
+      <div class="row__media"><figure class="shot">
+        <img data-fr="assets/03-event-fr.jpg" data-en="assets/03-event-en.jpg" src="assets/03-event-fr.jpg"
+             data-alt-fr="Une carte de rendez-vous du jour, en teal, sur l'écran de Carrousel"
+             data-alt-en="A teal card showing the day's event on the Carousel display"
+             alt="Une carte de rendez-vous du jour, en teal, sur l'écran de Carrousel">
+      </figure></div>
+      <div class="row__body">
+        <h2><span class="fr">La journée, en douceur.</span><span class="en">The day, gently surfaced.</span></h2>
+        <p><span class="fr">Reliez Calendrier et Rappels. Les rendez-vous et les tâches du jour dérivent au bon moment, sur leur propre carte calme. Anniversaires compris.</span>
+           <span class="en">Connect Calendar and Reminders. The day's events and to-dos drift in at the right time, on their own calm card. Birthdays included.</span></p>
+        <p><span class="fr">Lus en direct, jamais stockés. Vous choisissez quels calendriers et quelles listes alimentent l'écran.</span>
+           <span class="en">Read live, never stored. You choose which calendars and lists feed the display.</span></p>
+      </div>
+    </section>
+
+    <section class="row row--flip reveal">
+      <div class="row__media"><figure class="shot">
+        <img data-fr="assets/04-composer-fr.jpg" data-en="assets/04-composer-en.jpg" src="assets/04-composer-fr.jpg"
+             data-alt-fr="L'atelier de sélection : une liste de photos, citations et sources avec des repères de fréquence"
+             data-alt-en="The curation workshop: a list of photos, quotes and sources with frequency markers"
+             alt="L'atelier de sélection : une liste de photos, citations et sources avec des repères de fréquence">
+      </figure></div>
+      <div class="row__body">
+        <h2><span class="fr">Vous choisissez ce qui dérive.</span><span class="en">You choose what drifts.</span></h2>
+        <p><span class="fr">Un geste pour ajouter, réordonner, retirer. Réglez la fréquence de chaque chose : plus de photos, moins de citations, comme il vous plaît.</span>
+           <span class="en">A gesture to add, reorder, remove. Set how often each thing appears: more photos, fewer quotes, however you like.</span></p>
+      </div>
+    </section>
+
+    <section class="row reveal">
+      <div class="row__media"><figure class="shot">
+        <img data-fr="assets/05-settings-fr.jpg" data-en="assets/05-settings-en.jpg" src="assets/05-settings-fr.jpg"
+             data-alt-fr="Les réglages : la teinte du jour à la nuit, la taille du texte et le rythme"
+             data-alt-en="Settings: the day-to-night hue, text size and pace"
+             alt="Les réglages : la teinte du jour à la nuit, la taille du texte et le rythme">
+      </figure></div>
+      <div class="row__body">
+        <h2><span class="fr">Calme le jour, tamisé la nuit.</span><span class="en">Calm by day, dim by night.</span></h2>
+        <p><span class="fr">Une seule teinte chaude passe de l'ambre à l'ardoise au fil des heures.</span>
+           <span class="en">A single warm hue shifts from amber to slate through the hours.</span></p>
+        <p><span class="fr">Réglez le rythme et la taille du texte pour qu'il se lise d'un bout à l'autre de la pièce, ou tout en intimité.</span>
+           <span class="en">Set the pace and the text size so it reads from across the room, or up close.</span></p>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="band reveal">
+    <div class="wrap">
+      <h2><span class="fr">Tout reste sur votre appareil.</span><span class="en">Everything stays on your device.</span></h2>
+      <p><span class="fr">Aucun compte. Aucune publicité. Aucun pistage. Vos photos, vos événements et vos rappels sont affichés, jamais envoyés ailleurs.</span>
+         <span class="en">No account. No ads. No tracking. Your photos, events, and reminders are shown, never sent anywhere.</span></p>
+      <a class="link" href="privacy.html">
+        <span class="fr">Lire la politique de confidentialité →</span>
+        <span class="en">Read the privacy policy →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="facts wrap reveal">
+    <span class="fact"><svg viewBox="0 0 24 24" stroke-width="1.4"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M10 19h4"/></svg>
+      <span class="fr">Conçu pour l'iPad</span><span class="en">Designed for iPad</span></span>
+    <span class="fact"><svg viewBox="0 0 24 24" stroke-width="1.4"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c3 3 3 16 0 19M12 2.5c-3 3-3 16 0 19"/></svg>
+      <span class="fr">Français et anglais</span><span class="en">French and English</span></span>
+    <span class="fact"><svg viewBox="0 0 24 24" stroke-width="1.4"><path d="M12 2.5l8 3.5v6c0 5-3.5 8-8 9.5-4.5-1.5-8-4.5-8-9.5v-6z"/><path d="M9 12l2 2 4-4.5"/></svg>
+      <span class="fr">Aucune pub, aucun pistage</span><span class="en">No ads, no tracking</span></span>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><span class="fr">Carrousel</span><span class="en">Carousel</span></span>
+    <nav>
+      <a href="privacy.html"><span class="fr">Confidentialité</span><span class="en">Privacy</span></a>
+      <a href="mailto:gautreau.jac@gmail.com"><span class="fr">Assistance</span><span class="en">Support</span></a>
+      <span class="note" style="color:var(--faint)"><span class="fr">Bientôt sur l'App&nbsp;Store</span><span class="en">Coming to the App&nbsp;Store</span></span>
+    </nav>
+    <p class="fineprint">
+      <span class="fr">Conçu au Québec par Jacques Gautreau. © 2026. Tout ce que vous ajoutez reste sur votre appareil.</span>
+      <span class="en">Made in Québec by Jacques Gautreau. © 2026. Everything you add stays on your device.</span>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var TITLES = { fr: "Carrousel — un foyer calme pour l'iPad", en: "Carousel — a calm hearth for your iPad" };
+
+  function setLang(l) {
+    document.body.className = 'lang-' + l;
+    document.documentElement.lang = l;
+    document.title = TITLES[l];
+    try { localStorage.setItem('carousel-lang', l); } catch (e) {}
+    document.querySelectorAll('.langtoggle button').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.lang === l ? 'true' : 'false');
+    });
+    document.querySelectorAll('img[data-fr]').forEach(function (img) {
+      var next = img.dataset[l];
+      if (next && img.getAttribute('src') !== next) img.setAttribute('src', next);
+      var alt = img.dataset[l === 'en' ? 'altEn' : 'altFr'];
+      if (alt) img.alt = alt;
+    });
+  }
+
+  var stored;
+  try { stored = localStorage.getItem('carousel-lang'); } catch (e) {}
+  var initial = stored || ((navigator.language || 'fr').toLowerCase().indexOf('en') === 0 ? 'en' : 'fr');
+  setLang(initial);
+
+  document.querySelectorAll('.langtoggle button').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.dataset.lang); });
+  });
+})();
+</script>
+</body>
+</html>
