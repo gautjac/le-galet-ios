@@ -41,5 +41,5 @@ ajuster ce comportement dans les Réglages.
 ## Confidentialité
 
 Vos photos, événements et rappels restent sur votre appareil. Consultez la
-[politique de confidentialité](https://le-galet.netlify.app/confidentialite)
+[politique de confidentialité](https://carrousel-app.netlify.app/confidentialite)
 complète.

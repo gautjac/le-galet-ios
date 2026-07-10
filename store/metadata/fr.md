@@ -102,12 +102,10 @@ La toute première version de Carrousel. Merci de l'essayer.
 C'est une version bêta — vos commentaires sont les bienvenus.
 ```
 
-## URLs
-- **URL d'assistance** *(obligatoire)* : hébergez `support.fr.md`. Provisoire :
-  `https://le-galet.netlify.app/aide`
-- **URL marketing** *(optionnelle)* : `https://le-galet.netlify.app`
-- **URL de politique de confidentialité** *(obligatoire)* : hébergez
-  `privacy-policy.fr.md`. Provisoire : `https://le-galet.netlify.app/confidentialite`
+## URLs  *(en ligne — déployées sur carrousel-app.netlify.app)*
+- **URL d'assistance** *(obligatoire)* : `https://carrousel-app.netlify.app/aide`
+- **URL marketing** *(optionnelle)* : `https://carrousel-app.netlify.app`
+- **URL de politique de confidentialité** *(obligatoire)* : `https://carrousel-app.netlify.app/confidentialite`
 
 ## Réglages de la fiche (identiques à l'anglais)
 - **Catégorie principale :** Style de vie

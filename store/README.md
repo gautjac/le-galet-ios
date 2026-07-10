@@ -35,18 +35,18 @@ store/
 
 ---
 
-## Step 1 — Host two pages (only thing that needs the open web)
+## Step 1 — Marketing / Support / Privacy pages ✅ DONE
 
-App Store Connect requires a **Support URL** and a **Privacy Policy URL** that
-resolve to real pages. Easiest options:
+The bilingual landing page (`../landing/`) is **live** at
+**https://carrousel-app.netlify.app** (Netlify site `carrousel-app`, team
+"La shop"). The App Store Connect URLs are ready to paste:
 
-- Drop the four markdown files into the existing **le-galet.netlify.app** site
-  (or any GitHub Pages repo), e.g. `/privacy`, `/confidentialite`, `/support`,
-  `/aide`. The placeholder URLs in the metadata already assume these paths —
-  change them if you host elsewhere.
+- **Marketing:** `https://carrousel-app.netlify.app`
+- **Privacy Policy:** `https://carrousel-app.netlify.app/privacy`
+- **Support:** `https://carrousel-app.netlify.app/support`
 
-Then update the URL lines in `metadata/en.md`, `metadata/fr.md`, and
-`testflight.md` to the real addresses.
+To redeploy after editing `../landing/`:
+`netlify deploy --dir ../landing --prod --site carrousel-app`
 
 ## Step 2 — Create the app record in App Store Connect
 

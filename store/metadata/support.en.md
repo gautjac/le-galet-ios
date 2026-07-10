@@ -38,4 +38,4 @@ adjust day/night behavior in Settings.
 ## Privacy
 
 Your photos, events, and reminders stay on your device. See the full
-[Privacy Policy](https://le-galet.netlify.app/privacy).
+[Privacy Policy](https://carrousel-app.netlify.app/privacy).

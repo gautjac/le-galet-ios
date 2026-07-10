@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrousel — Assistance</title>
+<meta name="description" content="Aide et assistance pour Carrousel : vos photos, citations, rappels et rendez-vous du jour, un à la fois.">
+<link rel="icon" href="assets/icon-180.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="lang-fr">
+
+<nav class="nav">
+  <a class="brand" href="index.html" aria-label="Carrousel">
+    <img src="assets/icon-180.png" alt="">
+    <span class="name"><span class="fr">Carrousel</span><span class="en">Carousel</span></span>
+  </a>
+  <div class="langtoggle" role="group" aria-label="Language / Langue">
+    <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+    <button type="button" data-lang="en" aria-pressed="false">EN</button>
+  </div>
+</nav>
+
+<main class="doc">
+  <div class="wrap">
+    <a class="back" href="index.html">
+      <span class="fr">← Retour</span><span class="en">← Back</span>
+    </a>
+
+    <!-- Français -->
+    <div class="fr">
+      <h1>Assistance</h1>
+      <p class="updated">Carrousel transforme un vieil iPad en foyer familial calme.</p>
+
+      <p>Une question, un bogue ou une idée ? Écrivez à
+        <a class="inline" href="mailto:gautreau.jac@gmail.com">gautreau.jac@gmail.com</a>
+        et je vous répondrai.</p>
+
+      <h2>Aide rapide</h2>
+
+      <p><strong>Rien ne s'affiche / l'écran semble vide.</strong> Ouvrez le guide de
+      démarrage, ou touchez l'écran et utilisez le crayon (Composer) pour ajouter quelques
+      photos ou citations. Pour afficher les événements du jour, touchez l'engrenage
+      (Réglages) et activez Calendrier ou Rappels.</p>
+
+      <p><strong>Mes photos n'apparaissent pas.</strong> Carrousel a besoin d'accéder à
+      votre photothèque. Ouvrez Réglages iOS → Carrousel → Photos et autorisez l'accès. Si
+      vous n'avez autorisé que quelques photos, choisissez « Toutes les photos » pour
+      parcourir les albums.</p>
+
+      <p><strong>Les rendez-vous ou les rappels ne s'affichent pas.</strong> Touchez
+      l'engrenage et assurez-vous que Calendrier et Rappels sont activés, et que les bons
+      calendriers et listes sont sélectionnés. L'écran montre les événements des prochains
+      jours et les rappels bientôt dus.</p>
+
+      <p><strong>Une photo en portrait a une tête coupée.</strong> Par défaut, Carrousel
+      montre la photo entière sur un fond doux et flou, sans jamais recadrer. Si vous avez
+      activé le « recadrage intelligent », désactivez-le dans les Réglages pour toujours
+      voir la photo entière.</p>
+
+      <p><strong>L'écran se tamise le soir.</strong> C'est voulu : Carrousel s'illumine le
+      jour et se tamise le soir. Vous pouvez ajuster ce comportement dans les Réglages.</p>
+
+      <h2>Confidentialité</h2>
+      <p>Vos photos, événements et rappels restent sur votre appareil. Consultez la
+        <a class="inline" href="privacy.html">politique de confidentialité</a>.</p>
+    </div>
+
+    <!-- English -->
+    <div class="en">
+      <h1>Support</h1>
+      <p class="updated">Carousel turns an old iPad into a calm family hearth.</p>
+
+      <p>Questions, bugs, or ideas? Email
+        <a class="inline" href="mailto:gautreau.jac@gmail.com">gautreau.jac@gmail.com</a>
+        and I'll get back to you.</p>
+
+      <h2>Quick help</h2>
+
+      <p><strong>Nothing shows up / it looks empty.</strong> Open the first-run guide, or
+      tap the screen and use the pencil (Compose) to add a few photos or quotes. To show the
+      day's events, tap the gear (Settings) and turn on Calendar and/or Reminders.</p>
+
+      <p><strong>My photos aren't appearing.</strong> Carousel needs access to your photo
+      library. Open iOS Settings → Carousel → Photos and allow access. If you granted access
+      to only a few photos, choose "All Photos" to browse albums.</p>
+
+      <p><strong>Calendar events or reminders aren't showing.</strong> Tap the gear and make
+      sure Calendar and Reminders are on, and that the right calendars and lists are
+      selected. The display shows events from the next few days and reminders due soon.</p>
+
+      <p><strong>A portrait photo has a head cut off.</strong> By default Carousel shows the
+      whole photo on a soft blurred background and never crops. If you turned on "smart crop,"
+      turn it off in Settings to always show the whole photo.</p>
+
+      <p><strong>It dims at night.</strong> That's intentional: Carousel brightens by day and
+      dims in the evening. You can adjust this in Settings.</p>
+
+      <h2>Privacy</h2>
+      <p>Your photos, events, and reminders stay on your device. See the
+        <a class="inline" href="privacy.html">privacy policy</a>.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><span class="fr">Carrousel</span><span class="en">Carousel</span></span>
+    <nav>
+      <a href="index.html"><span class="fr">Accueil</span><span class="en">Home</span></a>
+      <a href="privacy.html"><span class="fr">Confidentialité</span><span class="en">Privacy</span></a>
+    </nav>
+    <p class="fineprint">
+      <span class="fr">Conçu au Québec par Jacques Gautreau. © 2026.</span>
+      <span class="en">Made in Québec by Jacques Gautreau. © 2026.</span>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var TITLES = { fr: "Carrousel — Assistance", en: "Carousel — Support" };
+  function setLang(l) {
+    document.body.className = 'lang-' + l;
+    document.documentElement.lang = l;
+    document.title = TITLES[l];
+    try { localStorage.setItem('carousel-lang', l); } catch (e) {}
+    document.querySelectorAll('.langtoggle button').forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.lang === l ? 'true' : 'false');
+    });
+  }
+  var stored;
+  try { stored = localStorage.getItem('carousel-lang'); } catch (e) {}
+  setLang(stored || ((navigator.language || 'fr').toLowerCase().indexOf('en') === 0 ? 'en' : 'fr'));
+  document.querySelectorAll('.langtoggle button').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.dataset.lang); });
+  });
+})();
+</script>
+</body>
+</html>

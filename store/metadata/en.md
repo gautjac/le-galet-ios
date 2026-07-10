@@ -94,13 +94,10 @@ The first release of Carousel. Thank you for trying it.
 This is an early beta — your feedback is very welcome.
 ```
 
-## URLs
-- **Support URL** *(required)*: host `support.en.md` (e.g. as a page on
-  le-galet.netlify.app/support or a GitHub Pages site). Placeholder:
-  `https://le-galet.netlify.app/support`
-- **Marketing URL** *(optional)*: `https://le-galet.netlify.app`
-- **Privacy Policy URL** *(required)*: host `privacy-policy.en.md`. Placeholder:
-  `https://le-galet.netlify.app/privacy`
+## URLs  *(all live now — deployed at carrousel-app.netlify.app)*
+- **Support URL** *(required)*: `https://carrousel-app.netlify.app/support`
+- **Marketing URL** *(optional)*: `https://carrousel-app.netlify.app`
+- **Privacy Policy URL** *(required)*: `https://carrousel-app.netlify.app/privacy`
 
 ## Listing settings (same across languages)
 - **Primary category:** Lifestyle

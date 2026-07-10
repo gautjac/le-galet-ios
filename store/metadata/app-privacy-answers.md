@@ -32,5 +32,5 @@ choice given nothing is stored or identity-linked. The Privacy Policy (below)
 describes both the geocoding and the Souffleur transparently regardless.
 
 ## Privacy Policy URL
-Required. Host `privacy-policy.en.md` (and the FR version) and paste the URL
-into both App Privacy and each localization's metadata.
+Required, and **live**: `https://carrousel-app.netlify.app/privacy` (bilingual).
+Paste it into both App Privacy and each localization's metadata.

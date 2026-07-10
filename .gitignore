@@ -5,3 +5,6 @@ DerivedData/
 xcuserdata/
 *.xcscmblueprint
 .swiftpm/
+
+# Local Netlify folder
+.netlify

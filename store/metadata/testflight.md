@@ -57,8 +57,8 @@ gautreau.jac@gmail.com
 
 ### Marketing URL (optional) / Privacy Policy URL (required for external)
 ```
-Marketing: https://le-galet.netlify.app
-Privacy:   https://le-galet.netlify.app/privacy   (host privacy-policy.en.md / .fr.md first)
+Marketing: https://carrousel-app.netlify.app
+Privacy:   https://carrousel-app.netlify.app/privacy
 ```
 
 ---
