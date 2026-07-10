@@ -23,19 +23,16 @@
 </nav>
 
 <header class="hero" id="top">
-  <div class="hero__stage" aria-hidden="true">
-    <img src="assets/hero-photo.jpg" alt="">
-  </div>
-  <div class="hero__scrim" aria-hidden="true"></div>
+  <div class="hero__glow" aria-hidden="true"></div>
   <div class="wrap hero__inner">
     <span class="kicker serif">
-      <span class="fr">Pour un vieil iPad qui dort.</span>
-      <span class="en">For an old iPad, gathering dust.</span>
+      <span class="fr">Laissez votre iPad vous accompagnez toute la journée</span>
+      <span class="en">Make your iPad a part of your day</span>
     </span>
     <h1><span class="fr">Carrousel</span><span class="en">Carousel</span></h1>
     <p class="lede">
-      <span class="fr">Un écran calme qui dérive à travers vos photos, vos citations et votre journée — une chose à la fois.</span>
-      <span class="en">A calm display that drifts through your photos, your quotes, and your day — one thing at a time.</span>
+      <span class="fr">Vos photos et votre journée, qui défilent calmement</span>
+      <span class="en">Your photos and your day, one calm thing at a time.</span>
     </p>
     <div class="hero__cta">
       <a class="btn" href="#photos">
@@ -45,6 +42,61 @@
         <span class="fr">En bêta privée sur TestFlight</span>
         <span class="en">In private beta on TestFlight</span>
       </span>
+    </div>
+  </div>
+
+  <!-- the real app, drifting through its pebbles inside an iPad -->
+  <div class="hero__device">
+    <div class="galet-stage">
+      <div class="ipad">
+        <span class="ipad__cam" aria-hidden="true"></span>
+        <div class="ipad__screen">
+          <div class="pebble is-on">
+            <img data-fr="assets/01-photo-fr.jpg" data-en="assets/01-photo-en.jpg" src="assets/01-photo-fr.jpg"
+                 data-alt-fr="Une photo de famille au bord d'un lac dérive sur l'écran de Carrousel"
+                 data-alt-en="A family lakeside photo drifting on the Carousel display"
+                 alt="Une photo de famille au bord d'un lac dérive sur l'écran de Carrousel">
+          </div>
+          <div class="pebble">
+            <img data-fr="assets/06-ski-fr.jpg" data-en="assets/06-ski-en.jpg" src="assets/06-ski-fr.jpg"
+                 data-alt-fr="Une famille à ski au sommet d'une piste enneigée, sur l'écran de Carrousel"
+                 data-alt-en="A family on skis at the top of a snowy run, on the Carousel display"
+                 alt="Une famille à ski au sommet d'une piste enneigée, sur l'écran de Carrousel">
+          </div>
+          <div class="pebble">
+            <img data-fr="assets/02-quote-fr.jpg" data-en="assets/02-quote-en.jpg" src="assets/02-quote-fr.jpg"
+                 data-alt-fr="Une citation en grands caractères serif sur l'écran de Carrousel"
+                 data-alt-en="A quote in large serif type on the Carousel display"
+                 alt="Une citation en grands caractères serif sur l'écran de Carrousel">
+          </div>
+          <div class="pebble">
+            <img data-fr="assets/07-beach-fr.jpg" data-en="assets/07-beach-en.jpg" src="assets/07-beach-fr.jpg"
+                 data-alt-fr="Une famille marchant sur la plage au soleil couchant, sur l'écran de Carrousel"
+                 data-alt-en="A family walking a beach at golden hour, on the Carousel display"
+                 alt="Une famille marchant sur la plage au soleil couchant, sur l'écran de Carrousel">
+          </div>
+          <div class="pebble">
+            <img data-fr="assets/03-event-fr.jpg" data-en="assets/03-event-en.jpg" src="assets/03-event-fr.jpg"
+                 data-alt-fr="Le rendez-vous du jour, sur sa propre carte, sur l'écran de Carrousel"
+                 data-alt-en="The day's event on its own card, on the Carousel display"
+                 alt="Le rendez-vous du jour, sur sa propre carte, sur l'écran de Carrousel">
+          </div>
+          <div class="pebble">
+            <img data-fr="assets/08-birthday-fr.jpg" data-en="assets/08-birthday-en.jpg" src="assets/08-birthday-fr.jpg"
+                 data-alt-fr="Un gâteau d'anniversaire maison aux bougies allumées, sur l'écran de Carrousel"
+                 data-alt-en="A homemade birthday cake with lit candles, on the Carousel display"
+                 alt="Un gâteau d'anniversaire maison aux bougies allumées, sur l'écran de Carrousel">
+          </div>
+          <div class="pebble">
+            <img data-fr="assets/09-reminder-fr.jpg" data-en="assets/09-reminder-en.jpg" src="assets/09-reminder-fr.jpg"
+                 data-alt-fr="Un rappel — passer chercher le nettoyage à sec, sur l'écran de Carrousel"
+                 data-alt-en="A reminder to pick up the dry cleaning, on the Carousel display"
+                 alt="Un rappel — passer chercher le nettoyage à sec, sur l'écran de Carrousel">
+          </div>
+          <div class="ipad__glass" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="galet-dots" aria-hidden="true"><b class="is-on"></b><b></b><b></b><b></b><b></b><b></b><b></b></div>
     </div>
   </div>
 </header>
@@ -174,8 +226,8 @@
       <span class="note" style="color:var(--faint)"><span class="fr">Bientôt sur l'App&nbsp;Store</span><span class="en">Coming to the App&nbsp;Store</span></span>
     </nav>
     <p class="fineprint">
-      <span class="fr">Conçu au Québec par Jacques Gautreau. © 2026. Tout ce que vous ajoutez reste sur votre appareil.</span>
-      <span class="en">Made in Québec by Jacques Gautreau. © 2026. Everything you add stays on your device.</span>
+      <span class="fr">Conçu au Canada par Jac Gautreau. © 2026. Tout ce que vous ajoutez reste sur votre appareil.</span>
+      <span class="en">Made in Canada by Jac Gautreau. © 2026. Everything you add stays on your device.</span>
     </p>
   </div>
 </footer>
@@ -208,6 +260,19 @@
   document.querySelectorAll('.langtoggle button').forEach(function (b) {
     b.addEventListener('click', function () { setLang(b.dataset.lang); });
   });
+
+  /* the drift: cross-fade the hero iPad through its pebbles, dwell then dissolve */
+  var pebbles = Array.prototype.slice.call(document.querySelectorAll('.hero .pebble'));
+  var dots    = Array.prototype.slice.call(document.querySelectorAll('.hero .galet-dots b'));
+  if (pebbles.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var DWELL = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--dwell')) || 5200;
+    var i = 0;
+    setInterval(function () {
+      i = (i + 1) % pebbles.length;
+      pebbles.forEach(function (p, k) { p.classList.toggle('is-on', k === i); });
+      dots.forEach(function (d, k) { d.classList.toggle('is-on', k === i); });
+    }, DWELL);
+  }
 })();
 </script>
 </body>

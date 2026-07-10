@@ -8,3 +8,6 @@ xcuserdata/
 
 # Local Netlify folder
 .netlify
+
+# Local ship/build artifacts (never commit — see vault sync hygiene)
+dist/

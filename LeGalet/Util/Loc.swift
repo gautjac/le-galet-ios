@@ -16,7 +16,6 @@ enum S {
     // Chrome / nav
     static let compose = L(fr: "Composer", en: "Compose")
     static let settings = L(fr: "Réglages", en: "Settings")
-    static let souffleur = L(fr: "Souffleur", en: "Souffleur")
     static let back = L(fr: "Retour", en: "Back")
     static let tapToCurate = L(fr: "Toucher pour composer", en: "Tap to compose")
 
@@ -74,7 +73,6 @@ enum S {
     static let hide = L(fr: "Masquer", en: "Hide")
     static let show = L(fr: "Afficher", en: "Show")
     static let edit = L(fr: "Modifier", en: "Edit")
-    static let bySouffleur = L(fr: "soufflé", en: "by souffleur")
     static let live = L(fr: "en direct", en: "live")
     static let liveSources = L(fr: "Sources vivantes", en: "Live sources")
     static let calendarToggle = L(fr: "Faire dériver les rendez-vous du jour", en: "Drift in the day's events")
@@ -162,29 +160,9 @@ enum S {
     static let smartCropHelp = L(
         fr: "En mode paysage, recadre intelligemment une photo portrait pour remplir l'écran — le sujet (visage, animal) reste au centre — au lieu d'afficher des bandes floues. Et l'inverse en mode portrait.",
         en: "In landscape, intelligently crops a portrait photo to fill the screen — keeping the subject (a face, a pet) centred — instead of showing blurred bars. And the reverse in portrait.")
-    static let household = L(fr: "Le foyer", en: "Household")
-    static let toneLabel = L(fr: "L'air de la maison", en: "The mood of the home")
-    static let tonePlaceholder = L(fr: "p. ex. une famille calme, deux enfants, on aime les mots doux et la mer…",
-                                   en: "e.g. a calm family, two kids, fond of gentle words and the sea…")
-    static let toneHelp = L(fr: "Le Souffleur s'en sert pour proposer des mots qui vous ressemblent.",
-                            en: "The Souffleur uses this to suggest words that feel like you.")
     static let language = L(fr: "Langue", en: "Language")
     static let staysAwake = L(fr: "L'écran reste allumé pendant que le galet dérive.",
                               en: "The screen stays awake while the pebble drifts.")
-
-    // Souffleur
-    static let souffleurSub = L(fr: "Une voix discrète qui souffle un mot de saison et quelques citations qui résonnent avec le jour. Vous choisissez ce qui reste.",
-                                en: "A quiet voice offering a seasonal greeting and a few quotes that resonate with the day. You choose what stays.")
-    static let conjure = L(fr: "Souffler des idées", en: "Offer suggestions")
-    static let conjuring = L(fr: "Le souffleur réfléchit…", en: "The souffleur is thinking…")
-    static let again = L(fr: "Encore", en: "Again")
-    static let greetings = L(fr: "Salutations de saison", en: "Seasonal greetings")
-    static let quotes = L(fr: "Citations qui résonnent", en: "Resonant quotes")
-    static let add = L(fr: "Ajouter", en: "Add")
-    static let added = L(fr: "Ajouté", en: "Added")
-    static let suggestedWindow = L(fr: "fenêtre suggérée", en: "suggested window")
-    static let souffleurError = L(fr: "Le souffleur s'est tu un instant. Réessayez.",
-                                  en: "The souffleur went quiet for a moment. Try again.")
 
     static let today = L(fr: "Aujourd'hui", en: "Today")
     static let tomorrow = L(fr: "Demain", en: "Tomorrow")

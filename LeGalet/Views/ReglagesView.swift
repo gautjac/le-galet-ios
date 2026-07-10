@@ -20,7 +20,6 @@ struct ReglagesView: View {
                         typeface
                         dayNight
                         texture
-                        household
                         language
                         footnote
                     }
@@ -132,21 +131,6 @@ struct ReglagesView: View {
                     Text(S.photoMetaHelp(lang))
                         .font(Typo.sans(12)).foregroundStyle(Color.mistFaint).lineSpacing(2)
                 }
-            }
-        }
-    }
-
-    private var household: some View {
-        section(S.household(lang)) {
-            GaletCard {
-                Text(S.toneLabel(lang)).font(Typo.sans(14)).foregroundStyle(Color.mistSoft)
-                TextField(S.tonePlaceholder(lang), text: $settings.tone, axis: .vertical)
-                    .font(Typo.sans(15)).foregroundStyle(Color.mist)
-                    .lineLimit(2...4)
-                    .padding(12)
-                    .background(Color.stoneBase, in: RoundedRectangle(cornerRadius: 12))
-                    .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.stoneLine, lineWidth: 1))
-                Text(S.toneHelp(lang)).font(Typo.sans(12)).foregroundStyle(Color.mistFaint).lineSpacing(2)
             }
         }
     }

@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-enum Screen { case galet, composer, settings, souffleur }
+enum Screen { case galet, composer, settings }
 
 struct RootView: View {
     @Environment(\.modelContext) private var context
@@ -94,8 +94,7 @@ struct RootView: View {
                                          useReminders: settings.useReminders),
                 albumPhotos: albums.pebbles,
                 onCompose: { screen = .composer },
-                onSettings: { screen = .settings },
-                onSouffleur: { screen = .souffleur }
+                onSettings: { screen = .settings }
             )
             .task { await events.refresh() }
         case .composer:
@@ -103,8 +102,6 @@ struct RootView: View {
                          modalOpen: $composerModalOpen) { screen = .galet }
         case .settings:
             ReglagesView(settings: settings, events: events) { screen = .galet }
-        case .souffleur:
-            SouffleurView(items: items, settings: settings) { screen = .galet }
         }
     }
 

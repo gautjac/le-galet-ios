@@ -17,19 +17,13 @@ reasoning per data path so you're comfortable defending it:
 | **Photos** | Stay on device. Only a `localIdentifier` reference is stored locally; image bytes are never uploaded. | Nothing leaves the device. |
 | **Calendar & Reminders** | Read live, shown, never stored or transmitted. | Nothing leaves the device. |
 | **Photo location → city name** | A photo's saved coordinate is sent to **Apple's** system geocoder to get a city name for the caption. | A system/OS service, not data you collect; result isn't stored or linked. |
-| **Souffleur (optional)** | Season, date, a short tone description you type, and existing quote text are sent to your own server (→ Anthropic) only when you invoke it. | Ephemeral: used solely to generate the suggestion, not stored, not linked to identity, not used for tracking. Qualifies for Apple's optional-disclosure exception. |
 
-### If you'd rather be maximally conservative
-If you prefer to disclose the Souffleur path instead of relying on the
-ephemeral-data exception, declare exactly one item:
-- **Data type:** *User Content* (the tone text / quotes you type)
-- **Used for:** *App Functionality* only
-- **Linked to identity:** **No**
-- **Used for tracking:** **No**
-
-Either answer is defensible. "Data Not Collected" is the simplest accurate
-choice given nothing is stored or identity-linked. The Privacy Policy (below)
-describes both the geocoding and the Souffleur transparently regardless.
+The app sends **nothing you add** off the device: no accounts, no analytics, no
+third-party SDKs, and no calls to any server of ours. The only network activity
+is downloading a small curated quotes feed (a public read; no personal data is
+transmitted). **"Data Not Collected"** is the simplest accurate choice — nothing
+is stored or identity-linked. The Privacy Policy (below) describes the on-device
+geocoding transparently regardless.
 
 ## Privacy Policy URL
 Required, and **live**: `https://carrousel-app.netlify.app/privacy` (bilingual).

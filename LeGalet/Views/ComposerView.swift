@@ -536,9 +536,6 @@ private struct ComposerRow: View {
                 HStack(spacing: 6) {
                     Text(tag.uppercased()).font(Typo.sans(10, .medium)).tracking(1.4)
                         .foregroundStyle(Color.mistFaint)
-                    if item.isSouffleur {
-                        Text("· \(S.bySouffleur(lang))").font(Typo.sans(10)).foregroundStyle(Color.amber.opacity(0.7))
-                    }
                 }
             }
             Spacer()

@@ -12,9 +12,9 @@ l'app fait, et ne fait pas, avec vos données.
   publicité et aucun pistage.** Il n'utilise aucun SDK tiers.
 - Vos **photos, vos événements et vos rappels restent sur votre appareil.** Ils
   sont affichés, jamais téléversés ni stockés par nous.
-- Deux exceptions étroites et optionnelles envoient une petite quantité de
-  données hors de l'appareil, décrites ci-dessous. Aucune n'est liée à votre
-  identité.
+- Rien de ce que vous ajoutez ne nous est jamais envoyé. Une seule exception
+  étroite et optionnelle utilise un service système d'Apple, décrite ci-dessous,
+  et n'est pas liée à votre identité.
 
 ## Ce qui reste sur votre appareil
 
@@ -27,24 +27,15 @@ l'app fait, et ne fait pas, avec vos données.
   affichés en direct et ne sont **jamais stockés ni transmis.**
 - Tous les réglages et la sélection restent dans le stockage local de l'appareil.
 
-## Les deux exceptions optionnelles
+## La seule exception optionnelle
 
-1. **Légendes de photos (noms de lieux).** Si vous activez les légendes et qu'une
-   photo possède un lieu enregistré, Carrousel demande au service de
-   géocodage **d'Apple** de transformer cette coordonnée en nom de ville (p. ex.
-   « Montréal »). Ceci utilise le service d'Apple, selon les conditions de
-   confidentialité d'Apple ; le résultat est affiché comme légende, n'est pas
-   stocké par nous et n'est pas lié à vous. Aucune autorisation de localisation
-   n'est requise.
-
-2. **Le Souffleur (aide optionnelle).** Si vous choisissez d'utiliser le
-   Souffleur optionnel, l'app envoie la saison en cours, la date, une courte
-   description du ton souhaité et le texte des citations déjà dans votre rotation
-   au serveur du développeur à `le-galet.netlify.app`, qui utilise l'API
-   d'Anthropic pour générer des suggestions. Cela se produit **uniquement quand
-   vous le demandez**, sert seulement à produire la suggestion, n'est **pas
-   stocké** et n'est **pas lié à votre identité.** Si vous n'utilisez jamais le
-   Souffleur, rien n'est jamais envoyé.
+**Légendes de photos (noms de lieux).** Si vous activez les légendes et qu'une
+photo possède un lieu enregistré, Carrousel demande au service de
+géocodage **d'Apple** de transformer cette coordonnée en nom de ville (p. ex.
+« Montréal »). Ceci utilise le service d'Apple, selon les conditions de
+confidentialité d'Apple ; le résultat est affiché comme légende, n'est pas
+stocké par nous et n'est pas lié à vous. Aucune autorisation de localisation
+n'est requise.
 
 ## Enfants
 
@@ -59,4 +50,4 @@ en conséquence.
 
 ## Contact
 
-Des questions ? Écrivez à **gautreau.jac@gmail.com**.
+Des questions ? Écrivez à **jac@jacgautreau.com**.

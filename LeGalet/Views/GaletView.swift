@@ -12,7 +12,6 @@ struct GaletView: View {
     var albumPhotos: [Pebble] = []
     let onCompose: () -> Void
     let onSettings: () -> Void
-    let onSouffleur: () -> Void
 
     @Environment(\.lang) private var lang
 
@@ -117,7 +116,6 @@ struct GaletView: View {
                 Spacer()
                 if chromeVisible {
                     HStack(spacing: 10) {
-                        CircleButton(symbol: "sparkles", label: S.souffleur(lang), action: onSouffleur)
                         CircleButton(symbol: "pencil", label: S.compose(lang), action: onCompose)
                         CircleButton(symbol: "gearshape", label: S.settings(lang), action: onSettings)
                     }

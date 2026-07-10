@@ -73,12 +73,8 @@ CALM BY DESIGN
 • Respects Reduce Motion and Dynamic Type.
 • Bilingual: French (Québécois) and English throughout.
 
-OPTIONAL GENTLE HOST
-Carousel includes an optional helper that can suggest seasonal cards and
-resonant quotes to add to the rotation. It's entirely optional and off until
-you ask for it.
-
-Designed for iPad. Everything you add stays on your device.
+Designed for iPad. Everything you add stays on your device — no accounts, no
+tracking, nothing sent to a server.
 ```
 
 ## What's New in This Version  *(max 4000 — release notes)*

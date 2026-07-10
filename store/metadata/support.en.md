@@ -6,7 +6,7 @@ at a time.
 
 ## Contact
 
-Questions, bugs, or ideas? Email **gautreau.jac@gmail.com** and I'll get back to
+Questions, bugs, or ideas? Email **jac@jacgautreau.com** and I'll get back to
 you.
 
 ## Quick help

@@ -1,8 +1,9 @@
 import Foundation
 import SwiftData
 
-// One curated pebble the household composed by hand (or kept from the Souffleur):
-// a photo (referenced by its Photos localIdentifier — bytes stay in the library),
+// One curated pebble the household composed by hand (or imported from the margin
+// quotes feed): a photo (referenced by its Photos localIdentifier — bytes stay in
+// the library),
 // a quote, or a manual time-aware reminder. Live Calendar/Reminders pebbles are
 // NOT stored here — they're merged in at playlist time from EventKit.
 @Model
@@ -18,7 +19,7 @@ final class GaletItem {
     var endAt: Date?
     var recurrenceRaw: String = "once" // "once" | "daily" | "weekly" | "yearly"
     var active: Bool = true
-    var sourceRaw: String = "hand"  // "hand" | "souffleur"
+    var sourceRaw: String = "hand"  // "hand" | "margin"
     var createdAt: Date = Date()
 
     init(typeRaw: String, text: String = "", author: String = "", photoLocalId: String = "",
@@ -41,7 +42,6 @@ final class GaletItem {
 
     var kind: PebbleKind { PebbleKind(rawValue: typeRaw) ?? .quote }
     var recurrence: Recurrence { Recurrence(rawValue: recurrenceRaw) ?? .once }
-    var isSouffleur: Bool { sourceRaw == "souffleur" }
 }
 
 enum Recurrence: String, CaseIterable { case once, daily, weekly, yearly }

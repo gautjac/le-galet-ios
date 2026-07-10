@@ -12,8 +12,8 @@ with your data.
   tracking.** It uses no third-party SDKs.
 - Your **photos, calendar events, and reminders stay on your device.** They are
   displayed, never uploaded or stored by us.
-- Two narrow, optional exceptions send a small amount of data off the device,
-  described below. Neither is tied to your identity.
+- Nothing you add is ever sent to us. One narrow, optional exception uses an
+  Apple system service, described below, and is not tied to your identity.
 
 ## What stays on your device
 
@@ -26,21 +26,13 @@ with your data.
   **never stored or transmitted.**
 - All settings and curation live in local storage on the device.
 
-## The two optional exceptions
+## The one optional exception
 
-1. **Photo captions (place names).** If you enable photo captions, and a photo
-   has a saved location, Carousel asks **Apple's** system geocoding service to
-   turn that coordinate into a city name (e.g. "Montréal"). This uses Apple's
-   service under Apple's privacy terms; the result is shown as a caption and is
-   not stored by us or linked to you. This needs no location permission.
-
-2. **The Souffleur (optional helper).** If you choose to use the optional
-   Souffleur, the app sends the current season, the date, a short description of
-   the tone you want, and the text of quotes already in your rotation to the
-   developer's server at `le-galet.netlify.app`, which uses Anthropic's API to
-   generate suggestions. This happens **only when you invoke it**, is used solely
-   to produce the suggestion, is **not stored**, and is **not linked to your
-   identity.** If you never use the Souffleur, nothing is ever sent.
+**Photo captions (place names).** If you enable photo captions, and a photo
+has a saved location, Carousel asks **Apple's** system geocoding service to
+turn that coordinate into a city name (e.g. "Montréal"). This uses Apple's
+service under Apple's privacy terms; the result is shown as a caption and is
+not stored by us or linked to you. This needs no location permission.
 
 ## Children
 
@@ -53,4 +45,4 @@ If this policy changes, the "Last updated" date above will change with it.
 
 ## Contact
 
-Questions? Email **gautreau.jac@gmail.com**.
+Questions? Email **jac@jacgautreau.com**.

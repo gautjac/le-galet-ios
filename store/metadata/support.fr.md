@@ -6,7 +6,7 @@ fois.
 
 ## Contact
 
-Questions, bogues ou idées ? Écrivez à **gautreau.jac@gmail.com** et je vous
+Questions, bogues ou idées ? Écrivez à **jac@jacgautreau.com** et je vous
 répondrai.
 
 ## Aide rapide

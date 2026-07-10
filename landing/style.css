@@ -23,6 +23,8 @@
   --z-nav: 100;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1); /* ease-out-quint-ish */
+  --dwell: 5200ms;   /* pebble dwell before it dissolves */
+  --fade: 1500ms;    /* cross-fade duration */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -86,26 +88,56 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .langtoggle button[aria-pressed="true"]:hover { color: var(--bg); }
 
 /* ── hero ─────────────────────────────────────────────────────────────────── */
-.hero { position: relative; min-height: 100svh; display: grid; align-items: center;
+.hero { position: relative; min-height: 100svh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: clamp(1.4rem, 3.5vh, 2.6rem);
+  padding-block: clamp(3.5rem, 8vh, 6rem) clamp(2.2rem, 5vh, 4rem);
   overflow: hidden; isolation: isolate; }
-.hero__stage { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
-.hero__stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-  transform: scale(1.06); transform-origin: 54% 46%;
-  animation: kenburns 30s ease-in-out infinite alternate; }
-@keyframes kenburns { from { transform: scale(1.05); } to { transform: scale(1.15) translate3d(-1.5%, -2%, 0); } }
-.hero__scrim { position: absolute; inset: 0; z-index: -1;
+.hero__glow { position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(15,16,20,0.72) 0%, rgba(15,16,20,0.30) 34%, rgba(15,16,20,0.55) 72%, rgba(15,16,20,0.94) 100%),
-    radial-gradient(90% 70% at 50% 44%, transparent 40%, rgba(15,16,20,0.5) 100%); }
-.hero__inner { padding-block: 12vh 8vh; }
-.hero h1 { font-size: clamp(3.2rem, 2rem + 7vw, 6rem); line-height: 0.98; }
+    radial-gradient(120% 62% at 50% 4%, rgba(160,120,70,0.17), transparent 52%),
+    radial-gradient(90% 60% at 50% 116%, rgba(70,84,96,0.10), transparent 60%); }
+.hero__inner { text-align: center; }
+.hero h1 { font-size: clamp(3rem, 2rem + 6vw, 5.4rem); line-height: 0.98; }
+
+/* the app itself, drifting through its pebbles inside a landscape iPad Pro (M4) */
+.hero__device { position: relative; width: 100%; display: flex; justify-content: center; }
+.galet-stage { position: relative; width: min(84vw, 680px, 50vh);
+  animation: galet-float 12s ease-in-out infinite; }
+@keyframes galet-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+.ipad { position: relative; aspect-ratio: 4 / 3; padding: 2.15%;   /* % padding → uniform bezel */
+  border-radius: clamp(20px, 3.4vw, 40px);
+  background: linear-gradient(145deg, #43454c 0%, #24262c 38%, #1b1d22 62%, #35373e 100%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10), inset 0 0 0 3px rgba(0,0,0,0.55),
+    0 2px 3px rgba(0,0,0,0.6), 0 36px 74px -22px rgba(0,0,0,0.78), 0 12px 26px -14px rgba(0,0,0,0.6); }
+.ipad::after { content: ""; position: absolute; inset: 0; border-radius: inherit;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.14); pointer-events: none; }         /* titanium hairline */
+.ipad__cam { position: absolute; top: 1.02%; left: 50%; transform: translateX(-50%);   /* landscape front camera */
+  width: 6px; height: 6px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3a4652 0%, #10151b 60%, #05070a 100%);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.6), inset 0 0 2px rgba(120,150,180,0.5); z-index: 4; }
+.ipad__screen { position: relative; width: 100%; height: 100%;
+  border-radius: clamp(9px, 1.7vw, 20px); overflow: hidden; background: #16171c;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.9); }
+.pebble { position: absolute; inset: 0; opacity: 0; transition: opacity var(--fade) ease; will-change: opacity; }
+.pebble.is-on { opacity: 1; }
+.pebble img { width: 100%; height: 100%; object-fit: cover; display: block;
+  transform: scale(1.035); transition: transform calc(var(--dwell) + var(--fade)) linear; }
+.pebble.is-on img { transform: scale(1.075); }                          /* slow Ken-Burns drift */
+.ipad__glass { position: absolute; inset: 0; z-index: 3; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(120deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.015) 18%, transparent 40%); }
+.galet-dots { display: flex; justify-content: center; align-items: center; gap: 0.6rem;
+  margin-top: clamp(1.2rem, 3vh, 2rem); }                               /* the app's own pagination dots */
+.galet-dots b { width: 7px; height: 7px; border-radius: 999px; display: block;
+  background: var(--faint); opacity: 0.5;
+  transition: width var(--fade) var(--ease), opacity var(--fade) var(--ease), background var(--fade) var(--ease); }
+.galet-dots b.is-on { width: 20px; opacity: 1; background: var(--amber); }
 .hero .kicker { display: block; font-size: clamp(1.05rem, 0.9rem + 0.8vw, 1.5rem);
   color: var(--amber-2); font-family: var(--serif); font-style: italic; margin-bottom: 1.1rem;
   letter-spacing: 0; }
 .hero .lede { margin-top: 1.6rem; font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
-  color: var(--text); max-width: 30ch; line-height: 1.5; }
-.hero .kicker, .hero h1, .hero .lede { text-shadow: 0 1px 34px rgba(9, 9, 12, 0.6); }
-.hero__cta { margin-top: 2.6rem; display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap; }
+  color: var(--text); max-width: 34ch; line-height: 1.5; margin-inline: auto; }
+.hero__cta { margin-top: 2.4rem; display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap; }
 
 .btn { display: inline-flex; align-items: center; gap: 0.55rem; font-family: var(--sans);
   font-weight: 500; font-size: 1rem; padding: 0.85rem 1.6rem; border-radius: 999px;
@@ -117,6 +149,7 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .btn--ghost:hover { background: rgba(255,255,255,0.04); color: var(--ink); border-color: var(--muted); }
 
 .note { font-size: 0.9rem; color: var(--muted); display: inline-flex; align-items: center; gap: 0.5rem; }
+.hero .note { color: var(--text); }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber);
   box-shadow: 0 0 0 0 rgba(211,165,103,0.6); animation: pulse 3.2s var(--ease) infinite; }
 @keyframes pulse { 0%,100%{ box-shadow: 0 0 0 0 rgba(211,165,103,0.5);} 50%{ box-shadow: 0 0 0 6px rgba(211,165,103,0);} }
@@ -189,7 +222,9 @@ footer .fineprint { width: 100%; color: var(--faint); font-size: 0.85rem; margin
    stillness). The one ambient motion is the hero's slow drift; everything else
    is hover/focus. Content is always present — nothing is gated on a transition. */
 @media (prefers-reduced-motion: reduce) {
-  .hero__stage img { animation: none; transform: none; }
+  .galet-stage { animation: none; }
+  .pebble { transition: none; }
+  .pebble img { transition: none; transform: none; }
   .dot { animation: none; }
   .btn { transition: none; }
 }

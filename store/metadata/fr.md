@@ -81,12 +81,8 @@ CALME PAR NATURE
 • Respecte Réduire les animations et le Texte dynamique.
 • Bilingue : français (québécois) et anglais.
 
-UN HÔTE DISCRET, EN OPTION
-Carrousel inclut une aide optionnelle qui peut suggérer des cartes de saison et
-des citations à ajouter à la rotation. Entièrement optionnelle et désactivée
-tant que vous ne la demandez pas.
-
-Conçu pour l'iPad. Tout ce que vous ajoutez reste sur votre appareil.
+Conçu pour l'iPad. Tout ce que vous ajoutez reste sur votre appareil — aucun
+compte, aucun pistage, rien envoyé à un serveur.
 ```
 
 ## Nouveautés de cette version  *(max 4000)*

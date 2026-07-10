@@ -52,7 +52,7 @@ Tell me anything that feels confusing, slow, cramped, or wrong. Thank you!
 
 ### Feedback email
 ```
-gautreau.jac@gmail.com
+jac@jacgautreau.com
 ```
 
 ### Marketing URL (optional) / Privacy Policy URL (required for external)
@@ -75,8 +75,7 @@ To see the full experience, allow access when prompted:
 Notes for the reviewer:
 • The app is iPad-only and designed for landscape or portrait on a stand.
 • Photo captions may show a city name; this is produced on-device from a photo's saved coordinates via Apple's geocoder, and needs no location permission.
-• There is an optional "Souffleur" helper (sparkles icon) that suggests seasonal cards/quotes. It sends only the season, date, a short tone description, and existing quote text to the developer's own server (le-galet.netlify.app) to generate suggestions; it is off until invoked and stores nothing.
-• No analytics, no tracking, no third-party SDKs.
+• Nothing the user adds is ever sent to a server — no accounts, no analytics, no tracking, no third-party SDKs. The app is fully on-device.
 ```
 
 ---
