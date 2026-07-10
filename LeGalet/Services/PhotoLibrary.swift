@@ -2,6 +2,7 @@ import SwiftUI
 import Photos
 import PhotosUI
 import CoreLocation
+import MapKit
 
 // The quiet facts a photo carries: when it was taken and, if the camera saved a
 // location, where. `place` is reverse-geocoded to a gentle "City, Region" once
@@ -42,7 +43,6 @@ final class PhotoLoader: ObservableObject {
     private let cache = NSCache<NSString, UIImage>()
     private var framingCache: [String: PhotoFraming] = [:]
     private var metaCache: [String: PhotoMeta] = [:]
-    private let geocoder = CLGeocoder()
     private let manager = PHImageManager.default()
 
     init() { cache.countLimit = 24 }
@@ -65,19 +65,21 @@ final class PhotoLoader: ObservableObject {
         return meta
     }
 
-    // A gentle "City, Region" (or the best available subset). CLGeocoder is network-
-    // backed and rate-limited; results are cached by the caller above so the display
-    // never re-asks for a photo it has already placed. A failure just yields nil.
+    // A gentle "City, Region" (or the best available subset). Uses MapKit's
+    // MKReverseGeocodingRequest (the iOS 26 replacement for the deprecated
+    // CLGeocoder); it is network-backed, so results are cached by the caller above
+    // and the display never re-asks for a photo it has already placed. Any failure
+    // just yields nil and the caption simply doesn't appear.
     private func reverseGeocode(_ location: CLLocation) async -> String? {
-        guard let placemark = try? await geocoder.reverseGeocodeLocation(location).first
+        guard let request = MKReverseGeocodingRequest(location: location),
+              let address = try? await request.mapItems.first?.addressRepresentations
         else { return nil }
-        let city = placemark.locality ?? placemark.subAdministrativeArea ?? placemark.name
-        let region = placemark.administrativeArea ?? placemark.country
-        let parts = [city, region].compactMap { $0 }.filter { !$0.isEmpty }
-        // Drop a duplicate (e.g. a city-state where locality == region).
-        return parts.count == 2 && parts[0] == parts[1]
-            ? parts[0]
-            : (parts.isEmpty ? nil : parts.joined(separator: ", "))
+        let parts = [address.cityName, address.regionName]
+            .compactMap { $0 }.filter { !$0.isEmpty }
+        // Drop a duplicate (e.g. a city-state where city == region); fall back to
+        // MapKit's own city-with-context string if the structured parts are empty.
+        if parts.count == 2 && parts[0] == parts[1] { return parts[0] }
+        return parts.isEmpty ? address.cityWithContext : parts.joined(separator: ", ")
     }
 
     // How to frame a photo (aspect + salient focus), computed once off the main

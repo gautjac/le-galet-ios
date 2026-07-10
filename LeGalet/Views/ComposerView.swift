@@ -549,10 +549,14 @@ private struct ComposerRow: View {
             if item.kind == .photo {
                 thumb = await PhotoLoader.shared.image(for: item.photoLocalId, target: CGSize(width: 90, height: 90))
             } else if item.kind == .album {
+                // Capture the id (a Sendable String) before hopping off the main
+                // actor — the GaletItem model itself must not cross into the
+                // detached, non-isolated context.
+                let collectionID = item.photoLocalId
                 albumCount = await Task.detached(priority: .userInitiated) {
-                    AlbumKit.imageCount(collectionID: item.photoLocalId)
+                    AlbumKit.imageCount(collectionID: collectionID)
                 }.value
-                thumb = await PhotoLoader.shared.albumCover(collectionID: item.photoLocalId,
+                thumb = await PhotoLoader.shared.albumCover(collectionID: collectionID,
                                                             target: CGSize(width: 90, height: 90))
             }
         }
