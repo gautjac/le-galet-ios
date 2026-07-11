@@ -58,6 +58,9 @@ a { color: inherit; text-decoration: none; }
 .en, .fr { }
 body.lang-fr .en { display: none; }
 body.lang-en .fr { display: none; }
+/* App Store badge: localized artwork, toggled with the page language */
+body.lang-fr .badge-en { display: none; }
+body.lang-en .badge-fr { display: none; }
 
 /* ── type ─────────────────────────────────────────────────────────────────── */
 .serif { font-family: var(--serif); }
@@ -150,6 +153,14 @@ p { text-wrap: pretty; max-width: var(--measure); }
 
 .note { font-size: 0.9rem; color: var(--muted); display: inline-flex; align-items: center; gap: 0.5rem; }
 .hero .note { color: var(--text); }
+
+/* Download-on-the-App-Store badge */
+.appstore { display:inline-flex; align-items:center; border-radius:9px;
+  transition: transform .35s var(--ease), filter .35s var(--ease);
+  outline-offset:4px; }
+.appstore:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.appstore:focus-visible { outline:2px solid var(--amber-2); }
+.appstore-badge { height:46px; width:auto; display:block; }
 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber);
   box-shadow: 0 0 0 0 rgba(211,165,103,0.6); animation: pulse 3.2s var(--ease) infinite; }
 @keyframes pulse { 0%,100%{ box-shadow: 0 0 0 0 rgba(211,165,103,0.5);} 50%{ box-shadow: 0 0 0 6px rgba(211,165,103,0);} }
@@ -161,6 +172,20 @@ p { text-wrap: pretty; max-width: var(--measure); }
 .manifesto p .soft { color: var(--faint); }
 .manifesto .sub { font-family: var(--sans); font-size: 1.1rem; color: var(--muted);
   margin-top: 2rem; max-width: 52ch; }
+
+/* ── lifestyle band — the app at home, morning & evening ──────────────────── */
+.lifestyle { margin-top: clamp(-6rem, -9vh, -3rem); padding-bottom: clamp(2.5rem, 7vh, 5rem); }
+.lifestyle__grid { max-width: 1320px; margin-inline: auto; padding-inline: var(--pad);
+  display: grid; grid-template-columns: 1fr 1fr; gap: clamp(.7rem, 1.6vw, 1.2rem); }
+.lifestyle .life { position: relative; margin: 0; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 34px 80px -34px rgba(0,0,0,.75), inset 0 0 0 1px rgba(255,255,255,.045); }
+.lifestyle .life img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 16 / 9; }
+.lifestyle figcaption { position: absolute; inset: auto 0 0 0; padding: 2rem 1.4rem 1.1rem;
+  font-family: var(--serif); font-style: italic; color: var(--ink); letter-spacing: .01em;
+  font-size: clamp(1rem, .9rem + .4vw, 1.28rem);
+  background: linear-gradient(transparent, rgba(11,12,15,.74)); }
+@media (max-width: 700px) { .lifestyle__grid { grid-template-columns: 1fr; }
+  .lifestyle { margin-top: clamp(-3rem, -5vh, -1rem); } }
 
 /* ── showcase rows ────────────────────────────────────────────────────────── */
 .rows { display: flex; flex-direction: column; gap: clamp(5rem, 12vh, 10rem); padding-bottom: clamp(5rem,12vh,10rem); }
@@ -242,3 +267,18 @@ footer .fineprint { width: 100%; color: var(--faint); font-size: 0.85rem; margin
   .hero__cta { gap: 1rem; }
   .btn { width: 100%; justify-content: center; }
 }
+
+/* ── Also from the atelier — cross-reference card ─────────────────────────── */
+.alsoby { width: 100%; padding-bottom: 1.6rem; margin-bottom: 0.4rem; border-bottom: 1px solid var(--line); }
+.alsoby .eyebrow { color: var(--faint); margin-bottom: 0.9rem; }
+.atelier-card { display: inline-flex; align-items: center; gap: 0.9rem;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  padding: 0.7rem 1.1rem 0.7rem 0.7rem; color: var(--text);
+  transition: transform .3s var(--ease), border-color .3s, box-shadow .3s; }
+.atelier-card:hover { border-color: var(--muted); transform: translateY(-2px); box-shadow: 0 14px 34px -16px rgba(0,0,0,.6); }
+.atelier-card img { width: 52px; height: 52px; border-radius: 12px; border: 1px solid var(--line); display: block; }
+.atelier-card .atelier-meta { display: flex; flex-direction: column; line-height: 1.3; }
+.atelier-card .name { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); }
+.atelier-card .tag { font-family: var(--sans); font-size: 0.85rem; color: var(--muted); }
+.atelier-card .arrow { margin-left: 0.5rem; color: var(--amber); font-size: 1.2rem; transition: transform .3s var(--ease); }
+.atelier-card:hover .arrow { transform: translateX(3px); }

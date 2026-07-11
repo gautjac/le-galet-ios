@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrousel — sur iPad</title>
+<meta name="description" content="Carrousel, en train de dériver, sur un iPad — photos, citations et rendez-vous se succèdent, un à la fois.">
+<style>
+  /* ─────────────────────────────────────────────────────────────
+     Carrousel — iPad hero
+     A photorealistic iPad Pro (M4, landscape) framing the app's own
+     display, cross-fading through its "pebbles" — photo, quote,
+     event — exactly as the app drifts. Real app screens, self-
+     contained (no external CSS / JS / fonts / requests).
+     Palette lifted from the Carrousel landing (candle-lit dark).
+     ───────────────────────────────────────────────────────────── */
+  :root {
+    --bg:      #131418;
+    --ink:     #F0EADF;
+    --text:    #DAD4C9;
+    --muted:   #ABA59A;
+    --faint:   #8B857A;
+    --amber:   #D3A567;
+    --amber-2: #E6C9A0;
+    --serif: ui-serif, "New York", "Iowan Old Style", Palatino, Georgia, serif;
+    --sans:  -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --dwell: 5200ms;
+    --fade: 1500ms;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .galet-hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.4rem, 3.5vw, 2.6rem);
+    padding: clamp(2rem, 5vw, 4rem) clamp(1.2rem, 5vw, 4rem);
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .galet-hero::before {                 /* one warm hearth glow */
+    content: "";
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(120% 90% at 50% -12%, rgba(160, 120, 70, 0.20), transparent 58%),
+      radial-gradient(90% 70% at 50% 118%, rgba(70, 84, 96, 0.10), transparent 60%);
+    pointer-events: none;
+  }
+
+  .galet-hero__label { position: relative; z-index: 1; text-align: center; max-width: 42ch; }
+  .galet-hero__kicker {
+    font-family: var(--serif); font-style: italic;
+    font-size: clamp(1.15rem, 0.95rem + 1vw, 1.7rem);
+    line-height: 1.2; color: var(--amber-2); letter-spacing: 0.01em;
+  }
+  .galet-hero__sub {
+    margin-top: 0.55rem; font-size: 0.95rem; color: var(--muted); line-height: 1.55;
+  }
+
+  /* ── the device ───────────────────────────────────────────────── */
+  .galet-stage {
+    position: relative; z-index: 1;
+    /* cap by height too, so the whole iPad clears the fold */
+    width: min(90vw, 900px, 82vh);
+    animation: galet-float 12s ease-in-out infinite;
+  }
+  @keyframes galet-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+  .ipad {
+    position: relative;
+    aspect-ratio: 4 / 3;               /* iPad Pro 13", landscape */
+    padding: 2.15%;                     /* % padding → uniform bezel */
+    border-radius: clamp(20px, 3.4vw, 40px);
+    background: linear-gradient(145deg, #43454c 0%, #24262c 38%, #1b1d22 62%, #35373e 100%);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.10),
+      inset 0 0 0 3px rgba(0,0,0,0.55),
+      0 2px 3px rgba(0,0,0,0.6),
+      0 36px 74px -22px rgba(0,0,0,0.78),
+      0 12px 26px -14px rgba(0,0,0,0.6);
+  }
+  .ipad::after {                        /* titanium hairline */
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.14); pointer-events: none;
+  }
+  .ipad__cam {                          /* landscape front camera (M4) */
+    position: absolute; top: 1.02%; left: 50%; transform: translateX(-50%);
+    width: 6px; height: 6px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #3a4652 0%, #10151b 60%, #05070a 100%);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.6), inset 0 0 2px rgba(120,150,180,0.5);
+    z-index: 4;
+  }
+
+  .ipad__screen {
+    position: relative; width: 100%; height: 100%;
+    border-radius: clamp(9px, 1.7vw, 20px);
+    overflow: hidden; background: #16171c;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.9);
+  }
+
+  /* pebbles: real app display screens, cross-fading one at a time */
+  .pebble {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity var(--fade) ease;
+    will-change: opacity;
+  }
+  .pebble.is-on { opacity: 1; }
+  .pebble img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transform: scale(1.035);
+    transition: transform calc(var(--dwell) + var(--fade)) linear;
+  }
+  .pebble.is-on img { transform: scale(1.075); }   /* slow Ken-Burns drift */
+
+  .ipad__glass {                        /* faint diagonal sheen */
+    position: absolute; inset: 0; z-index: 3; border-radius: inherit;
+    background: linear-gradient(120deg,
+      rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.015) 18%, transparent 40%);
+    pointer-events: none;
+  }
+
+  /* the app's own pagination dots, echoed under the device */
+  .galet-dots {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .galet-dots b {
+    width: 7px; height: 7px; border-radius: 999px; display: block;
+    background: var(--faint); opacity: 0.5;
+    transition: width var(--fade) var(--ease), opacity var(--fade) var(--ease), background var(--fade) var(--ease);
+  }
+  .galet-dots b.is-on { width: 20px; opacity: 1; background: var(--amber); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .galet-stage { animation: none; }
+    .pebble { transition: none; }
+    .pebble img { transition: none; transform: none; }
+  }
+
+  /* i18n: two spans, CSS-toggled */
+  .en, .fr {}
+  .galet-hero.lang-fr .en { display: none; }
+  .galet-hero.lang-en .fr { display: none; }
+</style>
+</head>
+<body style="background:#131418">
+
+<section class="galet-hero lang-fr" id="galet-hero">
+  <div class="galet-hero__label">
+    <p class="galet-hero__kicker">
+      <span class="fr">Le voici, en train de dériver.</span>
+      <span class="en">Here it is, quietly drifting.</span>
+    </p>
+    <p class="galet-hero__sub">
+      <span class="fr">Vos photos, vos citations et les rendez-vous du jour se succèdent, un seul à la fois.</span>
+      <span class="en">Your photos, your quotes and the day's events succeed one another, one at a time.</span>
+    </p>
+  </div>
+
+  <div class="galet-stage">
+    <div class="ipad">
+      <span class="ipad__cam" aria-hidden="true"></span>
+      <div class="ipad__screen">
+        <div class="pebble is-on">
+          <img data-fr="assets/01-photo-fr.jpg" data-en="assets/01-photo-en.jpg" src="assets/01-photo-fr.jpg"
+               alt="Une photo de famille au bord d'un lac dérive sur l'écran de Carrousel">
+        </div>
+        <div class="pebble">
+          <img data-fr="assets/02-quote-fr.jpg" data-en="assets/02-quote-en.jpg" src="assets/02-quote-fr.jpg"
+               alt="Une citation en grands caractères serif sur l'écran de Carrousel">
+        </div>
+        <div class="pebble">
+          <img data-fr="assets/03-event-fr.jpg" data-en="assets/03-event-en.jpg" src="assets/03-event-fr.jpg"
+               alt="Le rendez-vous du jour, sur sa propre carte, sur l'écran de Carrousel">
+        </div>
+        <div class="ipad__glass" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="galet-dots" role="presentation" aria-hidden="true">
+    <b class="is-on"></b><b></b><b></b>
+  </div>
+</section>
+
+<script>
+(function () {
+  var hero = document.getElementById('galet-hero');
+  var pebbles = Array.prototype.slice.call(hero.querySelectorAll('.pebble'));
+  var dots    = Array.prototype.slice.call(hero.querySelectorAll('.galet-dots b'));
+  var reduce  = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* language: mirror the landing's stored choice, else the browser's */
+  function setLang(l) {
+    hero.className = 'galet-hero lang-' + l;
+    hero.querySelectorAll('img[data-fr]').forEach(function (img) {
+      var next = img.dataset[l];
+      if (next && img.getAttribute('src') !== next) img.setAttribute('src', next);
+    });
+  }
+  var stored; try { stored = localStorage.getItem('carousel-lang'); } catch (e) {}
+  setLang(stored || ((navigator.language || 'fr').toLowerCase().indexOf('en') === 0 ? 'en' : 'fr'));
+
+  /* the drift: cross-fade through the pebbles, dwell then dissolve */
+  var i = 0;
+  function show(n) {
+    pebbles.forEach(function (p, k) { p.classList.toggle('is-on', k === n); });
+    dots.forEach(function (d, k) { d.classList.toggle('is-on', k === n); });
+  }
+  if (!reduce) {
+    var DWELL = parseFloat(getComputedStyle(hero).getPropertyValue('--dwell')) || 5200;
+    setInterval(function () { i = (i + 1) % pebbles.length; show(i); }, DWELL);
+  }
+})();
+</script>
+</body>
+</html>

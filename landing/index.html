@@ -4,7 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Carrousel — un foyer calme pour l'iPad</title>
-<meta name="description" content="Carrousel transforme un vieil iPad en foyer familial calme : vos photos, citations, rappels et rendez-vous du jour dérivent lentement, un à la fois.">
+<meta name="description" content="Carrousel transforme votre iPad en foyer familial calme : vos photos, citations, rappels et rendez-vous du jour dérivent lentement, un à la fois.">
+
+<!-- Open Graph / Twitter link preview -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Carrousel">
+<meta property="og:locale" content="fr_CA">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://carrousel-app.netlify.app/">
+<meta property="og:title" content="Carrousel — un foyer calme pour l'iPad">
+<meta property="og:description" content="Vos photos, vos citations et vos rendez-vous du jour défilent lentement sur l'iPad, une chose calme à la fois.">
+<meta property="og:image" content="https://carrousel-app.netlify.app/assets/share.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Carrousel sur un iPad : une photo de famille au bord d'un lac.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@gautjac">
+<meta name="twitter:creator" content="@gautjac">
+<meta name="twitter:title" content="Carrousel — un foyer calme pour l'iPad">
+<meta name="twitter:description" content="Vos photos et votre journée, une chose calme à la fois.">
+<meta name="twitter:image" content="https://carrousel-app.netlify.app/assets/share.jpg">
+
 <link rel="icon" href="assets/icon-180.png">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
 <link rel="stylesheet" href="style.css">
@@ -26,7 +47,7 @@
   <div class="hero__glow" aria-hidden="true"></div>
   <div class="wrap hero__inner">
     <span class="kicker serif">
-      <span class="fr">Laissez votre iPad vous accompagnez toute la journée</span>
+      <span class="fr">Laissez votre iPad vous accompagner toute la journée</span>
       <span class="en">Make your iPad a part of your day</span>
     </span>
     <h1><span class="fr">Carrousel</span><span class="en">Carousel</span></h1>
@@ -38,10 +59,27 @@
       <a class="btn" href="#photos">
         <span class="fr">Découvrir</span><span class="en">Take a look</span>
       </a>
-      <span class="note"><span class="dot" aria-hidden="true"></span>
-        <span class="fr">En bêta privée sur TestFlight</span>
-        <span class="en">In private beta on TestFlight</span>
-      </span>
+      <a class="appstore" href="https://apps.apple.com/app/id6786345170"
+         aria-label="Carrousel sur l'App Store — Carousel on the App Store">
+        <!-- FR — Télécharger dans l'App Store -->
+        <span class="badge-fr">
+          <svg class="appstore-badge" viewBox="0 0 150 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Télécharger dans l'App Store">
+            <rect x=".75" y=".75" width="148.5" height="38.5" rx="8.5" fill="#000" stroke="#A6A6A6" stroke-width="1"/>
+            <svg x="12" y="9" width="22" height="22" viewBox="0 0 24 24"><path fill="#fff" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+            <text x="43" y="16.5" fill="#fff" font-family="-apple-system,'SF Pro Text',Helvetica,Arial,sans-serif" font-size="8" letter-spacing=".2">Télécharger dans l'</text>
+            <text x="42.4" y="31" fill="#fff" font-family="-apple-system,'SF Pro Display',Helvetica,Arial,sans-serif" font-size="16.5" font-weight="600" letter-spacing="-.3">App&#8202;Store</text>
+          </svg>
+        </span>
+        <!-- EN — Download on the App Store -->
+        <span class="badge-en">
+          <svg class="appstore-badge" viewBox="0 0 124 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Download on the App Store">
+            <rect x=".75" y=".75" width="122.5" height="38.5" rx="8.5" fill="#000" stroke="#A6A6A6" stroke-width="1"/>
+            <svg x="12" y="9" width="22" height="22" viewBox="0 0 24 24"><path fill="#fff" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+            <text x="43" y="16.5" fill="#fff" font-family="-apple-system,'SF Pro Text',Helvetica,Arial,sans-serif" font-size="8" letter-spacing=".2">Download on the</text>
+            <text x="42.4" y="31" fill="#fff" font-family="-apple-system,'SF Pro Display',Helvetica,Arial,sans-serif" font-size="16.5" font-weight="600" letter-spacing="-.3">App&#8202;Store</text>
+          </svg>
+        </span>
+      </a>
     </div>
   </div>
 
@@ -105,13 +143,32 @@
 
   <section class="manifesto wrap reveal">
     <p class="serif">
-      <span class="fr">Un vieil iPad devient un&nbsp;foyer. <span class="soft">Pas un écran de plus à consulter.</span></span>
-      <span class="en">An old iPad becomes a&nbsp;hearth. <span class="soft">Not one more screen to check.</span></span>
+      <span class="fr">Votre iPad devient le coeur de la maison. <span class="soft">Pas un écran de plus à consulter.</span></span>
+      <span class="en">Your iPad becomes a&nbsp;hearth. <span class="soft">Not one more screen to check.</span></span>
     </p>
     <p class="sub">
       <span class="fr">Posez-le sur une tablette ou un comptoir. Il s'illumine au déjeuner, se tamise le soir, et fait défiler lentement ce qui compte pour votre maisonnée. Sans notification, sans décision.</span>
       <span class="en">Prop it on a shelf or a counter. It brightens at breakfast, dims in the evening, and drifts slowly through what matters to your household. No notifications, no decisions.</span>
     </p>
+  </section>
+
+  <section class="lifestyle reveal" aria-label="Carrousel à la maison / Carousel at home">
+    <div class="lifestyle__grid">
+      <figure class="life">
+        <img data-fr="assets/kitchen-day-fr.jpg" data-en="assets/kitchen-day-en.jpg" src="assets/kitchen-day-fr.jpg" loading="lazy"
+             data-alt-fr="Un iPad sur le comptoir de la cuisine affiche le rendez-vous du jour, le matin"
+             data-alt-en="An iPad on the kitchen counter shows the day's event, in the morning"
+             alt="Un iPad sur le comptoir de la cuisine affiche le rendez-vous du jour, le matin">
+        <figcaption><span class="fr">Le matin, au comptoir.</span><span class="en">Morning, on the counter.</span></figcaption>
+      </figure>
+      <figure class="life">
+        <img data-fr="assets/bedside-night-fr.jpg" data-en="assets/bedside-night-en.jpg" src="assets/bedside-night-fr.jpg" loading="lazy"
+             data-alt-fr="Un iPad à la table de chevet affiche une photo de famille à la plage, le soir"
+             data-alt-en="An iPad on the nightstand shows a family photo at the beach, in the evening"
+             alt="Un iPad à la table de chevet affiche une photo de famille à la plage, le soir">
+        <figcaption><span class="fr">Le soir, au chevet.</span><span class="en">Evening, by the bed.</span></figcaption>
+      </figure>
+    </div>
   </section>
 
   <div class="rows wrap">
@@ -219,6 +276,17 @@
 
 <footer>
   <div class="wrap">
+    <div class="alsoby">
+      <div class="eyebrow"><span class="fr">Aussi de l'atelier</span><span class="en">Also from the atelier</span></div>
+      <a class="atelier-card" href="https://astheure.netlify.app">
+        <img src="assets/astheure-icon.png" alt="Astheure" loading="lazy" />
+        <span class="atelier-meta">
+          <span class="name">Astheure</span>
+          <span class="tag"><span class="fr">la radio du monde, en direct</span><span class="en">live radio from everywhere</span></span>
+        </span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
     <span class="brand"><span class="fr">Carrousel</span><span class="en">Carousel</span></span>
     <nav>
       <a href="privacy.html"><span class="fr">Confidentialité</span><span class="en">Privacy</span></a>
