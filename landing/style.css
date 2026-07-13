@@ -271,7 +271,7 @@ footer .fineprint { width: 100%; color: var(--faint); font-size: 0.85rem; margin
 /* ── Also from the atelier — cross-reference card ─────────────────────────── */
 .alsoby { width: 100%; padding-bottom: 1.6rem; margin-bottom: 0.4rem; border-bottom: 1px solid var(--line); }
 .alsoby .eyebrow { color: var(--faint); margin-bottom: 0.9rem; }
-.atelier-card { display: inline-flex; align-items: center; gap: 0.9rem;
+.atelier-card { display: inline-flex; align-items: center; gap: 0.9rem; margin: 0 0.5rem 0.5rem 0;
   background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
   padding: 0.7rem 1.1rem 0.7rem 0.7rem; color: var(--text);
   transition: transform .3s var(--ease), border-color .3s, box-shadow .3s; }

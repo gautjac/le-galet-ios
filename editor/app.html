@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrousel — éditeur de contenu</title>
+<style>
+  :root{
+    --bg:#131418; --bar:#1A1B20; --line:#35363f; --ink:#F0EADF; --text:#DAD4C9;
+    --muted:#ABA59A; --faint:#8B857A; --amber:#D3A567; --amber-2:#E6C9A0; --green:#7FA894; --red:#c98b83;
+    --serif:ui-serif,"New York",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+
+  .bar{position:fixed;inset:0 0 auto 0;height:56px;z-index:10;display:flex;align-items:center;gap:14px;
+    padding:0 16px;background:linear-gradient(var(--bar),#16171b);border-bottom:1px solid var(--line);
+    box-shadow:0 6px 24px -12px rgba(0,0,0,.6)}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;color:var(--ink);letter-spacing:.2px}
+  .brand .glyph{width:20px;height:20px;border-radius:6px;background:radial-gradient(circle at 50% 35%,var(--amber-2),var(--amber) 60%,#7a5a30);
+    box-shadow:0 0 0 1px rgba(255,255,255,.1) inset}
+  .brand small{color:var(--faint);font-weight:400;font-size:.8rem;margin-left:2px}
+
+  .seg{display:inline-flex;background:#0f1013;border:1px solid var(--line);border-radius:999px;padding:3px}
+  .seg button{border:0;background:transparent;color:var(--muted);font:600 .8rem/1 var(--sans);letter-spacing:.06em;
+    padding:6px 13px;border-radius:999px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--amber);color:#17130c}
+
+  .spacer{flex:1}
+  .status{font-size:.85rem;color:var(--muted);min-width:120px;text-align:right}
+  .status b{color:var(--amber-2);font-weight:600}
+  .status.saved{color:var(--green)}
+
+  button.act{border:1px solid var(--line);background:#0f1013;color:var(--text);font:500 .9rem/1 var(--sans);
+    padding:9px 15px;border-radius:10px;cursor:pointer;transition:.15s}
+  button.act:hover{border-color:var(--muted);color:var(--ink)}
+  button.act:disabled{opacity:.45;cursor:not-allowed}
+  button.save{background:var(--amber);color:#17130c;border-color:transparent;font-weight:600}
+  button.save:hover{background:var(--amber-2)}
+  button.save:disabled{background:#3a352c;color:#8a8071}
+  button.deploy{background:transparent;color:var(--amber-2);border-color:rgba(211,165,103,.4)}
+  button.deploy:hover{background:rgba(211,165,103,.08);color:var(--ink)}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(23,19,12,.35);border-top-color:#17130c;
+    border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .stage{position:fixed;inset:56px 0 0 0;background:#0d0e11}
+  iframe{width:100%;height:100%;border:0;display:block;background:var(--bg)}
+
+  .hint{position:fixed;left:16px;bottom:14px;z-index:9;font-size:.8rem;color:var(--faint);
+    background:rgba(19,20,24,.82);border:1px solid var(--line);border-radius:8px;padding:7px 11px;backdrop-filter:blur(6px)}
+  .hint kbd{font-family:var(--sans);background:#0f1013;border:1px solid var(--line);border-bottom-width:2px;
+    border-radius:5px;padding:1px 6px;color:var(--muted);font-size:.75rem}
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);z-index:20;opacity:0;pointer-events:none;
+    background:#20130b;border:1px solid rgba(211,165,103,.4);color:var(--amber-2);
+    padding:11px 18px;border-radius:12px;font-size:.9rem;box-shadow:0 18px 44px -18px rgba(0,0,0,.8);transition:.3s var(--serif)}
+  .toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  .toast.ok{border-color:rgba(127,168,148,.5);color:#a9cdbd;background:#0f1a15}
+  .toast.err{border-color:rgba(201,139,131,.5);color:#e5b3ac;background:#1e1210}
+  .toast a{color:inherit;text-decoration:underline}
+</style>
+</head>
+<body>
+  <header class="bar">
+    <span class="brand"><span class="glyph"></span>Carrousel <small>éditeur de contenu</small></span>
+    <div class="seg" role="group" aria-label="Langue">
+      <button data-lang="fr" aria-pressed="true">FR</button>
+      <button data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <span class="spacer"></span>
+    <span class="status" id="status">Chargement…</span>
+    <button class="act" id="reset" title="Annuler les changements non enregistrés">Réinitialiser</button>
+    <button class="act save" id="save" disabled>Enregistrer</button>
+    <button class="act deploy" id="deploy">Publier</button>
+  </header>
+
+  <div class="stage"><iframe id="site" src="/site/" title="Aperçu de la page Carrousel"></iframe></div>
+
+  <div class="hint">Cliquez n'importe quel texte pour le modifier · bascule <kbd>FR</kbd>/<kbd>EN</kbd> pour l'autre langue · <kbd>⌘S</kbd> pour enregistrer</div>
+  <div class="toast" id="toast"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

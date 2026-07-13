@@ -1,0 +1,10 @@
+{
+  "name": "carrousel-editor",
+  "private": true,
+  "type": "module",
+  "description": "Local WYSIWYG copy editor for the Carrousel landing page. Not deployed.",
+  "scripts": {
+    "start": "node server.mjs",
+    "edit": "node server.mjs"
+  }
+}

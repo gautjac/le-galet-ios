@@ -20,14 +20,14 @@ enum S {
     static let tapToCurate = L(fr: "Toucher pour composer", en: "Tap to compose")
 
     // Empty / onboarding
-    static let emptyTitle = L(fr: "Le galet est lisse et vide.", en: "The pebble is smooth and empty.")
+    static let emptyTitle = L(fr: "Le carrousel est vide.", en: "The carousel is empty.")
     static let emptyBody = L(fr: "Ajoutez une photo, une pensée ou un rappel — puis laissez l'écran dériver.",
                              en: "Add a photo, a thought, or a reminder — then let the screen drift.")
     static let begin = L(fr: "Commencer", en: "Begin")
 
     static let ob1Title = L(fr: "Carrousel", en: "Carousel")
-    static let ob1Body = L(fr: "Une vieille tablette devient un foyer calme — vos photos, citations, rappels et événements dérivent lentement, un à la fois.",
-                           en: "An old tablet becomes a calm hearth — your photos, quotes, reminders and events drift slowly by, one at a time.")
+    static let ob1Body = L(fr: "Un vieil iPad devient un foyer calme — vos photos, citations, rappels et événements dérivent lentement, un à la fois.",
+                           en: "An old iPad becomes a calm hearth — your photos, quotes, reminders and events drift slowly by, one at a time.")
     static let ob2Title = L(fr: "Reliez vos albums et votre agenda.", en: "Connect your albums and calendar.")
     static let ob2Body = L(fr: "Choisissez des photos, écrivez une parole. Carrousel fait dériver vos rappels et vos rendez-vous du jour au bon moment.",
                            en: "Pick photos, write a saying. Carousel drifts your reminders and the day's events in at the right moment.")
@@ -55,18 +55,18 @@ enum S {
     static let obConnectReminders = L(fr: "Rappels", en: "Reminders")
 
     // Composer
-    static let composerTitle = L(fr: "Composer le galet", en: "Compose the pebble")
+    static let composerTitle = L(fr: "Composer le carrousel", en: "Compose the carousel")
     static let composerSub = L(fr: "Ce qui suit dérive sur l'écran, un seul à la fois.",
                                en: "These drift across the screen, one at a time.")
     static let addPhoto = L(fr: "Photos", en: "Photos")
     static let addQuote = L(fr: "Citation", en: "Quote")
     static let addReminder = L(fr: "Rappel", en: "Reminder")
     static let importFile = L(fr: "Importer", en: "Import")
-    static let importDone = L(fr: "%d citations ajoutées au galet.", en: "%d quotes added to the pebble.")
-    static let importOne = L(fr: "1 citation ajoutée au galet.", en: "1 quote added to the pebble.")
+    static let importDone = L(fr: "%d citations ajoutées au carrousel.", en: "%d quotes added to the carousel.")
+    static let importOne = L(fr: "1 citation ajoutée au carrousel.", en: "1 quote added to the carousel.")
     static let importNone = L(fr: "Aucune nouvelle citation trouvée dans ce fichier.", en: "No new quotes found in that file.")
     static let importFailed = L(fr: "Impossible de lire ce fichier.", en: "Couldn't read that file.")
-    static let nothingYet = L(fr: "Rien encore dans le galet.", en: "Nothing in the pebble yet.")
+    static let nothingYet = L(fr: "Rien encore dans le carrousel.", en: "Nothing in the carousel yet.")
     static let itemsCount = L(fr: "%d éléments", en: "%d items")
     static let oneItem = L(fr: "1 élément", en: "1 item")
     static let remove = L(fr: "Retirer", en: "Remove")
@@ -133,7 +133,7 @@ enum S {
     static let cancel = L(fr: "Annuler", en: "Cancel")
 
     // Réglages
-    static let reglagesTitle = L(fr: "Le souffle du galet", en: "The breath of the pebble")
+    static let reglagesTitle = L(fr: "Le souffle du carrousel", en: "The breath of the carousel")
     static let pace = L(fr: "Le rythme", en: "Pace")
     static let fade = L(fr: "Durée du fondu", en: "Fade duration")
     static let dwell = L(fr: "Temps de repos", en: "Dwell time")
@@ -161,8 +161,8 @@ enum S {
         fr: "En mode paysage, recadre intelligemment une photo portrait pour remplir l'écran — le sujet (visage, animal) reste au centre — au lieu d'afficher des bandes floues. Et l'inverse en mode portrait.",
         en: "In landscape, intelligently crops a portrait photo to fill the screen — keeping the subject (a face, a pet) centred — instead of showing blurred bars. And the reverse in portrait.")
     static let language = L(fr: "Langue", en: "Language")
-    static let staysAwake = L(fr: "L'écran reste allumé pendant que le galet dérive.",
-                              en: "The screen stays awake while the pebble drifts.")
+    static let staysAwake = L(fr: "L'écran reste allumé pendant que le carrousel dérive.",
+                              en: "The screen stays awake while the carousel drifts.")
 
     static let today = L(fr: "Aujourd'hui", en: "Today")
     static let tomorrow = L(fr: "Demain", en: "Tomorrow")
