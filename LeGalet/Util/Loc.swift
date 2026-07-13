@@ -26,8 +26,8 @@ enum S {
     static let begin = L(fr: "Commencer", en: "Begin")
 
     static let ob1Title = L(fr: "Carrousel", en: "Carousel")
-    static let ob1Body = L(fr: "Un vieil iPad devient un foyer calme — vos photos, citations, rappels et événements dérivent lentement, un à la fois.",
-                           en: "An old iPad becomes a calm hearth — your photos, quotes, reminders and events drift slowly by, one at a time.")
+    static let ob1Body = L(fr: "Votre iPad devient un foyer calme — vos photos, citations, rappels et événements dérivent lentement, un à la fois.",
+                           en: "Your iPad becomes a calm hearth — your photos, quotes, reminders and events drift slowly by, one at a time.")
     static let ob2Title = L(fr: "Reliez vos albums et votre agenda.", en: "Connect your albums and calendar.")
     static let ob2Body = L(fr: "Choisissez des photos, écrivez une parole. Carrousel fait dériver vos rappels et vos rendez-vous du jour au bon moment.",
                            en: "Pick photos, write a saying. Carousel drifts your reminders and the day's events in at the right moment.")
