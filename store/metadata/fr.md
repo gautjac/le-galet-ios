@@ -24,7 +24,7 @@ Variantes : `Photos, citations, rappels` · `Vos photos, qui dérivent`
 
 ## Texte promotionnel  *(max 170 — modifiable sans nouvelle version)*
 ```
-Un vieil iPad devient un foyer familial calme : vos propres photos, citations, rappels et événements du jour dérivent lentement, un à la fois. Aucun fil, aucune notification.
+Votre iPad devient un foyer familial calme : vos propres photos, citations, rappels et événements du jour dérivent lentement, un à la fois. Aucun fil, aucune notification.
 ```
 
 ## Mots-clés  *(max 100, séparés par des virgules, sans espaces)*
@@ -34,7 +34,7 @@ ambiance,cadre photo,famille,calme,diaporama,citations,rappel,calendrier,foyer,i
 
 ## Description  *(max 4000)*
 ```
-Carrousel transforme un vieil iPad en un foyer familial calme.
+Carrousel transforme votre iPad en foyer familial calme.
 
 Posez-le sur une étagère ou un comptoir de cuisine et il dérive doucement à
 travers ce qui compte pour votre maisonnée — vos propres photos de famille,

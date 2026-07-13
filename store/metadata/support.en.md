@@ -1,6 +1,6 @@
 # Carousel — Support
 
-Carousel turns an old iPad into a calm family hearth: it slowly drifts
+Carousel turns your iPad into a calm family hearth: it slowly drifts
 through your own photos, quotes, reminders, and the day's calendar events — one
 at a time.
 

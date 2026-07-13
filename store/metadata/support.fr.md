@@ -1,6 +1,6 @@
 # Carrousel — Assistance
 
-Carrousel transforme un vieil iPad en foyer familial calme : il dérive doucement
+Carrousel transforme votre iPad en foyer familial calme : il dérive doucement
 à travers vos propres photos, citations, rappels et rendez-vous du jour — un à la
 fois.
 

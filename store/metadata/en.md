@@ -24,7 +24,7 @@ Alternates: `Photos, quotes & reminders` · `Your photos, drifting by`
 
 ## Promotional Text  *(max 170 — editable anytime without a new build)*
 ```
-An old iPad becomes a calm family hearth: your own photos, quotes, reminders and the day's events drift slowly by, one at a time. No feeds, no notifications.
+Your iPad becomes a calm family hearth: your own photos, quotes, reminders and the day's events drift slowly by, one at a time. No feeds, no notifications.
 ```
 
 ## Keywords  *(max 100, comma-separated, no spaces)*
@@ -34,7 +34,7 @@ ambient,photo frame,digital frame,family,calm,slideshow,quotes,reminder,calendar
 
 ## Description  *(max 4000)*
 ```
-Carousel turns an old iPad into a calm family hearth.
+Carousel turns your iPad into a calm family hearth.
 
 Prop it on a shelf or kitchen counter and it slowly drifts through the things
 that matter to your household — your own family photos, a few hand-picked
