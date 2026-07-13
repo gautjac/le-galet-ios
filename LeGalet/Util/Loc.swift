@@ -53,6 +53,14 @@ enum S {
     static let obBegin = L(fr: "Commencer", en: "Begin")
     static let obConnectCalendar = L(fr: "Calendrier", en: "Calendar")
     static let obConnectReminders = L(fr: "Rappels", en: "Reminders")
+    // "How it works" step — the two controls
+    static let obUseTitle = L(fr: "Vous gardez la main.", en: "You keep control.")
+    static let obUseBody = L(fr: "Touchez l'écran à tout moment pour faire apparaître deux boutons :",
+                             en: "Tap the display anytime to reveal two buttons:")
+    static let obComposeDesc = L(fr: "Le crayon : ajoutez des photos, des citations et des albums, et réglez leur fréquence.",
+                                 en: "The pencil: add photos, quotes and albums, and set how often each drifts by.")
+    static let obBreathDesc = L(fr: "L'engrenage : réglez le rythme, la taille du texte et la lumière, du jour à la nuit.",
+                                en: "The gear: set the pace, the text size, and the light from day to night.")
 
     // Composer
     static let composerTitle = L(fr: "Composer le carrousel", en: "Compose the carousel")

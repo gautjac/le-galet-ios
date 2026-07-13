@@ -17,7 +17,7 @@ struct OnboardingView: View {
     @State private var showPhotoPicker = false
     @State private var photosAdded = 0
 
-    private let stepCount = 4
+    private let stepCount = 5
     private var isLast: Bool { step == stepCount - 1 }
 
     var body: some View {
@@ -108,9 +108,37 @@ struct OnboardingView: View {
                 }
                 .padding(.top, 30)
             }
+        case 3:
+            page("hand.tap", S.obUseTitle(lang), S.obUseBody(lang)) {
+                VStack(spacing: 14) {
+                    controlRow("pencil", S.composerTitle(lang), S.obComposeDesc(lang))
+                    controlRow("gearshape", S.reglagesTitle(lang), S.obBreathDesc(lang))
+                }
+                .padding(.top, 26)
+            }
         default:
             page("sparkles", S.obDoneTitle(lang), S.obDoneBody(lang)) { EmptyView() }
         }
+    }
+
+    // One of the two controls, shown with the same icon the display reveals on tap.
+    private func controlRow(_ icon: String, _ title: String, _ desc: String) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            Image(systemName: icon)
+                .font(.system(size: 17))
+                .foregroundStyle(Color.amber)
+                .frame(width: 40, height: 40)
+                .background(Color.amber.opacity(0.12), in: Circle())
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title).font(Typo.sans(15, .medium)).foregroundStyle(Color.mist)
+                Text(desc).font(Typo.sans(13, .light)).foregroundStyle(Color.mistSoft)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: 430)
+        .padding(14)
+        .background(Color.stoneRaise.opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
     }
 
     private func page<Extra: View>(_ icon: String, _ title: String, _ body: String,
