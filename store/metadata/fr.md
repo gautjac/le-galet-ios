@@ -34,9 +34,9 @@ ambiance,cadre photo,famille,calme,diaporama,citations,rappel,calendrier,foyer,i
 
 ## Description  *(max 4000)*
 ```
-Carrousel transforme un vieil iPad, ou un iPad qui dort, en un foyer familial calme.
+Carrousel transforme un vieil iPad en un foyer familial calme.
 
-Posez-le sur une tablette ou un comptoir de cuisine et il dérive doucement à
+Posez-le sur une étagère ou un comptoir de cuisine et il dérive doucement à
 travers ce qui compte pour votre maisonnée — vos propres photos de famille,
 quelques citations choisies, les rappels et les rendez-vous du jour — un à la
 fois, avec un fondu tout en douceur. Aucun fil d'actualité. Aucune notification.

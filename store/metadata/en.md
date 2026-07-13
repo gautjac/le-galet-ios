@@ -34,7 +34,7 @@ ambient,photo frame,digital frame,family,calm,slideshow,quotes,reminder,calendar
 
 ## Description  *(max 4000)*
 ```
-Carousel turns an old or idle iPad into a calm family hearth.
+Carousel turns an old iPad into a calm family hearth.
 
 Prop it on a shelf or kitchen counter and it slowly drifts through the things
 that matter to your household — your own family photos, a few hand-picked

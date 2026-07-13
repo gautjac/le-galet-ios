@@ -20,7 +20,7 @@ You only fill the "Test Information" once; it applies to external testers.
 
 **English**
 ```
-Carousel turns an old or idle iPad into a calm family hearth — it slowly drifts through your own photos, a few quotes, and the day's reminders and calendar events, one at a time, with a gentle cross-fade. No feeds, no notifications.
+Carousel turns an old iPad into a calm family hearth — it slowly drifts through your own photos, a few quotes, and the day's reminders and calendar events, one at a time, with a gentle cross-fade. No feeds, no notifications.
 
 In this beta I'd love your read on: does it feel calm and effortless to set up? Do your photos look good (including portrait photos and whole albums)? Do calendar events and reminders show up correctly? Anything that feels confusing, cramped, or off.
 
