@@ -24,7 +24,7 @@ Variantes : `Photos, citations, rappels` · `Vos photos, qui dérivent`
 
 ## Texte promotionnel  *(max 170 — modifiable sans nouvelle version)*
 ```
-Votre iPad devient un foyer familial calme : vos propres photos, citations, rappels et événements du jour dérivent lentement, un à la fois. Aucun fil, aucune notification.
+Votre iPad devient un foyer familial calme : vos photos, citations, rappels et événements du jour dérivent lentement, un à la fois. Aucun fil, aucune notification.
 ```
 
 ## Mots-clés  *(max 100, séparés par des virgules, sans espaces)*
