@@ -18,7 +18,7 @@ touche que la fiche) :
 
 ## Sous-titre  *(max 30)*
 ```
-Un foyer calme pour l'iPad
+Cadre photo calme et diaporama
 ```
 Variantes : `Photos, citations, rappels` · `Vos photos, qui dérivent`
 
@@ -29,7 +29,7 @@ Votre iPad devient un foyer familial calme : vos photos, citations, rappels et �
 
 ## Mots-clés  *(max 100, séparés par des virgules, sans espaces)*
 ```
-ambiance,cadre photo,famille,calme,diaporama,citations,rappel,calendrier,foyer,iPad,photos
+ambiance,famille,diaporama,citations,rappel,calendrier,cuisine,chevet,veille,souvenirs,écran,album
 ```
 
 ## Description  *(max 4000)*

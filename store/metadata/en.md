@@ -18,7 +18,7 @@ listing):
 
 ## Subtitle  *(max 30)*
 ```
-A calm hearth for your iPad
+A calm photo frame & slideshow
 ```
 Alternates: `Photos, quotes & reminders` · `Your photos, drifting by`
 
@@ -29,7 +29,7 @@ Your iPad becomes a calm family hearth: your own photos, quotes, reminders and t
 
 ## Keywords  *(max 100, comma-separated, no spaces)*
 ```
-ambient,photo frame,digital frame,family,calm,slideshow,quotes,reminder,calendar,hearth,kiosk
+digital,picture,gallery,ambient,quotes,reminder,calendar,kitchen,nightstand,standby,memories,kiosk
 ```
 
 ## Description  *(max 4000)*
