@@ -120,7 +120,8 @@ that feels like it's asking for attention when it shouldn't.
 > opening parts of it, particularly the photo-framing code, which is the part
 > that took the longest to get right.
 
-**"Québécois French?"**
-> The app is bilingual and French-first — I'm Acadian, from New Brunswick, and I
-> write in French before English. The English is a real translation, not a
-> machine one.
+**"Why French first?"**
+> I write in French before English, so the French is the original and the English
+> is a real translation rather than a machine one. Both are complete — the app
+> switches on device language, and every string, screenshot and caption exists in
+> both.

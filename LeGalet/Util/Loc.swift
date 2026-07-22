@@ -2,7 +2,7 @@ import Foundation
 
 enum Lang: String, CaseIterable { case fr, en }
 
-// A bilingual string. Le Galet is French-first (Québécois); English where natural.
+// A bilingual string. The app is French-first; English where natural.
 struct L {
     let fr: String
     let en: String

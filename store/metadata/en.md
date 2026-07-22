@@ -71,7 +71,7 @@ CALM BY DESIGN
 • Set the pace — from a few seconds to several minutes per moment.
 • A text-size dial scales every word so it reads from across the room.
 • Respects Reduce Motion and Dynamic Type.
-• Bilingual: French (Québécois) and English throughout.
+• Bilingual: French and English throughout.
 
 Designed for iPad. Everything you add stays on your device — no accounts, no
 tracking, nothing sent to a server.

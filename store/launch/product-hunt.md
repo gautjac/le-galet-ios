@@ -39,7 +39,7 @@ Carousel turns your iPad into a calm family hearth. Your own photos, hand-picked
 ```
 Hi Product Hunt 👋
 
-I'm Jac, a filmmaker in Québec who builds small software in the evenings.
+I'm Jac, a filmmaker who builds small software in the evenings.
 
 Carousel came from a simple frustration: every screen in my house wants
 something from me. Notifications, feeds, badges, a scroll that never ends. I
@@ -67,7 +67,7 @@ A few decisions I care about:
   suggested seasonal quotes; I cut it before launch. It was a nice flourish,
   but it meant the app talked to a server, and that wasn't worth it.
 
-• Bilingual throughout — French (Québécois) and English.
+• Bilingual throughout — French and English.
 
 It's free, iPad-only, and there's no upsell — I built it for my own kitchen.
 

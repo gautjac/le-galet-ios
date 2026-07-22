@@ -79,7 +79,7 @@ CALME PAR NATURE
 • Un curseur de taille du texte agrandit chaque mot pour qu'il se lise d'un
   bout à l'autre de la pièce.
 • Respecte Réduire les animations et le Texte dynamique.
-• Bilingue : français (québécois) et anglais.
+• Bilingue : français et anglais.
 
 Conçu pour l'iPad. Tout ce que vous ajoutez reste sur votre appareil — aucun
 compte, aucun pistage, rien envoyé à un serveur.
