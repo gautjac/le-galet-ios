@@ -1,0 +1,6 @@
+name,segment,has_ipad,channel,promo_code,sent(Y/N),date_sent,redeemed(Y/N),reviewed(Y/N),amplified(Y/N),notes
+# segment = close-network | maker | apple-press | franco-press | creative | reserve
+# only send a code if has_ipad = Y. keep ~30 codes in reserve for inbound asks.
+,,,,,,,,,,
+,,,,,,,,,,
+,,,,,,,,,,
