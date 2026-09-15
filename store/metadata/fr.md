@@ -95,7 +95,7 @@ La toute première version de Carrousel. Merci de l'essayer.
 • Une teinte chaude qui passe de l'ambre le jour à l'ardoise la nuit.
 • En français et en anglais.
 
-C'est une version bêta — vos commentaires sont les bienvenus.
+J'aimerais beaucoup avoir vos commentaires.
 ```
 
 ## URLs  *(en ligne — déployées sur carrousel-app.netlify.app)*
@@ -108,7 +108,7 @@ C'est une version bêta — vos commentaires sont les bienvenus.
 - **Catégorie secondaire :** Photo et vidéo
 - **Classification par âge :** 4+ (aucun contenu sensible — répondre « Aucun » à
   toutes les questions ; ne pas cocher « Conçu pour les enfants »)
-- **Prix :** Gratuit
+- **Prix :** Payant — 7,99 $ CAD, achat unique (aucune pub, aucun achat intégré, aucun abonnement)
 - **Droits sur le contenu :** Si vous diffusez des citations qui ne sont pas de
   vous, confirmez que vous avez le droit de les utiliser. L'app ne contient
   aucun contenu protégé de tiers par défaut.

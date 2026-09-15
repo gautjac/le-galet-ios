@@ -87,7 +87,7 @@ The first release of Carousel. Thank you for trying it.
 • A warm accent that shifts from amber by day to slate at night.
 • French and English throughout.
 
-This is an early beta — your feedback is very welcome.
+I'd love to hear what you think.
 ```
 
 ## URLs  *(all live now — deployed at carrousel-app.netlify.app)*
@@ -100,7 +100,7 @@ This is an early beta — your feedback is very welcome.
 - **Secondary category:** Photo & Video
 - **Age rating:** 4+ (no objectionable content — answer "None" to all
   questionnaire items; not "Made for Kids")
-- **Price:** Free
+- **Price:** Paid — $5.99 USD, one-time (no ads, no in-app purchases, no subscription)
 - **Content rights:** If you ship quotes that aren't your own words, confirm you
   have the right to use them. The app ships with no third-party copyrighted
   content by default.

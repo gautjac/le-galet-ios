@@ -2,7 +2,7 @@
 
 **App Store:** https://apps.apple.com/app/id6786345170
 **Website:** https://carrousel-app.netlify.app
-**Price:** Free · **Platform:** iPad (iPadOS 26+)
+**Price:** $5.99 USD, one-time — no ads, no IAP, no subscription · **Platform:** iPad (iPadOS 26+)
 
 ---
 
@@ -22,7 +22,7 @@ Turn your iPad into a calm family display
 
 ## Description  *(max 260 chars)*
 ```
-Carousel turns your iPad into a calm family hearth. Your own photos, hand-picked quotes, and the day's calendar and reminders drift past one at a time, with a slow cross-fade. No feed, no notifications, no accounts. Nothing leaves your device. Free.
+Carousel turns your iPad into a calm family hearth. Your own photos, hand-picked quotes, and the day's calendar and reminders drift past one at a time, with a slow cross-fade. No feed, no notifications, no accounts. Pay once — no ads, no subscription.
 ```
 
 ## Topics
@@ -69,7 +69,10 @@ A few decisions I care about:
 
 • Bilingual throughout — French and English.
 
-It's free, iPad-only, and there's no upsell — I built it for my own kitchen.
+It's a one-time $5.99, iPad-only — no ads, no in-app purchases, no
+subscription. I'd rather charge a fair price once than make you the product;
+and since it talks to no server, there's nothing to harvest anyway. I built it
+for my own kitchen.
 
 I'd genuinely love to know: what would you put on a screen that never asks for
 your attention? And if you try it, tell me where it feels wrong. I'm here all
@@ -120,9 +123,11 @@ Run `node store/screenshots/generate.mjs` to regenerate.
 > a kitchen counter. On a phone it'd be a widget, which is a different product. An
 > older iPad you're not using anymore is the perfect device for it.
 
-**"Is it really free? What's the catch?"**
-> No catch, no ads, no accounts, no data collection. I built it for my own
-> kitchen and it costs me nothing to run, because it doesn't talk to any server.
+**"Why is it paid? / What do I get for $5.99?"**
+> A one-time $5.99 and that's the whole transaction — no ads, no in-app
+> purchases, no subscription, no data collection, no account. I'd rather charge a
+> fair price once than monetise your attention or your data. It's the honest
+> version of the deal.
 
 **"Android / Mac / Apple TV?"**
 > Not yet. If enough people ask I'll look at it — but I'd rather make this one

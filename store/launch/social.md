@@ -13,7 +13,7 @@ reason the thing exists, and it's the only line that makes people stop.
 
 ---
 
-## X — English  *(263/280 — X counts any link as 23 chars)*
+## X — English  *(274/280 — X counts any link as 23 chars)*
 
 ```
 Every screen in my house wants something from me.
@@ -24,11 +24,11 @@ Carrousel turns your iPad into a calm family display — photos, quotes, your da
 
 No feed. No notifications. Nothing leaves your device.
 
-Free:
+$5.99, pay once:
 https://apps.apple.com/app/id6786345170
 ```
 
-## X — Français  *(264/280)*
+## X — Français  *(273/280)*
 
 ```
 Tous mes écrans veulent quelque chose.
@@ -39,7 +39,7 @@ Carrousel transforme votre iPad en écran calme : photos, citations, journée, u
 
 Aucun fil. Aucune notification. Rien ne quitte l'appareil.
 
-Gratuit :
+7,99 $, une fois :
 https://apps.apple.com/app/id6786345170
 ```
 
@@ -51,7 +51,7 @@ https://apps.apple.com/app/id6786345170
 
 **4/** `I also removed the only AI feature before shipping. It suggested seasonal quotes, but it meant the app depended on a server I pay for. Cutting it made "nothing leaves your device" true instead of almost-true. Not every app needs a model in it.`
 
-**5/** `Free, no ads, no account, no upsell. It's bilingual — French first. Built for my own kitchen counter.` + site link
+**5/** `$5.99, once — no ads, no subscription, no account. I'd rather charge a fair price than make you the product. Bilingual, French first. Built for my own kitchen counter.` + site link
 
 ---
 
@@ -74,7 +74,7 @@ Three decisions I care about:
 
 → I removed the one AI feature before launch. It suggested seasonal quotes, but it meant the app depended on a server — and that wasn't worth breaking the promise for.
 
-It's free, bilingual (French first), and on the App Store today.
+It's a one-time $5.99 — no ads, no subscription, no data collection — bilingual (French first), and on the App Store today.
 
 https://carrousel-app.netlify.app
 
@@ -102,7 +102,7 @@ Trois décisions qui me tiennent à cœur :
 
 → J'ai retiré la seule fonction d'IA avant le lancement. Elle suggérait des citations de saison, mais elle rendait l'app dépendante d'un serveur — et ça ne valait pas la peine de briser la promesse.
 
-Gratuit, bilingue (le français d'abord), et sur l'App Store dès aujourd'hui.
+Un achat unique (7,99 $) — aucune pub, aucun abonnement, aucune collecte de données — bilingue (le français d'abord), et sur l'App Store dès aujourd'hui.
 
 https://carrousel-app.netlify.app
 

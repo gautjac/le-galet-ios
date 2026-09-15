@@ -71,9 +71,10 @@ Things that might be technically interesting:
   Cutting it made the privacy claim absolute rather than almost-true.
 
 Limitations, up front: iPad only (iPadOS 26+); everything is local, so there's
-no sync between devices; and it's a display, not a photo manager. It's free,
-with no ads, no accounts and no upsell — it costs me nothing to run because
-there's no backend.
+no sync between devices; and it's a display, not a photo manager. It's a
+one-time purchase ($5.99), with no ads, no in-app purchases, no subscription and
+no account. I'd rather charge once than make you the product — and since there's
+no backend, there's nothing to harvest anyway.
 
 App Store: https://apps.apple.com/app/id6786345170
 
@@ -98,10 +99,12 @@ that feels like it's asking for attention when it shouldn't.
 ## Likely HN objections — prepared answers
 
 **"This is a slideshow. Photos.app does this for free."**
-> Fair. Three differences: it mixes calendar, reminders and quotes into the same
-> rotation, not only photos; it never crops a face by default, which the built-in
-> one does; and you control the mix — how often each kind of thing appears. It's
-> also much slower than a slideshow by design.
+> Fair, and Photos is genuinely fine. Three differences: it mixes calendar,
+> reminders and quotes into the same rotation, not only photos; it never crops a
+> face by default, which the built-in one does; and you control the mix — how
+> often each kind of thing appears. It's also much slower by design. If those
+> aren't worth $6 to you, the built-in one is the right call — I'm not pretending
+> otherwise.
 
 **"'No servers' — how do I verify that?"**
 > You can't take my word for it, and you shouldn't. Two checks: the app declares
