@@ -116,7 +116,7 @@ async function cmdCreateVersion(ver) {
 }
 
 const LOCALES = {
-  'en-US': { file: 'en.md', keys: { description: '## Description', promotionalText: '## Promotional text', keywords: '## Keywords', whatsNew: "## What's New" } },
+  'en-US': { file: 'en.md', keys: { description: '## Description', promotionalText: '## Promotional Text', keywords: '## Keywords', whatsNew: "## What's New" } },
   'fr-FR': { file: 'fr.md', keys: { description: '## Description', promotionalText: '## Texte promotionnel', keywords: '## Mots-clés', whatsNew: '## Nouveautés de cette version' } },
   'fr-CA': { file: 'fr.md', keys: { description: '## Description', promotionalText: '## Texte promotionnel', keywords: '## Mots-clés', whatsNew: '## Nouveautés de cette version' } },
 };

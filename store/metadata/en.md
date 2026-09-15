@@ -79,15 +79,13 @@ tracking, nothing sent to a server.
 
 ## What's New in This Version  *(max 4000 — release notes)*
 ```
-The first release of Carousel. Thank you for trying it.
+A gentle polish on the first release.
 
-• Drift through your own photos, quotes, reminders and calendar events, one calm thing at a time.
-• Pick individual photos or whole albums.
-• Connect Calendar and Reminders, and choose exactly which feed the display.
-• A warm accent that shifts from amber by day to slate at night.
-• French and English throughout.
+• A short "how it works" welcome, so the display makes sense at a glance.
+• Refreshed the built-in quotes with a small set of timeless lines.
+• Clearer wording throughout — and a calmer walk-through the first time you open it.
 
-I'd love to hear what you think.
+Everything still lives on your device. Thank you for having Carousel on your shelf — I'd love to hear what you think.
 ```
 
 ## URLs  *(all live now — deployed at carrousel-app.netlify.app)*

@@ -87,15 +87,13 @@ compte, aucun pistage, rien envoyé à un serveur.
 
 ## Nouveautés de cette version  *(max 4000)*
 ```
-La toute première version de Carrousel. Merci de l'essayer.
+Un doux polissage de la première version.
 
-• Dérivez à travers vos propres photos, citations, rappels et rendez-vous, une chose calme à la fois.
-• Choisissez des photos une à une ou des albums entiers.
-• Reliez Calendrier et Rappels, et choisissez lesquels alimentent l'écran.
-• Une teinte chaude qui passe de l'ambre le jour à l'ardoise la nuit.
-• En français et en anglais.
+• Un court accueil « comment ça marche », pour que l'écran se comprenne d'un coup d'œil.
+• Des citations intégrées rafraîchies — un petit choix de lignes intemporelles.
+• Des formulations plus claires partout, et une première ouverture plus sereine.
 
-J'aimerais beaucoup avoir vos commentaires.
+Tout reste sur votre appareil. Merci d'accueillir Carrousel sur votre tablette — j'aimerais beaucoup avoir vos commentaires.
 ```
 
 ## URLs  *(en ligne — déployées sur carrousel-app.netlify.app)*
