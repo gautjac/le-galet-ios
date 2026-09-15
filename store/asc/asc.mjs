@@ -142,18 +142,27 @@ async function cmdSetCopy(ver) {
   }
 }
 
-async function newestBuild(appId, wantBuild) {
+// Newest build ON A GIVEN TRAIN (preReleaseVersion == trainVer), so a 1.0.1
+// version never accidentally grabs an older 1.0.0 build. If wantBuild is set,
+// it further pins the CFBundleVersion.
+async function newestBuild(appId, wantBuild, trainVer) {
   const filter = wantBuild ? `&filter[version]=${encodeURIComponent(wantBuild)}` : '';
-  const b = await api('GET', `/v1/builds?filter[app]=${appId}${filter}&sort=-uploadedDate&limit=1&fields[builds]=version,processingState`);
-  return b.data[0];
+  const b = await api('GET', `/v1/builds?filter[app]=${appId}${filter}&sort=-uploadedDate&limit=25&fields[builds]=version,processingState,preReleaseVersion&include=preReleaseVersion&fields[preReleaseVersions]=version`);
+  const trainOf = build => {
+    const rel = build.relationships?.preReleaseVersion?.data;
+    const inc = rel && (b.included || []).find(i => i.id === rel.id);
+    return inc?.attributes?.version;
+  };
+  const list = b.data.filter(x => !trainVer || trainOf(x) === trainVer);
+  return list[0];
 }
-async function waitForValidBuild(appId, wantBuild) {
+async function waitForValidBuild(appId, wantBuild, trainVer) {
   const t0 = Date.now();
-  let b = await newestBuild(appId, wantBuild);
+  let b = await newestBuild(appId, wantBuild, trainVer);
   while ((!b || b.attributes.processingState === 'PROCESSING') && Date.now() - t0 < 45 * 60e3) {
-    warn(`build ${wantBuild ?? ''}: ${b ? b.attributes.processingState : 'not visible yet'}… (${Math.round((Date.now()-t0)/1000)}s)`);
+    warn(`build on train ${trainVer ?? '*'} ${wantBuild ?? ''}: ${b ? b.attributes.processingState : 'not visible yet'}… (${Math.round((Date.now()-t0)/1000)}s)`);
     await new Promise(r => setTimeout(r, 30e3));
-    b = await newestBuild(appId, wantBuild);
+    b = await newestBuild(appId, wantBuild, trainVer);
   }
   return b;
 }
@@ -162,12 +171,76 @@ async function cmdAttachBuild(ver, wantBuild, doWait) {
   const app = await getApp();
   const v = await findVersion(app.id, ver);
   if (!v) throw new Error(`version ${ver} not found`);
-  let b = doWait ? await waitForValidBuild(app.id, wantBuild) : await newestBuild(app.id, wantBuild);
-  if (!b) throw new Error('no build found');
+  let b = doWait ? await waitForValidBuild(app.id, wantBuild, ver) : await newestBuild(app.id, wantBuild, ver);
+  if (!b) throw new Error(`no build on the ${ver} train found yet`);
   if (b.attributes.processingState !== 'VALID') { warn(`build ${b.attributes.version} is ${b.attributes.processingState}, not VALID yet`); return { app, v, build: b, valid: false }; }
   await api('PATCH', `/v1/appStoreVersions/${v.id}/relationships/build`, { data: { type: 'builds', id: b.id } });
   ok(`attached build ${b.attributes.version} (VALID) to version ${ver}`);
   return { app, v, build: b, valid: true };
+}
+
+// Match the approved baseline: en-US + fr-CA only. Remove any stray locale.
+async function cmdPruneLocales(ver, keep = ['en-US', 'fr-CA']) {
+  const app = await getApp();
+  const v = await findVersion(app.id, ver);
+  if (!v) throw new Error(`version ${ver} not found`);
+  const locs = (await api('GET', `/v1/appStoreVersions/${v.id}/appStoreVersionLocalizations?fields[appStoreVersionLocalizations]=locale`)).data;
+  for (const l of locs) {
+    if (!keep.includes(l.attributes.locale)) {
+      await api('DELETE', `/v1/appStoreVersionLocalizations/${l.id}`);
+      ok(`removed locale ${l.attributes.locale}`);
+    }
+  }
+}
+
+// Upload the 5 iPad Pro 12.9" screenshots to each locale, in order.
+// en-US ← store/screenshots/out/*-en.png ; fr-CA ← *-fr.png
+const SHOTS = {
+  'en-US': ['01-photo-en', '02-quote-en', '03-event-en', '04-composer-en', '05-settings-en'],
+  'fr-CA': ['01-photo-fr', '02-quote-fr', '03-event-fr', '04-composer-fr', '05-settings-fr'],
+};
+const DISPLAY_TYPE = 'APP_IPAD_PRO_3GEN_129';
+async function cmdUploadScreenshots(ver) {
+  const app = await getApp();
+  const v = await findVersion(app.id, ver);
+  if (!v) throw new Error(`version ${ver} not found`);
+  const locs = (await api('GET', `/v1/appStoreVersions/${v.id}/appStoreVersionLocalizations?fields[appStoreVersionLocalizations]=locale`)).data;
+  for (const [locale, files] of Object.entries(SHOTS)) {
+    const loc = locs.find(l => l.attributes.locale === locale);
+    if (!loc) { warn(`no ${locale} localization — skipping screenshots`); continue; }
+    // find or create the display-type set
+    let sets = (await api('GET', `/v1/appStoreVersionLocalizations/${loc.id}/appScreenshotSets?include=appScreenshots`));
+    let set = (sets.data || []).find(s => s.attributes.screenshotDisplayType === DISPLAY_TYPE);
+    if (!set) {
+      set = (await api('POST', '/v1/appScreenshotSets', { data: { type: 'appScreenshotSets',
+        attributes: { screenshotDisplayType: DISPLAY_TYPE },
+        relationships: { appStoreVersionLocalization: { data: { type: 'appStoreVersionLocalizations', id: loc.id } } } } })).data;
+      ok(`${locale}: created ${DISPLAY_TYPE} set`);
+    }
+    const existing = (set.relationships?.appScreenshots?.data || []).length;
+    if (existing >= files.length) { ok(`${locale}: already has ${existing} screenshots — skipping`); continue; }
+    for (const base of files) {
+      const fp = path.join(repo, 'store', 'screenshots', 'out', base + '.png');
+      const bytes = fs.readFileSync(fp);
+      const md5 = crypto.createHash('md5').update(bytes).digest('hex');
+      // 1. reserve
+      const res = (await api('POST', '/v1/appScreenshots', { data: { type: 'appScreenshots',
+        attributes: { fileName: base + '.png', fileSize: bytes.length },
+        relationships: { appScreenshotSet: { data: { type: 'appScreenshotSets', id: set.id } } } } })).data;
+      // 2. upload bytes to each operation
+      for (const op of res.attributes.uploadOperations) {
+        const headers = {}; for (const h of (op.requestHeaders || [])) headers[h.name] = h.value;
+        const chunk = bytes.subarray(op.offset, op.offset + op.length);
+        const r = await fetch(op.url, { method: op.method, headers, body: chunk });
+        if (r.status >= 400) throw new Error(`upload ${base} → ${r.status} ${await r.text()}`);
+      }
+      // 3. commit
+      await api('PATCH', `/v1/appScreenshots/${res.id}`, { data: { type: 'appScreenshots', id: res.id,
+        attributes: { uploaded: true, sourceFileChecksum: md5 } } });
+      info(`${locale}: uploaded ${base}.png (${(bytes.length/1024|0)} KB)`);
+    }
+    ok(`${locale}: ${files.length} screenshots uploaded`);
+  }
 }
 
 async function cmdSubmit(ver) {
@@ -209,6 +282,8 @@ try {
   if (cmd === 'status') await cmdStatus();
   else if (cmd === 'create-version') await cmdCreateVersion(args[1]);
   else if (cmd === 'set-copy') await cmdSetCopy(args[1]);
+  else if (cmd === 'prune-locales') await cmdPruneLocales(args[1]);
+  else if (cmd === 'upload-screenshots') await cmdUploadScreenshots(args[1]);
   else if (cmd === 'attach-build') await cmdAttachBuild(args[1], flag('--build'), args.includes('--wait'));
   else if (cmd === 'submit') await cmdSubmit(args[1]);
   else if (cmd === 'release-flow') await cmdReleaseFlow(args[1], flag('--build'));
