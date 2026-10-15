@@ -19,5 +19,8 @@ struct CarouselWidget: Widget {
             : "One calm thing at a time — a photo, a quote, or the day's next event.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge,
                             .accessoryRectangular, .accessoryInline])
+        // A quiet display, not a glanceable stat — always keep its dark backdrop
+        // (including in StandBy), never let the Home Screen strip it to bare text.
+        .containerBackgroundRemovable(false)
     }
 }

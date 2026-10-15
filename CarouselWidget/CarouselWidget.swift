@@ -92,6 +92,10 @@ private func nightFactor(_ date: Date) -> Double {
 
 struct CarouselWidgetView: View {
     @Environment(\.widgetFamily) private var family
+    // .fullColor on the Home Screen and in StandBy by day; .vibrant on the iPhone
+    // Lock Screen and in StandBy Night Mode (the dim, desaturated red look), where
+    // custom colours are flattened to luminance and must give way to .primary.
+    @Environment(\.widgetRenderingMode) private var renderMode
     let entry: CarouselEntry
 
     var body: some View {
@@ -105,7 +109,12 @@ struct CarouselWidgetView: View {
         }
     }
 
-    private var accent: Color { Accent.color(nightFactor: entry.nightFactor) }
+    private var vibrant: Bool { renderMode == .vibrant }
+    // In vibrant mode the accent would desaturate to a muddy grey, so fall back to
+    // the system's vibrant primary; by day, the live amber→slate accent.
+    private var accent: Color {
+        vibrant ? Color.primary : Accent.color(nightFactor: entry.nightFactor)
+    }
 
     // Home Screen / StandBy / (iPhone →) CarPlay
     @ViewBuilder private var homeScreen: some View {
@@ -115,10 +124,10 @@ struct CarouselWidgetView: View {
         case .sampleLandscape:
             PhotoCard(uiImage: UIImage(named: "SampleLandscape"), caption: nil, family: family)
         case .quote(let text, let author):
-            QuoteCard(text: text, author: author, accent: accent, family: family)
+            QuoteCard(text: text, author: author, accent: accent, vibrant: vibrant, family: family)
                 .containerBackground(Color.stoneBase, for: .widget)
         case .event(let title, let line):
-            EventCard(title: title, line: line, accent: accent, family: family)
+            EventCard(title: title, line: line, accent: accent, vibrant: vibrant, family: family)
                 .containerBackground(Color.stoneBase, for: .widget)
         }
     }
@@ -190,6 +199,7 @@ private struct QuoteCard: View {
     let text: String
     let author: String
     let accent: Color
+    var vibrant: Bool = false
     let family: WidgetFamily
 
     private var size: CGFloat {
@@ -200,7 +210,7 @@ private struct QuoteCard: View {
         VStack(alignment: .leading, spacing: family == .systemSmall ? 6 : 10) {
             Text(text)
                 .font(.system(size: size, weight: .regular, design: .serif))
-                .foregroundStyle(Color.quoteInk)
+                .foregroundStyle(vibrant ? Color.primary : Color.quoteInk)
                 .lineLimit(family == .systemSmall ? 4 : 7)
                 .minimumScaleFactor(0.7)
                 .fixedSize(horizontal: false, vertical: true)
@@ -208,7 +218,7 @@ private struct QuoteCard: View {
                 Text(author.uppercased())
                     .font(.system(size: family == .systemSmall ? 9 : 11, weight: .semibold))
                     .tracking(1.2)
-                    .foregroundStyle(accent)
+                    .foregroundStyle(vibrant ? AnyShapeStyle(.secondary) : AnyShapeStyle(accent))
                     .lineLimit(1)
             }
         }
@@ -220,6 +230,7 @@ private struct EventCard: View {
     let title: String
     let line: String
     let accent: Color
+    var vibrant: Bool = false
     let family: WidgetFamily
 
     var body: some View {
@@ -229,24 +240,35 @@ private struct EventCard: View {
             } icon: {
                 Image(systemName: "calendar").font(.system(size: 11, weight: .semibold))
             }
-            .foregroundStyle(accent)
+            .foregroundStyle(vibrant ? AnyShapeStyle(.secondary) : AnyShapeStyle(accent))
             .lineLimit(1)
 
             Text(title)
                 .font(.system(size: family == .systemSmall ? 16 : 22, weight: .regular, design: .serif))
-                .foregroundStyle(Color.quoteInk)
+                .foregroundStyle(vibrant ? Color.primary : Color.quoteInk)
                 .lineLimit(family == .systemSmall ? 3 : 4)
                 .minimumScaleFactor(0.7)
             Spacer(minLength: 0)
         }
         .padding(family == .systemSmall ? 2 : 6)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(
+        .background(eventBackground)
+    }
+
+    // The teal card reads as "the day's thing" in full colour; in StandBy Night
+    // Mode (vibrant) a saturated card muddies, so let the dark container show and
+    // mark the card with a hairline instead.
+    @ViewBuilder private var eventBackground: some View {
+        if vibrant {
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color.primary.opacity(0.35), lineWidth: 1)
+                .padding(-4)
+        } else {
             LinearGradient(colors: [Color.eventCardTop, Color.eventCardBottom],
                            startPoint: .top, endPoint: .bottom)
                 .overlay(RoundedRectangle(cornerRadius: 18).stroke(accent.opacity(0.25), lineWidth: 1))
                 .clipShape(RoundedRectangle(cornerRadius: 18))
                 .padding(-4)
-        )
+        }
     }
 }
