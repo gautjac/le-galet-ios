@@ -49,6 +49,8 @@ struct RootView: View {
             events.selectedReminderListIDs = settings.selectedReminderListIDs
             albums.update(albumSpecs)
             await events.refresh()
+            // Hand the widget a fresh snapshot once the day's events are loaded.
+            await WidgetPublisher.publish(items: items, settings: settings, events: events)
         }
         // Pull margin quotes saved from the magazines (Les Marges → wiki → feed),
         // then top up on a slow timer for as long as the display stays open.
@@ -56,8 +58,12 @@ struct RootView: View {
         .onChange(of: screen) { _, _ in composerModalOpen = false; armIdleReturn() }
         // A modal opening pauses the countdown; closing it re-arms a fresh one.
         .onChange(of: composerModalOpen) { _, _ in armIdleReturn() }
-        // Adding or removing items is active curation — keep the screen alive.
-        .onChange(of: items.count) { _, _ in armIdleReturn() }
+        // Adding or removing items is active curation — keep the screen alive, and
+        // refresh what the widget shows.
+        .onChange(of: items.count) { _, _ in
+            armIdleReturn()
+            publishWidget()
+        }
         .onChange(of: settings.langRaw) { _, _ in
             events.lang = settings.lang
             Task { await events.refresh() }
@@ -121,6 +127,11 @@ struct RootView: View {
     // A curation screen left genuinely idle drifts back to the display after a
     // while — but never while a modal is open (the photo picker can take minutes)
     // and the countdown restarts on each interaction, so active use never bounces.
+    // Republish the widget snapshot off the main flow (best-effort, never blocks UI).
+    private func publishWidget() {
+        Task { await WidgetPublisher.publish(items: items, settings: settings, events: events) }
+    }
+
     private func armIdleReturn() {
         idleTask?.cancel()
         guard screen != .galet, !composerModalOpen else { return }

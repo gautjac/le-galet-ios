@@ -26,6 +26,14 @@ targets:
     platform: iOS
     sources:
       - path: LeGalet
+      - path: Shared
+    dependencies:
+      - target: CarouselWidget
+    entitlements:
+      path: LeGalet/LeGalet.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.jac.LeGalet
     info:
       path: LeGalet/Resources/Info.plist
       properties:
@@ -62,6 +70,39 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.jac.LeGalet
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  # Spike: Carrousel as a WidgetKit widget — Home Screen / Lock Screen / StandBy,
+  # and (once the app also targets iPhone) the CarPlay Home Screen on iOS 26.
+  # Reads a small shared snapshot the app publishes into the App Group; it does not
+  # open the app's SwiftData store.
+  CarouselWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: CarouselWidget
+      - path: Shared
+      # Reuse the app's palette + accent so the widget matches the display exactly.
+      - path: LeGalet/Theme/Palette.swift
+    info:
+      path: CarouselWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Carrousel
+        CFBundleDevelopmentRegion: fr
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: CarouselWidget/CarouselWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.jac.LeGalet
+    settings:
+      base:
+        # "2" (iPad) mirrors the app today, so the widget is demonstrable on iPad
+        # now. To reach iPhone + the CarPlay Home Screen, set BOTH this and the app
+        # target to "1,2".
+        TARGETED_DEVICE_FAMILY: "2"
+        PRODUCT_BUNDLE_IDENTIFIER: com.jac.LeGalet.CarouselWidget
+        INFOPLIST_KEY_CFBundleDisplayName: Carrousel
 
 schemes:
   LeGalet:
